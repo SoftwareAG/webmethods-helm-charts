@@ -1,0 +1,31 @@
+apiVersion: v1
+entries:
+  common:
+  - annotations:
+      category: Infrastructure
+      licenses: Apache-2.0
+    apiVersion: v2
+    appVersion: 1.0.0
+    created: "2023-08-16T10:35:44.554885+02:00"
+    description: A Library Helm Chart for grouping common logic between SoftwareAG
+      charts. This chart is not deployable by itself.
+    digest: 09f3a27733e7d6d0d14d941fbc5ec81e7eb6f2fe21ab63db8bfa148ada845eeb
+    home: https://softwareag.com
+    icon: https://softwareag.com/downloads/logos/softwareag-mark.png
+    keywords:
+    - common
+    - helper
+    - template
+    - function
+    - softwareag
+    maintainers:
+    - name: SoftwareAG
+      url: https://softwareag.com
+    name: common
+    sources:
+    - https://github.com/softwareag/webmethods-helm-charts
+    type: library
+    urls:
+    - common-1.0.0.tgz
+    version: 1.0.0
+generated: "2023-08-16T10:35:44.554106+02:00"
