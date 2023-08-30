@@ -1,0 +1,279 @@
+# Default values for microservicesruntime.
+
+# -- Number of replicates in Deployment
+replicaCount: 1
+
+# -- StatefulSet or Deployment. You should only change this if you require Client Side queuing (CSQ) or functionality in IS which requires stable hostnames and filesystems. Default is false => Deployment. Keep in mind, you must disable CSQ on each webMethods messaging and JMS connection if you don't use stateful-sets. See examples in Process Engine deployment for disableing QSC.
+statefulSet: false
+
+# -- deploy service monitor for Prometheus, by default disabled as we use pod annotations for Prometheus
+serviceMonitor: false
+
+image:
+  # -- Pull this image. Default is MSR from Software AG Container Registry
+  repository: "sagcr.azurecr.io/webmethods-microservicesruntime"
+  # -- Pull with policy
+  pullPolicy: IfNotPresent
+  # -- Tag of pulled the image
+  tag:        "10.15.0.4"
+
+# -- Secret list to pull image from repository
+imagePullSecrets: [regcred]
+
+# -- Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`.
+nameOverride: ""
+# -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
+fullnameOverride: ""
+
+# -- The name of the main container, by default this will be msr-<release_name>
+containerName: 
+
+# -- Exta volumes that should be mounted.
+extraVolumes: []
+# - name: extras
+#   emptyDir: {}
+
+# -- Exta environment properties to be passed on to the microservice runtime
+extraEnvs: []
+#  - name: extraEnvironmentVariable
+#    value: "myvalue"
+
+# -- Extra Ports to be defined, note: these ports need to be created 
+extraPorts: []
+
+# -- Secret mounts, A list of secrets and their paths to mount inside the pod
+secretMounts: []
+#  - name: default-secrets
+#    secretName: elastic-certificates
+#    path: /usr/share/elasticsearch/config/certs
+#    defaultMode: 0755
+
+# -- Secret volumes, A list of secrets
+secretVolumes: []
+# - name: msr-secrets
+#   secretName: msr-secrets
+
+# -- Extra volume mounts
+extraVolumeMounts: []
+# - name: extras
+#   mountPath: /usr/share/extras
+#   readOnly: true
+
+# -- Volume Claim Templates, only to be used when running as a Statefulset (e.g. using client-side queuing)
+volumeClaimTemplates: []
+#    - metadata:
+#        name: my-volume
+#      spec:
+#        accessModes:
+#          - ReadWriteOnce
+#        resources:
+#          requests:
+#            storage: 1Gi
+
+# -- Extra containers which should run in addtion to the main container as a sidecar
+extraContainers: []
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+
+# -- Extra init containers that are executed before starting the main container
+extraInitContainers: []
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+
+# -- Extra config maps for addtional configurations such as extra ports, etc.
+extraConfigMaps: []
+
+# -- Extra command, which is executed before the startContainer entrypoint script of the Microservice Runtime
+extraCommand: ""
+
+# -- lifecycle hooks to execute on preStop / postStart,...
+lifecycle: {}
+# preStop:
+#   exec:
+#     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+# postStart:
+#   exec:
+#     command:
+#       - bash
+#       - -c
+#       - |
+#         #!/bin/bash
+#         # Sync PDTs at startup
+#         IS_URL=http://localhost:5555
+#         curl -XGET "$IS_URL/invoke/pub.publish:syncToProvider"
+
+# -- readiness probe for container, by default this will simply check for tcp socket connection. Adjust this in order to avoid routing traffing to non-ready Integration Servers (e.g. use the ping service via http call)
+readinessProbe:
+  tcpSocket:
+    port: http
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 1
+
+# -- startup probe for container
+startupProbe:
+  tcpSocket:
+    port: http
+  failureThreshold: 60
+  periodSeconds: 30            # wait 10 * 60 seconds for starting readinessProbe and livenessProbe
+
+microservicesruntime:
+  # -- Defines external runtime port
+  httpsPort:                5556
+  # -- Defines scheme of runtime port 
+  httpsPortScheme:          "HTTPS"
+  # -- Defines administration port
+  httpPort:                 5555
+  # -- Defines scheme of administration port
+  httpPortScheme:          "HTTP"
+  # -- Defies diagnostic port
+  diagnosticPort:           9999
+  
+  readinessProbe:
+    # -- Scheme of administration port port, uppercase
+    scheme:                 "HTTP"
+  # -- Name of config map which contains the license key
+  licenseConfigMap:         "microservicesruntime-license-key"
+  memoryHeap:
+    ## -- Minimum of allocated heap memory
+    min:                    "512M"
+    # -- Maximum of heap memory
+    max:                    "512M"
+
+  # -- Defines installation folder which was using on image creation
+  installDir:      /opt/softwareag/IntegrationServer # This is the installation directory which you use on creating the image
+  # -- List of application properties which are added into config map in YAML format. See [Integration Server Configuration Variables](https://documentation.softwareag.com/webmethods/integration_server/pie10-15/webhelp/pie-webhelp/index.html#page/pie-webhelp%2Fre-configuration_variables_assets.html)
+  properties: {}
+  # -- Use "flat" application properties file as generated by configuration variable templates. Note: "properties" takes precedence over the propertiesFile values. Template function, 
+  # you can reference other values using template syntax (e.g. using curly braces)
+  #  content: |
+  #    truststore.DEFAULT_JVM_TRUSTSTORE.ksPassword=$secret{TruststorePasswordSecretName}
+  #    property=value
+  #    anotherproperty=value
+  #    image={{ .Values.image.repository }} # referencing other values
+  propertiesFile: 
+    content: |
+      # application properties file 
+
+  # -- list of custom java opts e.g. "-Dmy.prop1=value1" "-Dmy.prop2=value2"
+  javaCustomOpts:
+  # example:   
+  #  - "-Dmy.prop1=value1"
+  #  - "-Xss265"
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# -- pod annotations
+podAnnotations: {}
+
+# -- Prometheus annotations for scraping metrics from microservice runtime pod
+prometheusAnnotations: 
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: "5555"
+  prometheus.io/scheme: "http"
+
+podSecurityContext:
+  fsGroup: 1724
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5555
+
+ingress:
+  enabled: true
+  defaultHostname: msr.mydomain.com
+  className: ""
+  annotations: {}
+  hosts:
+    # -- Hostname of Ingress. By default the defaultHostname is used. For more complex rules or addtional hosts, you will need to overwrite this section.
+    - host: ""
+      # --  Address the backend
+      paths:
+        # -- Path to address the backend
+        - path: /
+          # -- Path type to address the backend
+          pathType: Prefix
+          # -- Port of service
+          port: 5555
+  # -- TLS of Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #
+  # msrContainer:
+  #   limits:
+  #     cpu: 100m
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+  # nginxContainer:
+  #   requests:
+  #     cpu: 500m
+  #     memory: 2Gi
+  #   limits:
+  #     # use a high cpu limit to avaoid the container being throttled
+  #     cpu: 8
+  #     memory: 4Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# -- Instanciate Nginx as external LB
+externalLoadBalancer: false
+
+# Use persistent volume for IS packages, configuration settings and logs ...
+persistence:
+  # -- Use persistent volume for IS packages, configuration settings and logs. If `persistence.existingClaim` not set, a claim will be automatically created.
+  enabled:          false
+  storageClassName: ""
+  annotations:      {}
+  # -- Use this existing and already created PVC.
+  existingClaim:    ""
+  accessMode:       ReadWriteOnce
+  accessModes:      []
+  # -- Size of Persistent Volume Claim
+  size:             10M
+  # -- if persistence.enabled=true, externalize packages / use packages from persistent volume
+  packages:         true
+  # -- if persistence.enabled=true, write logs to persistent volume
+  logs:             true
+  # -- if persistence.enabled=true, use configuration settings from persistent volume
+  configs:          true

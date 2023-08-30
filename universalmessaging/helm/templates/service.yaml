@@ -1,0 +1,21 @@
+{{- range $replicaIndex := until (int .Values.replicaCount) }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "common.names.fullname" $ }}-{{ $replicaIndex }}
+  labels:
+    {{- include "common.labels.standard" $ | nindent 4 }}
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: {{ include "common.names.fullname" $ }}-{{ $replicaIndex }}
+  ports:
+    - port: {{ $.Values.service.port }}
+      targetPort: 9000
+      protocol: TCP
+      name: nsp
+    - port: {{ $.Values.service.metricPort }}
+      targetPort: 9200
+      protocol: TCP
+      name: metric
+{{- end }}

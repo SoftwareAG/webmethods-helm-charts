@@ -1,0 +1,38 @@
+
+jobs:
+- name: push-doc-types
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  image:
+    repository: ubuntu
+    tag: latest
+  imagePullPolicy: IfNotPresent
+  restartPolicy: Never
+  envFrom:
+    - secretRef:
+        name: msr-secrets  
+  command: ["/bin/bash"] 
+  args:
+    - -c
+    - >-
+        echo Pushing Document Types to Provider for [${DEPLOYMENT}] ...;
+        apt-get update;
+        apt-get install jq   -y;
+        apt-get install curl -y;
+        status=$(curl -s -o /dev/null -w "%{http_code}" ${DEPLOYMENT}:5555 -u "Administrator:${ADMIN_PASSWORD}");
+        while [[ "${status}" != "200" ]];
+        do 
+          echo Waiting for IS [${DEPLOYMENT}] status [${status}] ...;
+          sleep 10;
+          status=$(curl -s -o /dev/null -w "%{http_code}" ${DEPLOYMENT}:5555 -u "Administrator:${ADMIN_PASSWORD}");
+        done;
+        pusdDTs=$(curl -s -u "Administrator:${ADMIN_PASSWORD}" -H "Content-Type: application/json" "${DEPLOYMENT}:5555/invoke/pub.utils.messaging:syncDocTypesToUM" | jq -r '.updatedDocumentTypes[].name');
+        echo "List of Document Types retrieved ...";
+        echo [${pusdDTs}];
+        for dt in ${pusdDTs};
+        do
+          echo Pushing [${dt}] ...;
+          curl -s -u "Administrator:${ADMIN_PASSWORD}" -H "Content-Type: application/json" "${DEPLOYMENT}:5555/invoke/pub.publish:syncToProvider?documentTypes[0]=${dt}" | jq '.';
+        done;

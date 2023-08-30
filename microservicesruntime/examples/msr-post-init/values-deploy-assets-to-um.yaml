@@ -1,0 +1,24 @@
+
+jobs:
+- name: deploy-assets-to-um
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  image:
+    repository: sagcr.azurecr.io/universalmessaging-tools
+    tag: 10.15
+  imagePullPolicy: IfNotPresent
+  restartPolicy: Never
+  env:
+    # -- Environment variable for Shell script
+    - name:  UM_HOST
+      # -- Set UM Realm deployment (=hostname)
+      value: wm-realm-um
+  command: ["/bin/bash"]
+  # -- Shell script to deploy / create assets in UM using runUMTool.sh
+  args:
+    - -c
+    - >-
+        echo Deploying Assets in UM [$UM_HOST] ...;
+        runUMTool.sh CreateConnectionFactory -rname=nsp://$UM_HOST:9000 -factoryname=local_um -factorytype=default -connectionurl=nsp://$UM_HOST:9000 -durabletype=S

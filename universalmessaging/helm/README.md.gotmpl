@@ -1,0 +1,41 @@
+# webMethods Universal Messaging Helm Chart
+
+This Helm Chart installs and configures a Universal Messaging (UM) container.
+
+## Prerequisites
+
+### Image Pull Secret
+
+If you want to pull image from Software AG Containers Registry, create secret with your Software AG Containers Registry credentials ...
+
+```
+kubectl create secret docker-registry regcred --docker-server=sagcr.azurecr.io --docker-username=<your-name> --docker-password=<your-pwd> --docker-email=<your-email>
+```
+
+### Licenses
+
+Universal Messaging requires a license file. These license is supposed to be provided as configmap.
+
+Hence before running `helm install` create the configmap:
+
+```
+kubectl create configmap universalmessaging-licence-key --from-file=licence.xml=<your path and filename to Universal Messaging license file>
+```
+
+## Examples for Use-cases
+
+Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values. 
+
+| Use-case | Description |
+|-----|------|
+| [post-init](../examples/post-init/README.md) | Post-initialize UM server deployment |
+
+## Install Universal Messaging Release
+
+Install release
+
+```shell
+helm install um webmethods/universalmessaging
+```
+
+{{ template "chart.valuesSection" . }}

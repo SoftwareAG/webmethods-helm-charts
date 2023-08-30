@@ -1,0 +1,6 @@
+ingress:
+  defaultHostname: myhost.mydomain.com
+  tls:
+    - secretName: tls-secret
+      hosts:
+        - myhost.mydomain.com

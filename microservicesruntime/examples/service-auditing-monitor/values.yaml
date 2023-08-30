@@ -1,0 +1,94 @@
+microservicesruntime:
+
+  mws:
+    # -- Connect to My webMethods Server hostname
+    host:
+    # -- Connect to My webMethods Server Administrator password
+    password:
+
+  properties:
+    jdbc:
+      data:
+        # -- JDBC pool Process Engine database URL
+        dbURL:
+        # -- JDBC pool Process Engine database user ID
+        userid:
+        # -- JDBC pool Process Engine database password
+        password:
+        # -- JDBC pool Process Engine database driver alias. To retrieve a list of available drivers, call GET `/admin/jdbc/driver` to running MSR.
+        driverAlias:
+        # -- JDBC pool Process Engine database number of connections
+        maxConns: 10
+      archive:
+        # -- JDBC pool Archive database URL
+        dbURL:
+        # -- JDBC pool Archive database user ID
+        userid:
+        # -- JDBC pool Archive database password
+        password:
+        # -- JDBC pool Archive database driver alias. Default is to use the Process Engine driver alias.
+        driverAlias: "{{ .Values.microservicesruntime.properties.jdbc.data.driverAlias }}"
+    monproperty:
+      wm:
+        # -- See [Monitor](https://documentation.softwareag.com/webmethods/monitor/wmn10-15/webhelp/wmn-webhelp/index.html#page/wmn-webhelp%2Fre-configure_monitor_properties_msr_template.html) configuration settings 
+        monitor:
+          # -- WmMonitor package connects to MWS hostname
+          myWebmethodsHost:     "{{ .Values.microservicesruntime.mws.host }}"
+          # -- WmMonitor package connects to MWS port
+          myWebmethodsPort:     8585
+          # -- WmMonitor package connects with MWS Adminitrator password
+          myWebmethodsPassword: "{{ .Values.microservicesruntime.mws.password }}"
+
+    jdbcfunc:
+      ISCoreAudit:
+        # -- Assign JDBC pool `pe` to Functions `ISCoreAudit`
+        connPoolAlias: data
+      ISDashboardStats:
+        # -- Assign JDBC pool `pe` to Functions `ISDashboardStats`
+        connPoolAlias: data
+      ISInternal:
+        # -- Assign JDBC pool `pe` to Functions `ISInternal`
+        connPoolAlias: data
+      Xref:
+        # -- Assign JDBC pool `pe` to Functions `Xref`
+        connPoolAlias: data
+      ProcessEngine:
+        # -- Assign JDBC pool `pe` to Functions `ProcessEngine`
+        connPoolAlias: data
+      DocumentHistory:
+        # -- Assign JDBC pool `pe` to Functions `DocumentHistory`
+        connPoolAlias: data
+
+      ProcessAudit:
+        # -- Assign JDBC pool `pa` to Functions `ProcessAudit`
+        connPoolAlias: data
+
+      Archiving:
+        # -- Assign JDBC pool `archiv` to Functions `Archiving`
+        connPoolAlias: archive
+
+    settings:
+      watt:
+        server:
+          # -- Maximum number of available server threads 
+          threadPool: 750
+          # -- Number of days to keep server log files
+          serverlogFilesToKeep: 1
+          stats:
+            # -- Number of days to statistic log files
+            logFilesToKeep: 1
+          audit:
+            # -- Number of days to audit log files
+            logFilesToKeep: 1
+          scheduler:
+            logical:
+              # -- Set hostname of this MSR deployment
+              hostname: "{{ include \"microservicesruntime.fullname\" . }}"
+        net:
+          # -- Set hostname of this MSR deployment
+          localhost: "{{ include \"microservicesruntime.fullname\" . }}"
+
+    statisticsdatacollector:
+      monitorConfig:
+        # -- Enable or disable IS internal statistic data collector. (Statistic data are visible on Monitor page.) We disable statistic data collector because of using Grafana and Prometheus.
+        enabled: false

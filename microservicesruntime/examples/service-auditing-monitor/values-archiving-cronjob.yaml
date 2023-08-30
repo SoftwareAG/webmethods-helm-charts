@@ -1,0 +1,36 @@
+
+# Cron schedule syntax
+# ┌───────────── minute (0 - 59)
+# │ ┌───────────── hour (0 - 23)
+# │ │ ┌───────────── day of the month (1 - 31)
+# │ │ │ ┌───────────── month (1 - 12)
+# │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday;
+# │ │ │ │ │                                   7 is also Sunday on some systems)
+# │ │ │ │ │                                   OR sun, mon, tue, wed, thu, fri, sat
+# │ │ │ │ │
+# * * * * *
+
+jobs:
+# -- Implements a cron job to purge all auditing data which are older than 30 days.
+- name: archive-auditing-data
+  image:
+    repository: curlimages/curl
+    tag: latest
+  imagePullPolicy: IfNotPresent
+  restartPolicy: Never
+  envFrom:
+    - secretRef:
+        name: msr-secrets
+  # -- Schedule job every day ...
+  schedule: "0 1 * * *"
+  command: ["/bin/sh"] 
+  args:
+    - -c
+    - >-
+        echo Archiving Auditing data with [${DEPLOYMENT}] ... &&
+        echo "Archiving Server data ..." &&
+        curl -s -u "Administrator:${ADMIN_PASSWORD}" "${DEPLOYMENT}:5555/invoke/pub.monitor.archive:serverArchive?days=30&archiveAction=DELETE&batchSize=100" &&
+        echo "Archiving Process data ..." &&
+        curl -s -u "Administrator:${ADMIN_PASSWORD}" "${DEPLOYMENT}:5555/invoke/pub.monitor.archive:processArchive?days=30&archiveAction=DELETE&batchSize=100&status=COMPLETED-FAILED" &&
+        echo "Archiving Services data ..." &&
+        curl -s -u "Administrator:${ADMIN_PASSWORD}" "${DEPLOYMENT}:5555/invoke/pub.monitor.archive:serviceArchive?days=30&archiveAction=DELETE&batchSize=100&status=COMPLETED-FAILED"

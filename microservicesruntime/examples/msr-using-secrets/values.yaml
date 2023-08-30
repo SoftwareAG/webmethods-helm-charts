@@ -1,0 +1,11 @@
+
+# -- Secret Mount for MSR
+secretMounts: 
+  - name: msr-secrets
+    path: /etc/secrets
+
+# -- Mount volume for secrets
+secretVolumes:
+  - name: msr-secrets
+    secretName: msr-secrets
+

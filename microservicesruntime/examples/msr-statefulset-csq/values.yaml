@@ -1,0 +1,15 @@
+statefulSet: true
+
+extraVolumeMounts:
+  - mountPath: /opt/softwareag/IntegrationServer/db
+    name: csq-data
+
+volumeClaimTemplates:
+  - metadata:
+      name: csq-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "local-path"
+      resources:
+        requests:
+          storage: 1Gi

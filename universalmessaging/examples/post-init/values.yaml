@@ -1,0 +1,20 @@
+
+jobs:
+- name: post-init
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  image:
+    repository: sagcr.azurecr.io/universalmessaging-tools
+    tag: 10.15
+  imagePullPolicy: IfNotPresent
+  restartPolicy: Never
+  command: ["/bin/bash"]
+  # -- Shell script to deploy / create assets in UM using [runUMTool.sh](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/index.html#page/num-webhelp%2Fto-title_clu_administration_tools.html%23)
+  # The following sample creates a Connection Factory using environment variable `$DEPLOYMENT` to reach the UM host. 
+  args:
+    - -c
+    - >-
+        echo Deploying Assets in UM [$DEPLOYMENT] ...;
+        runUMTool.sh CreateConnectionFactory -rname=nsp://$DEPLOYMENT:9000 -factoryname=local_um -factorytype=default -connectionurl=nsp://$DEPLOYMENT:9000 -durabletype=S

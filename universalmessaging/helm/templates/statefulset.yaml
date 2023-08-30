@@ -1,0 +1,168 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "common.names.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "common.labels.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- include "common.prometheus.annotations" (dict "port" .Values.service.metricPort) | nindent 8 }}
+      labels:
+        {{- include "common.labels.matchLabels" . | nindent 8 }}
+    spec:
+      {{- range .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ . }}
+      {{- end }}    
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: licence-xml
+          configMap:
+            name: {{ .Values.licenseConfigMap }}            
+            defaultMode: 420    
+        {{- if .Values.extraVolumes }}
+        {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
+          {{ tpl .Values.extraVolumes . | nindent 8 }}
+        {{- else }}
+          {{ toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
+        {{- end }}
+      initContainers:
+        {{- toYaml .Values.extraInitContainers | nindent 8 }}            
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{ if .Values.image.tag  }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- else -}}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: nsp
+              containerPort: 9000
+              protocol: TCP
+            - containerPort: 9200
+              protocol: TCP              
+          volumeMounts:
+          - name: data
+            mountPath: /opt/softwareag/UniversalMessaging/server/umserver/data
+          - name: logs
+            mountPath: /opt/softwareag/UniversalMessaging/server/umserver/logs
+          - name: configuration
+            mountPath: /opt/softwareag/common/conf
+          - name: licence-xml
+            mountPath: /opt/softwareag/UniversalMessaging/server/umserver/licence/
+          {{- if .Values.extraVolumeMounts }}
+          {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
+            {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              
+          {{- else }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+          {{- end }}            
+          env:
+          {{- if .Values.um.realmName }}
+          - name: REALM_NAME
+            value: {{ .Values.um.realmName | quote }}
+          {{- else }}
+          - name: REALM_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          {{- end }}
+          - name: INIT_JAVA_MEM_SIZE
+            value: {{ .Values.um.initJavaMemSize | quote }}
+          - name: MAX_JAVA_MEM_SIZE
+            value: {{ .Values.um.maxJavaMemSize | quote }}
+          - name: MAX_DIRECT_MEM_SIZE
+            value: {{ .Values.um.maxDirectMemSize | quote }}
+          - name: BASIC_AUTH_ENABLE
+            value: {{ .Values.um.basicAuthEnable | quote }}
+          - name: BASIC_AUTH_MANDATORY
+            value: {{ .Values.um.basicAuthMandatory | quote }}
+          - name: STARTUP_COMMAND
+            value: {{ tpl .Values.um.startupCommand . | quote }}
+          - name: LOG_FRAMEWORK
+            value: {{ .Values.um.logFramework | quote }}
+          {{- if .Values.extraEnvs }}
+          {{- range $key, $val := .Values.extraEnvs }}
+          - name: {{ $key }}
+            value: {{ $val }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.lifecycle }}
+          lifecycle:
+          {{ toYaml .Values.lifecycle | indent 10 }}
+          {{- end }}          
+          startupProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 10
+          livenessProbe:
+            exec:
+              command:
+              - runUMTool.sh
+              - GetServerTime
+              - -rname=nsp://localhost:9000
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            exec:
+              command:
+              - runUMTool.sh
+              - GetServerTime
+              - -rname=nsp://localhost:9000
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.storage.dataSize }}
+  - metadata:
+      name: logs
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.storage.logsSize }}
+  - metadata:
+      name: configuration
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.storage.configurationSize }}

@@ -1,0 +1,81 @@
+# webMethods Microservices Runtime Helm Chart
+
+This Helm Chart installs and configures a Microservices Runtime (MSR) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section. 
+
+## Prerequisites
+
+### Image Pull Secret
+
+If you want to pull image from [Software AG Containers Registry](https://containers.softwareag.com), create secret with your Software AG Containers Registry credentials ...
+
+```
+kubectl create secret docker-registry regcred --docker-server=sagcr.azurecr.io --docker-username=<your-name> --docker-password=<your-pwd> --docker-email=<your-email>
+```
+
+### Service Monitor
+
+A Service Monitor CRD can be created optional. Anywhere, the custom kind `ServiceMonitor` must be registered as Kubernetes object. If not, you can apply it with ... 
+
+```
+kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml
+```
+
+### Create Image for Microservices Runtime
+
+The default is to pull the image from Software AG Containers Registry `sagcr.azurecr.io/webmethods-microservicesruntime`.
+
+If you need to create an own image with additional webMethods product components, you can use the Azure pipelines provided by Git project [webmethods-image-creator](https://github.softwareag.com/PS/pswm-inno-container-image-creator.git). Please contact Software AG Professional Services for more information about image creation with Azure pipelines and getting [ReadMe](https://github.softwareag.com/PS/pswm-inno-container-image-creator/blob/main/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
+
+### Licenses
+
+Microservices Runtime requires a license file. These license is supposed to be provided as configmap.
+
+Hence before running `helm install`, create the configmap:
+
+```
+kubectl create configmap microservicesruntime-license-key --from-file=licenseKey.xml=<your path and filename to Microservices Runtime license file>
+```
+
+## Examples for Use-cases
+
+Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values. 
+
+| Use-case | Description |
+|-----|------|
+| [external-postgresql-db](../examples/external-postgresql-db/README.md) | Using MSR with external PostgresQL database |
+| [msr-defaults](../examples/msr-defaults/README.md) | Recommended default application properties|
+| [msr-post-init](../examples/msr-post-init/README.md) | Performs *post-init* actions after startup, e.g. deploy assets to Universal Messaging |
+| [msr-push-doc-types](../examples/msr-push-doc-types/README.md) | Pushing IS Document Types after startup |
+| [msr-statefulset-csq](../examples/msr-statefulset-csq/README.md) | Deploy MSR with stateful set |
+| [msr-using-secrets](../examples/msr-using-secrets/README.md) | Using secrets in application properties and set Administrator password |
+| [msr-with-extra-ports](../examples/msr-with-extra-ports/README.md) | Define additional ports in MSR deployment |
+| [msr-with-tls](../examples/msr-with-tls/README.md) | Configure Ingress with TLS |
+| [process-engine](../examples/process-engine/README.md) | Deploy MSR as Process Engine |
+| [service-auditing-monitor](../examples/service-auditing-monitor/README.md) | Deploy MSR as Service Auditing Monitor |
+
+## Install Microservices Runtime Release
+
+Install release with pulling image and setting secret (to pull image) ...
+
+```shell
+helm install wm-msr webmethods/microservicesruntime   \
+```
+
+... Ingress is enabled per default. Define Ingress service host ...
+
+```shell
+  --set "ingress.hosts[0].host=my-msr.mydomain.com"   \
+  --set "ingress.hosts[0].paths[0].path=/"            \
+  --set "ingress.hosts[0].paths[0].pathType=Prefix"   \
+  --set "ingress.hosts[0].paths[0].port=5555"
+```
+
+... instead of using default image, use your own ...
+
+
+```shell
+  --set "image.repository=<Your-Docker-registry>/wm-msr-db" \
+  --set "image.tag=10.15"
+```
+
+{{ template "chart.valuesSection" . }}

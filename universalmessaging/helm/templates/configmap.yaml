@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+data:
+{{ if .Values.customServerConfig.content }}
+  Custom_Server_Common.conf: |
+    {{ printf "%s" (tpl .Values.customServerConfig.content .) | nindent 4 }}
+{{- else }}
+{{ (.Files.Glob "files/Custom_Server_Common.conf").AsConfig | indent 2 }}
+{{- end }}
+{{ if .Values.customMetricExporterConfig.content }}
+  jmx_exporter.yaml: |  
+    {{ printf "%s" (tpl .Values.customMetricExporterConfig.content .) | nindent 4 }}
+{{- else }}
+{{ (.Files.Glob "files/jmx_exporter.yaml").AsConfig | indent 2 }}
+{{- end }}

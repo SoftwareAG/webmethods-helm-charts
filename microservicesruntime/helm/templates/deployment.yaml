@@ -1,0 +1,220 @@
+# /*
+#  * Copyright (c) 2023 Software AG, Darmstadt, Germany and/or its licensors
+#  *
+#  * SPDX-License-Identifier: Apache-2.0
+#  *
+#  *   Licensed under the Apache License, Version 2.0 (the "License");
+#  *   you may not use this file except in compliance with the License.
+#  *   You may obtain a copy of the License at
+#  *
+#  *       http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  *   Unless required by applicable law or agreed to in writing, software
+#  *   distributed under the License is distributed on an "AS IS" BASIS,
+#  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  *   See the License for the specific language governing permissions and
+#  *   limitations under the License.
+#  *
+#  */
+
+apiVersion: apps/v1
+kind: {{ if .Values.statefulSet }}StatefulSet{{ else }}Deployment{{ end }}
+metadata:
+  name: {{ include "microservicesruntime.fullname" . }}
+  labels:
+    {{- include "microservicesruntime.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- if .Values.statefulSet }}
+  serviceName: {{ .Values.serviceName | default (printf "msr-%s" (.Release.Name) ) }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "microservicesruntime.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- if or .Values.podAnnotations .Values.prometheusAnnotations }}
+      annotations:
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.prometheusAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      labels:
+        {{- include "microservicesruntime.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "microservicesruntime.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- toYaml .Values.extraInitContainers | nindent 8 }}
+      containers:
+        - name: {{ .Values.containerName | default (printf "msr-%s" (.Release.Name) )}}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.extraCommand }}
+          command: ["/bin/sh", "-c", "{{ .Values.extraCommand }} && /opt/softwareag/IntegrationServer/bin/startContainer.sh"]
+          {{- end }}
+          env:
+          - name: JAVA_MIN_MEM
+            value: {{ .Values.microservicesruntime.memoryHeap.min }}
+          - name: JAVA_MAX_MEM
+            value: {{ .Values.microservicesruntime.memoryHeap.max }}
+          - name: SAG_IS_LICENSE_FILE
+            value: {{ .Values.microservicesruntime.installDir }}/licenseKey.xml
+          - name: SAG_IS_CONFIG_PROPERTIES
+            value: "{{ .Values.microservicesruntime.installDir }}/applicationFile.properties,{{ .Values.microservicesruntime.installDir }}/application.properties"
+          {{- if .Values.persistence.enabled }}
+          - name: HOST_DIR
+            value: {{ .Values.microservicesruntime.installDir }}/pv
+          - name: SERVICE_NAME
+            value: {{ .Release.Name }}
+          - name: EXTERNALIZE_PACKAGES
+            value: "{{ .Values.persistence.packages }}"
+          - name: PERSIST_CONFIGS
+            value: "{{ .Values.persistence.configs }}"
+          - name: PERSIST_LOGS
+            value: "{{ .Values.persistence.logs }}"
+          {{- end }}
+          {{- if .Values.microservicesruntime.javaCustomOpts }}
+          - name: JAVA_CUSTOM_OPTS
+            value: "{{ join " " .Values.microservicesruntime.javaCustomOpts }}"
+          {{- end }}
+          {{- if .Values.extraEnvs }}
+          {{- toYaml .Values.extraEnvs | nindent 10 }}
+          {{- end }}
+          ports:
+          - containerPort: 5543
+            name: https
+            protocol: TCP
+          - containerPort: 9999
+            name: diag
+            protocol: TCP
+          - containerPort: 5555
+            name: http
+            protocol: TCP
+          {{- if .Values.extraPorts }}
+          {{- toYaml .Values.extraPorts | nindent 10 }}
+          {{- end }}
+          startupProbe:
+            {{- toYaml .Values.startupProbe | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+              scheme: {{ .Values.microservicesruntime.readinessProbe.scheme }} 
+            failureThreshold: 3
+            initialDelaySeconds: {{ .Values.microservicesruntime.initialDelaySeconds }}
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1            
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources.msrContainer | nindent 12 }}
+          volumeMounts:
+            - name: microservicesruntime-license
+              mountPath: {{ .Values.microservicesruntime.installDir }}/config/licenseKey.xml
+              subPath:   licenseKey.xml
+              readOnly:  true
+            - name: application-properties
+              mountPath: {{ .Values.microservicesruntime.installDir }}/application.properties
+              subPath:   application.properties
+              readOnly:  true
+            - name: applicationfile-properties
+              mountPath: {{ .Values.microservicesruntime.installDir }}/applicationFile.properties
+              subPath:   applicationFile.properties
+              readOnly:  true
+            {{- if .Values.persistence.enabled }}
+            - name: persistence-assets
+              mountPath: {{ .Values.microservicesruntime.installDir }}/pv
+              readOnly:  false
+            {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+            {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
+              {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              
+            {{- else }}
+              {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+            {{- end }}
+            {{- range .Values.secretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.lifecycle }}
+            lifecycle:
+            {{ toYaml .Values.lifecycle | indent 10 }}
+            {{- end }}
+      volumes:
+        {{- range .Values.secretVolumes }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+            {{- if .defaultMode }}
+            defaultMode: {{ .defaultMode }}
+            {{- end }}
+        {{- end }}
+        - name: microservicesruntime-license
+          configMap:
+            name: {{ .Values.microservicesruntime.licenseConfigMap }}
+            defaultMode: 0666
+            items:
+            - key:  licenseKey.xml
+              path: licenseKey.xml
+        - name: application-properties
+          configMap:
+            name: {{ include "microservicesruntime.fullname" . }}
+            items:
+            - key:  application.properties
+              path: application.properties
+        - name: applicationfile-properties
+          configMap:
+            name: {{ include "microservicesruntime.fullname" . }}
+            items:
+            - key:  applicationFile.properties
+              path: applicationFile.properties
+        {{- if .Values.persistence.enabled }}
+        - name: persistence-assets
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "microservicesruntime.fullname" .) }}
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+        # Currently some extra blocks accept strings
+        # to continue with backwards compatibility this is being kept
+        # whilst also allowing for yaml to be specified too.
+        {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
+          {{ tpl .Values.extraVolumes . | nindent 8 }}
+        {{- else }}
+          {{ toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{ if and .Values.statefulSet .Values.volumeClaimTemplates }}
+  volumeClaimTemplates:
+  {{- toYaml .Values.volumeClaimTemplates | nindent 2 }}
+  {{- end }}
+  

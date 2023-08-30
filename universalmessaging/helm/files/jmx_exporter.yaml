@@ -1,0 +1,265 @@
+---
+  startDelaySeconds: 0
+  
+  rules:
+  #Server Statistics:
+  #Heap Memory Usage - HeapMemory
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(HeapMemory)
+    name: HeapMemory
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Heap Memory free - MemoryFree
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(MemoryFree)
+    name: MemoryFree
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Direct Memory usage - DirectMemory
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(DirectMemory)
+    name: DirectMemory
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Direct Memory free - MemoryMax
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(MemoryMax)
+    name: MemoryMax
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Disk usage - DiskUsage
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(DiskUsage)
+    name: DiskUsage
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #CPU
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(CPU)
+    name: CPU
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Number Of Current Connections - CurrentConnections
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(CurrentConnections)
+    name: CurrentConnections
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #BytesIn
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(BytesIn)
+    name: BytesIn
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #BytesOut 
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(BytesOut)
+    name: BytesOut
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Events Published - TotalPublishedEvents
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(TotalPublishedEvents)
+    name: TotalPublishedEvents
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Events Consumed - TotalConsumedCount
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*)><>(TotalConsumedCount)
+    name: TotalConsumedCount
+    help: "Server Statistics"
+    type: COUNTER
+  
+  #Cluster Metrics
+  #QueueSize  
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), clusterType=(\S*), clusterName=(\S*)><>(ProcessQueue)
+    name: ProcessQueue
+    help: "Cluster Metrics"
+    type: COUNTER
+  
+  #ClientsSize   
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), clusterType=(\S*), clusterName=(\S*)><>(ClientQueue)
+    name: ClientQueue
+    help: "Cluster Metrics"
+    type: COUNTER
+  
+  #CommQueueSize    
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), clusterType=(\S*), clusterName=(\S*)><>(CommsQueue)
+    name: CommsQueue
+    help: "Cluster Metrics"
+    type: COUNTER
+  
+  #The Cluster node state
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), clusterType=(\S*), clusterName=(\S*), Member=(\S*)><>(CurrentState)
+    name: CurrentState
+    help: "Cluster Metrics"
+    type: COUNTER
+  # name: CurrentState
+  # value: 1
+  
+  #The Cluster state - IsOnline
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), clusterType=(\S*), clusterName=(\S*), Member=(\S*)><>(IsOnline)
+    name: IsOnline
+    help: "Cluster Metrics"
+    type: COUNTER
+  
+  #Thread Pools Statistics
+  #Thread Pool's Idle Thread 
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), threadPool=(\S*), threadPoolName=(\S*)><>(Idle Threads)
+    name: Idle Threads_$3
+    help: "Thread Pools Statistics"
+    type: COUNTER
+  
+  #Thread Pool's Allocated Thread
+  #Thread Pool's task queue
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), threadPool=(\S*), threadPoolName=(\S*)><>(Queueed Tasks)
+    name: Queueed Tasks_$3
+    help: "Thread Pools Statistics"
+    type: COUNTER
+  
+  #Number of slow tasks 
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), threadPool=(\S*), threadPoolName=(\S*)><>(Allocated Threads)
+    name: Allocated Threads_$3
+    help: "Thread Pools Statistics"
+    type: COUNTER
+  
+  #Number of stalled tasks 
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), threadPool=(\S*), threadPoolName=(\S*)><>(Stalled Tasks)
+    name: Stalled Tasks_$3
+    help: "Thread Pools Statistics"
+    type: COUNTER
+  
+  #Tasks Added.
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), threadPool=(\S*), threadPoolName=(\S*)><>(Tasks Added)
+    name: Tasks Added_$3
+    help: "Thread Pools Statistics"
+    type: COUNTER
+  
+  #Event Handling
+  #Per Store - Topic Events Published
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+)><>(TotalPublished)
+    name: TotalPublished_$3
+    help: "Topic Event Handling"
+    type: COUNTER
+  
+  #Per Store - Total Consumed Events
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+)<>(TotalConsumed)
+    name: TotalConsumed_$3
+    help: "Topic Event Handling"
+    type: COUNTER
+  
+  #Per Store: Еvents In Store
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+)><>(NoOfEvents)
+    name: NoOfEvents_$3
+    help: "Topic Event Handling"
+    type: COUNTER
+  
+  #Per Store: Memory Usage
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+)><>(MemoryUsage)
+    name: MemoryUsage_$3
+    help: "Topic Event Handling"
+    type: COUNTER
+  
+  #Per Store:  Disk Usage
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+)><>(UsedSpace)
+    name: UsedSpace_$3
+    help: "Topic Event Handling"
+    type: COUNTER
+  
+  #Per Store: Current Connections(subscribers)
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+)><>(CurrentConnections)
+    name: CurrentConnections_$3
+    help: "Topic Event Handling"
+    type: COUNTER
+  
+  #Per Durable: durable Node information - Outstanding, Durable → Total Events
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic,  destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*)><>(TotalEvents)
+    name: Durable_TotalEvents_$4_$5
+    help: "Event Handling durable"
+    type: COUNTER
+  
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+), destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*)><>(TotalEvents)
+    name: Durable_TotalEvents_$5_$6
+    help: "Event Handling durable"
+    type: COUNTER
+  
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(Pending)
+    name: Durable_Pending_$4_$5
+    help: "Event Handling"
+    type: COUNTER
+  
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+), destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(Pending)
+    name: Durable_Pending_$5_$6
+    help: "Event Handling"
+    type: COUNTER
+  
+  #Number of Connections(Subscribers)
+  #Durable Connections- Per Connection Statistics
+  #Acknowledged
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(Acknowledged)
+    name: Durable_Acknowledged_$5_$6_$7
+    help: "Acknowledged"
+    type: COUNTER
+  
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+), destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(Acknowledged)
+    name: Durable_Acknowledged_$6_$7_$8
+    help: "Acknowledged"
+    type: COUNTER
+  
+  #RolledBack
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(RolledBack)
+    name: Durable_RolledBack_$5_$6_$7
+    help: "RolledBack"
+    type: COUNTER
+  
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+), destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(RolledBack)
+    name: Durable_RolledBack_$6_$7_$8
+    help: "RolledBack"
+    type: COUNTER
+  
+  #Pending
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(Pending)
+    name: Durable_Pending_$5_$6_$7
+    help: "Pending"
+    type: COUNTER
+  
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Topic, (.+)=(.+), destinationName=(\S*), durable=(\S*), durableType=(\S*), durableName=(\S*), subtype=(\S*)><>(Pending)
+    name: Durable_Pending_$6_$7_$8
+    help: "Pending"
+    type: COUNTER
+  
+  #Queue data
+  #Per Store - Queue Events Published
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Queue, (.+)=(.+)><>(TotalPublished)
+    name: TotalPublished_$3
+    help: "Queue data"
+    type: COUNTER
+  
+  #Per Store - Total Consumed Events
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Queue, (.+)=(.+)><>(TotalConsumed)
+    name: TotalConsumed_$3
+    help: "Queue data"
+    type: COUNTER
+  
+  #Per Store: Еvents In Store
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Queue, (.+)=(.+)><>(NoOfEvents)
+    name: NoOfEvents_$3
+    help: "Queue data"
+    type: COUNTER
+  
+  #Per Store: Memory Usage
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Queue, (.+)=(.+)><>(MemoryUsage)
+    name: MemoryUsage_$3
+    help: "Queue data"
+    type: COUNTER
+  
+  #Per Store:  Disk Usage
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Queue, (.+)=(.+)><>(UsedSpace)
+    name: UsedSpace_$3
+    help: "Queue data"
+    type: COUNTER
+  
+  #Per Store: Current Connections(subscribers)
+  - pattern: com.softwareag.um.server<type=Broker, brokerName=(\S*), destinationType=Queue, (.+)=(.+)><>(CurrentConnections)
+    name: CurrentConnections_$3
+    help: "Queue data"
+    type: COUNTER

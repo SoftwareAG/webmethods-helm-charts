@@ -1,0 +1,106 @@
+extraConfigMaps:
+  - metadata:
+      name: extra-ports
+    data:
+      manifest.v3: |
+        <?xml version="1.0" encoding="UTF-8"?>
+            <Values version="2.0">
+            <value name="enabled">yes</value>
+            <value name="system_package">no</value>
+            <value name="version">1.0</value>
+            <null name="startup_services"/>
+            <null name="shutdown_services"/>
+            <null name="replication_services"/>
+            <null name="requires"/>
+            <null name="listACL"/>
+            <value name="webappLoad">yes</value>
+            <value name="reloadWithDependentPackage">yes</value>
+            <null name="build"/>
+            <null name="description"/>
+            <value name="created_date">09-06-2023 12:59:30 GMT</value>
+            <null name="extendedProperties"/>
+        </Values>
+      listeners.cnf: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Values version="2.0">
+        <record name="listeners" javaclass="com.wm.util.Values">
+            <record name="HTTPListener@8888" javaclass="com.wm.util.Values">
+            <number name="port" type="Integer">8888</number>
+            <value name="protocol">HTTP</value>
+            <value name="pkg">WxContainerPorts</value>
+            <value name="enabled">false</value>
+            <value name="key">HTTPListener@8888</value>
+            <value name="uniqueID">129804beb25c46ad9fe77aeb381d4469</value>
+            <value name="portAlias">extraport</value>
+            <value name="portDescription">Integration Server HTTP port: 8888</value>
+            <value name="factoryKey">webMethods/HTTP</value>
+            <value name="configURL">/WmRoot/configHTTP.dsp</value>
+            <value name="provider">webMethods</value>
+            <value name="listenerType">Regular</value>
+            <value name="clientAuth">none</value>
+            <value name="idProvider">salesforce.com</value>
+            <value name="ssl">false</value>
+            <value name="maxQueue">200</value>
+            <value name="keepAliveTimeout">20000</value>
+            <value name="internalPort">-1</value>
+            <value name="curDelay">0</value>
+            <value name="stepsize">10000</value>
+            <value name="suspended">false</value>
+            <null name="jsseDisabledProtocols"/>
+            <null name="jsseEnabledProtocols"/>
+            </record>
+        </record>
+        <record name="access" javaclass="com.wm.util.Values">
+            <record name="HTTPListener@8888" javaclass="com.wm.util.Values">
+            <null name="home"/>
+            <value name="default">exclude</value>
+            <record name="nodes" javaclass="com.wm.util.StringSet">
+                <list name="elements">
+                <value>wm.server:disconnect</value>
+                <value>wm.server.csrfguard:replaceSpecialCharacters</value>
+                <value>wm.server:ping</value>
+                <value>wm.server.tx:end</value>
+                <value>wm.server:getClusterNodes</value>
+                <value>wm.server:getServerNodes</value>
+                <value>wm.server.csrfguard:isCSRFGuardEnabled</value>
+                <value>wm.server:noop</value>
+                <value>wm.server.csrfguard:getCSRFSecretToken</value>
+                <value>wm.server.tx:execute</value>
+                <value>wm.server.tx:start</value>
+                <value>wm.server:connect</value>
+                <value>wm.server.tx:restart</value>
+                </list>
+            </record>
+            <value name="key">HTTPListener@8888</value>
+            </record>
+        </record>
+        </Values>
+
+extraInitContainers:
+  - name: init-container
+    image: busybox
+    command: ["sh", "-c", "mkdir -p /tmp/WxContainerPorts/config && cp /tmp_config/listeners.cnf /tmp/WxContainerPorts/config/listeners.cnf && cp /tmp_config/manifest.v3 /tmp/WxContainerPorts && cp -R /tmp/WxContainerPorts /autodeploy/WxContainerPorts"]
+    volumeMounts:
+      - name: tmpconfig
+        mountPath: /tmp_config
+      - name: autodeploy
+        mountPath: /autodeploy
+
+extraVolumeMounts:
+  - name: autodeploy
+    mountPath: /opt/softwareag/IntegrationServer/replicate/autodeploy
+    readOnly:  false
+
+extraVolumes:
+  - name: tmpconfig
+    configMap:
+      name: extra-ports
+      items:
+        - key: manifest.v3
+          path: manifest.v3
+        - key: listeners.cnf
+          path: listeners.cnf
+  - name: autodeploy
+    emptyDir: {}
+
+extraCommand: (cp -R /opt/softwareag/IntegrationServer/replicate/autodeploy/WxContainerPorts /opt/softwareag/IntegrationServer/packages)

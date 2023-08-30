@@ -1,0 +1,171 @@
+microservicesruntime:
+  um:
+    # -- Universal Messaging (UM) connection URL, e.g. nsp://my-um-realm:9000
+    url:
+
+  mws:
+    # -- Connect to My webMethods Server hostname
+    host:
+    # -- Connect to My webMethods Server Administrator password
+    password:
+
+  properties:
+    jdbc:
+      pe:
+        # -- JDBC pool Process Engine database URL
+        dbURL:
+        # -- JDBC pool Process Engine database user ID
+        userid:
+        # -- JDBC pool Process Engine database password
+        password:
+        # -- JDBC pool Process Engine database driver alias. To retrieve a list of available drivers, call GET `/admin/jdbc/driver` to running MSR.
+        driverAlias:
+        # -- JDBC pool Process Engine database number of connections
+        maxConns: 10
+      pa:
+        # -- JDBC pool Process Audit database URL
+        dbURL:
+        # -- JDBC pool Process Audit database user ID
+        userid:
+        # -- JDBC pool Process Audit database password
+        password:
+        # -- JDBC pool Process Audit database driver alias. Default is to use the Process Engine driver alias.
+        driverAlias: "{{ .Values.microservicesruntime.properties.jdbc.pe.driverAlias }}"
+        # -- JDBC pool Process Audit database number of connections
+        maxConns: 10
+      archive:
+        # -- JDBC pool Archive database URL
+        dbURL:
+        # -- JDBC pool Archive database user ID
+        userid:
+        # -- JDBC pool Archive database password
+        password:
+        # -- JDBC pool Archive database driver alias. Default is to use the Process Engine driver alias.
+        driverAlias: "{{ .Values.microservicesruntime.properties.jdbc.pe.driverAlias }}"
+      cus:
+        # -- JDBC pool Central Users database URL
+        dbURL:
+        # -- JDBC pool Central Users database user ID
+        userid:
+        # -- JDBC pool Central Users database password
+        password:
+        # -- JDBC pool Central Users database driver alias. Default is to use the Process Engine driver alias.
+        driverAlias: "{{ .Values.microservicesruntime.properties.jdbc.pe.driverAlias }}"
+
+    messaging:
+      IS_UM_CONNECTION:
+        # -- wM messaging IS_UM_CONNECTION connects to UM URL
+        url:                "{{ .Values.microservicesruntime.um.url }}"
+        # -- Set unique client ID (/prefix)
+        CLIENTPREFIX:       "{{ .Release.Name }}"
+        # -- Advice MSR container to enable connection
+        enabled:            true
+        # -- This is the DEFAULT connection
+        default:            true
+        type:               UM
+        # -- Enable/disable Request/Reply queue. It is not needed.
+        enableRequestReply: false
+        # -- Enable/disable client site queuing (CSQ). Enable CSQ only with stateful set.
+        useCSQ:             false
+
+    jndi:
+      DEFAULT_IS_JNDI_PROVIDER:
+        # -- Configure default JNDI provider UM URL
+        providerURL: "{{ .Values.microservicesruntime.um.url }}"
+        # -- Advice MSR container to enable connection
+        enabled:     true
+
+    jms:
+      DEFAULT_IS_JMS_CONNECTION:
+        # -- Set unique client ID
+        clientID:     "{{ .Release.Name }}"
+        # -- Advice MSR container to enable connection
+        enabled:     true
+        # -- Enable/disable (csqSize=0) client site queuing (CSQ). Enable CSQ only with stateful set.          
+        csqSize:     0
+      PE_NONTRANSACTIONAL_ALIAS:
+        # -- Set unique client ID
+        clientID:    "{{ .Release.Name }}"
+        enabled:     true
+        # -- Enable/disable (csqSize=0) client site queuing (CSQ). Enable CSQ only with stateful set.          
+        csqSize:     0
+
+    monproperty:
+      wm:
+        # -- See [Monitor](https://documentation.softwareag.com/webmethods/monitor/wmn10-15/webhelp/wmn-webhelp/index.html#page/wmn-webhelp%2Fre-configure_monitor_properties_msr_template.html) configuration settings 
+        monitor:
+          # -- WmMonitor package connects to MWS hostname
+          myWebmethodsHost:     "{{ .Values.microservicesruntime.mws.host }}"
+          # -- WmMonitor package connects to MWS port
+          myWebmethodsPort:     8585
+          # -- WmMonitor package connects with MWS Adminitrator password
+          myWebmethodsPassword: "{{ .Values.microservicesruntime.mws.password }}"
+
+    peproperty:
+      watt:
+        # -- See [Process Engine](https://documentation.softwareag.com/webmethods/process_engine/wpe10-15/webhelp/wpe-webhelp/index.html#page/wpe-webhelp%2Fto-configuring_monitoring_8.html) configuration settings 
+        prt:
+          # --  Process Engine connect to UM URL
+          optimizeBrokerURL: "{{ .Values.microservicesruntime.um.url }}"
+          # -- Process Engine is running as external Cluster
+          externalcluster: true
+          # -- Push BPM models to database
+          uploadMetadata:  true
+
+    jdbcfunc:
+      ISCoreAudit:
+        # -- Assign JDBC pool `pe` to Functions `ISCoreAudit`
+        connPoolAlias: pe
+      ISDashboardStats:
+        # -- Assign JDBC pool `pe` to Functions `ISDashboardStats`
+        connPoolAlias: pe
+      ISInternal:
+        # -- Assign JDBC pool `pe` to Functions `ISInternal`
+        connPoolAlias: pe
+      Xref:
+        # -- Assign JDBC pool `pe` to Functions `Xref`
+        connPoolAlias: pe
+      ProcessEngine:
+        # -- Assign JDBC pool `pe` to Functions `ProcessEngine`
+        connPoolAlias: pe
+      DocumentHistory:
+        # -- Assign JDBC pool `pe` to Functions `DocumentHistory`
+        connPoolAlias: pe
+
+      ProcessAudit:
+        # -- Assign JDBC pool `pa` to Functions `ProcessAudit`
+        connPoolAlias: pa
+
+      Archiving:
+        # -- Assign JDBC pool `archiv` to Functions `Archiving`
+        connPoolAlias: archive
+
+      CentralUsers:
+        # -- Assign JDBC pool `cus` to Functions `CentralUsers`
+        connPoolAlias: cus
+
+    settings:
+      watt:
+        server:
+          # -- Maximum number of available server threads 
+          threadPool: 750
+          # -- Number of days to keep server log files
+          serverlogFilesToKeep: 1
+          stats:
+            # -- Number of days to statistic log files
+            logFilesToKeep: 1
+          audit:
+            # -- Number of days to audit log files
+            logFilesToKeep: 1
+          scheduler:
+            logical:
+              # -- Set hostname of this MSR deployment
+              hostname: "{{ include \"microservicesruntime.fullname\" . }}"
+        net:
+          # -- Set hostname of this MSR deployment
+          localhost: "{{ include \"microservicesruntime.fullname\" . }}"
+
+    statisticsdatacollector:
+      monitorConfig:
+        # -- Enable or disable IS internal statistic data collector. (Statistic data are visible on Monitor page.) We disable statistic data collector because of using Grafana and Prometheus.
+        enabled: false

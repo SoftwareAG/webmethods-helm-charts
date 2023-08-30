@@ -1,0 +1,62 @@
+microservicesruntime:
+
+  properties:
+    jdbc:
+      data:
+        # -- JDBC pool Process Engine database URL
+        dbURL: jdbc:wm:postgresql://wm-msr-db-postgresql:5432;databaseName=wmdb
+        # -- JDBC pool Process Engine database user ID
+        userid: wm
+        # -- JDBC pool Process Engine database password
+        password: manage
+        # -- JDBC pool Process Engine database driver alias. To retrieve a list of available drivers, call GET `/admin/jdbc/driver` to running MSR.
+        driverAlias: DataDirect Connect JDBC PostgreSQL Driver
+        # -- JDBC pool Process Engine database number of connections
+        maxConns: 10
+
+    jdbcfunc:
+      ISCoreAudit:
+        # -- Assign JDBC pool `pe` to Functions `ISCoreAudit`
+        connPoolAlias: data
+      ISDashboardStats:
+        # -- Assign JDBC pool `pe` to Functions `ISDashboardStats`
+        connPoolAlias: data
+      ISInternal:
+        # -- Assign JDBC pool `pe` to Functions `ISInternal`
+        connPoolAlias: data
+      Xref:
+        # -- Assign JDBC pool `pe` to Functions `Xref`
+        connPoolAlias: data
+      ProcessEngine:
+        # -- Assign JDBC pool `pe` to Functions `ProcessEngine`
+        connPoolAlias: data
+      DocumentHistory:
+        # -- Assign JDBC pool `pe` to Functions `DocumentHistory`
+        connPoolAlias: data
+
+      ProcessAudit:
+        # -- Assign JDBC pool `pa` to Functions `ProcessAudit`
+        connPoolAlias: data
+
+    settings:
+      watt:
+        server:
+          # -- Maximum number of available server threads 
+          threadPool: 750
+          # -- Number of days to keep server log files
+          serverlogFilesToKeep: 1
+          stats:
+            # -- Number of days to statistic log files
+            logFilesToKeep: 1
+          scheduler:
+            logical:
+              # -- Set hostname of this MSR deployment
+              hostname: "{{ include \"microservicesruntime.fullname\" . }}"
+        net:
+          # -- Set hostname of this MSR deployment
+          localhost: "{{ include \"microservicesruntime.fullname\" . }}"
+
+    statisticsdatacollector:
+      monitorConfig:
+        # -- Enable or disable IS internal statistic data collector. (Statistic data are visible on Monitor page.) We disable statistic data collector because of using Grafana and Prometheus.
+        enabled: false

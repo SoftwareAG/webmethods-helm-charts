@@ -1,0 +1,169 @@
+# Default values for Universal Messaging.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Number of replicas
+replicaCount: 1
+
+# -- Run this image
+image:
+  repository: sagcr.azurecr.io/universalmessaging-server
+  pullPolicy: IfNotPresent
+  tag: "10.15.0.10"
+
+# -- Name of the licence config map
+licenseConfigMap: "universalmessaging-licence-key"
+
+# -- Secret list to pull image from repository
+imagePullSecrets: [regcred]
+
+# -- Exta environment properties to be passed on to the container
+extraEnvs: {}
+
+# -- Exta volumes that should be mounted.
+extraVolumes: []
+# - name: extras
+#   emptyDir: {}
+
+# -- Extra volume mounts
+extraVolumeMounts: []
+# - name: extras
+#   mountPath: /usr/share/extras
+#   readOnly: true
+
+# -- Extra containers which should run in addition to the main container as a sidecar
+extraContainers: []
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+
+# -- Extra init containers that are executed before starting the main container
+extraInitContainers: []
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+
+# -- Extra config maps for additional configurations such as extra ports, etc.
+extraConfigMaps: []
+
+# -- lifecycle hooks to execute on preStop / postStart,...
+lifecycle: {}
+# preStop:
+#   exec:
+#     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+# postStart:
+#   exec:
+#     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+
+um: 
+  # -- Startup command to be executed after UM was started. This can be used to enable / disable configurations or ensure that specific channels are created
+  # Example: runUMTool.sh EditRealmConfiguration -rname=nsp://localhost:9000 -JVM_Management.EnableJMX=false
+  # Next sample is to create JMS Connection Factory: runUMTool.sh CreateConnectionFactory -rname=nsp://localhost:9000 -factoryname=local_um -factorytype=default -connectionurl=nsp://{{ include \"common.names.fullname\" . }}:9000 -durabletype=S
+  startupCommand: ""
+  # -- Name of the Universal Messaging realm
+  realmName: ""
+  # -- Initial Java Heap Size (in MB)
+  initJavaMemSize: "1024"
+  # -- Maximum Java Heap Size (in MB)
+  maxJavaMemSize: "1024"
+  # -- Maximum Direct Memory Size (in GB)
+  maxDirectMemSize: "1G"
+  # -- Enable basic authentication on the server
+  basicAuthEnable: "No"
+  # -- Enable and mandate basic authentication on the server
+  basicAuthMandatory: "No"
+  # -- Enable log4j2 as logging framework by specifying this environment variable with log4j2 as value. By default fLogger (UM Native) logging framework enabled.
+  logFramework: ""
+
+# -- Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`.
+nameOverride: ""
+# -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
+fullnameOverride: ""
+
+# -- Custom server configuration file 
+customServerConfig: 
+  content: |
+
+# -- Custom metric JMX exporter configuration. Overwriting the default content of file [jmx_exporter.yaml](./files/jmx_exporter.yaml). See [Prometheus JMX exporter configuration](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config) for more configuration samples.
+customMetricExporterConfig: 
+  content: |
+
+podSecurityContext: 
+  fsGroup: 1724
+  
+securityContext: {} 
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+
+service:
+  type:       ClusterIP
+  # -- Universal Messaging default port
+  port:       9000
+  # -- Metrics port
+  metricPort: 9200
+
+storage:
+  # -- Storage size of logs
+  logsSize:          2Gi
+  # -- Storage size of data
+  dataSize:          2Gi
+  # -- Storage size of configuration files
+  configurationSize: 2Mi
+
+ingress:
+  # -- Enable or disable Ingress, default is disabled. On enabling Ingress, only the first `-0´ replica is currently supported. 
+  enabled: false
+  defaultHostname: um.mydomain.com
+  className: ""
+  annotations: {}
+  hosts:
+    # -- Hostname of Ingress. By default the defaultHostname is used. For more complex rules or addtional hosts, you will need to overwrite this section.
+    - host: ""
+      # --  Address the backend
+      paths:
+        # -- Path to address the backend
+        - path: /
+          # -- Path type to address the backend
+          pathType: Prefix
+          # -- Port of service
+          port: 9000
+  # -- TLS of Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# -- Configure liveness probe
+livenessProbe:
+  periodSeconds: 15
+  timeoutSeconds: 60
+  successThreshold: 1
+  failureThreshold: 5
+
+# -- Configure readiness probe
+readinessProbe:
+  periodSeconds: 15
+  timeoutSeconds: 60
+  successThreshold: 1
+  failureThreshold: 5
