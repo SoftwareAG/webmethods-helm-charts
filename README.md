@@ -27,6 +27,7 @@ To adopt Microservices Runtime for you deployment and environment, there is a co
 | --- | --- |
 | [dcc](./utils/dcc/README.md) | Script to create Image for Database Component Configurator (DCC) |
 | [PostgreSQL](./utils/postgresql/README.md) | Information to deploy a PostgreSQL database |
+| [BPM Demo](./utils/bpm-demo/README.md) | Discuss BPM scenarios to deploy MSR as Process Engine |
 
 ## Contributing
 
