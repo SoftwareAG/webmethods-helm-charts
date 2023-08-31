@@ -1,0 +1,10 @@
+#Tue Feb 07 11:02:32 UTC 2023
+ServerURL=https\://sdc-hq.softwareag.com/cgi-bin/dataservewebM1015.cgi
+selectedFixes=spro\:all
+Username=%EMPOWER_USER%
+InstallLocProducts=
+HostName=localhost
+InstallProducts=e2ei/11/TN_10.15.0.0.362/CDC/TNScdc,e2ei/11/TPS_10.15.0.0.145/SCG/tppWS,e2ei/11/BRMS_10.15.0.0.489/CDC/WOKcdc,e2ei/11/TPS_10.15.0.0.145/SCG/tppGfJaxb,e2ei/11/MFT_10.15.0.0.429/CDC/MATcdc,e2ei/11/YAI_10.15.0.0.95/CDC/YAIcdc,e2ei/11/TPS_10.15.0.0.145/SCG/tppModelling,e2ei/11/WMN_10.15.0.0.83/CDC/WMNcdc,e2ei/11/DCC_10.15.0.0.7/CDC/DatabaseComponentConfigurator,e2ei/11/TPL_10.15.0.0.25/License/license,e2ei/11/WST_10.15.0.0.533/CDC/WSTcdc,e2ei/11/MWS_10.15.0.0.385/CDC/MWScdc,e2ei/11/IS_10.15.0.0.674/CDC/PIEcdc,e2ei/11/SJP_11.0.16.0.79/Infrastructure/sjp,e2ei/11/TPS_10.15.0.0.145/SCG/tppParsers,e2ei/11/WSC_10.15.0.0.346/SCG/SCGCommon,e2ei/11/TPS_10.15.0.0.145/SCG/tppSpring,e2ei/11/IS_10.15.0.0.674/integrationServer/integrationServerMigrationFrameworkLib,e2ei/11/LIC_5.7.4.0.75/LICSharedLibsJava/LICSharedLibsJava,e2ei/11/TPS_10.15.0.0.145/SCG/tppDB,e2ei/11/TPS_10.15.0.0.145/SCG/tppAnt,e2ei/11/PE_10.15.0.0.25/CDC/WPEcdc,e2ei/11/TPS_10.15.0.0.145/SCG/tppGf,e2ei/11/DCC_10.15.0.0.7/CDC/DatabaseComponentConfiguratorCore,e2ei/11/TPS_10.15.0.0.145/SCG/loggers,e2ei/11/BAM_10.15.0.0.380/CDC/OBECentConfCdc,e2ei/11/TPS_10.15.0.0.145/SCG/tppMisc,e2ei/11/BAM_10.15.0.0.380/CDC/OBEcdc,e2ei/11/TPS_10.15.0.0.145/SCG/tppServlet,e2ei/11/IS_10.15.0.0.674/CDC/PIEEmbeddedCdc,e2ei/11/TPS_10.15.0.0.145/SCG/tppSEC,e2ei/11/DDJ_10.15.0.0.10/DDJ/WSIddj,e2ei/11/TPS_10.15.0.0.145/SCG/tppCommons
+Password=%EMPOWER_PASSWORD%
+InstallDir=/opt/softwareag
+adminPassword=manage
