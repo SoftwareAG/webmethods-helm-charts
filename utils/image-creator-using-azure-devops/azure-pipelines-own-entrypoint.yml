@@ -1,0 +1,65 @@
+# Starter pipeline
+# https://aka.ms/yaml
+
+parameters:
+- name: JOB_NAME
+  displayName: 'Job name'
+- name: TAG
+  displayName: Tag the created image with this name, e.g. wm-msr:10.15
+  default: 'wm-msr:10.15'
+- name: PRODUCTS
+  displayName: List of product components inside image (separated by comma)
+  default: 'MSC,Monitor,PIEContainerExternalRDBMS'
+- name: RELEASE
+  displayName: Dowmload product components from release version
+  default: '10.15'
+- name: ADMIN_PASSWORD
+  default: 'manage'
+  displayName: Define Administrator password for installed product components
+- name: ENTRYPOINT
+  default: 'echo'
+  displayName: Configure command for the ENTRYPOINT
+- name: BASE_IMAGE
+  default: 'ubuntu:latest'
+  displayName: 'Create new image based on this'
+- name: VARIABLE_GROUP
+  default: 'webmethods-image-creator-vars'
+  displayName: 'Use parameters from Variable Group'
+
+variables:
+- group: ${{parameters.VARIABLE_GROUP}}
+
+name: '${{parameters.JOB_NAME}}'     # Pipeline run number.
+appendCommitMessageToRunName: false  # Append the commit message to the build number. The default is true.
+
+trigger:
+- none
+
+pool:
+  name: $(AGENT_POOL)
+  vmImage: ubuntu-latest
+
+steps:
+- script: |
+    apt-get update
+    apt-get install docker.io
+  displayName: 'Install Docker CLI'
+
+- script: |
+    echo 'Login to: $(REGISTRY_HOST)'
+    docker login -u '$(REGISTRY_USERNAME)' -p '$(REGISTRY_PASSWORD)' $(REGISTRY_HOST)
+  displayName: 'Login Docker registry'
+
+- script:
+    docker build --no-cache --build-arg 'BASE_IMAGE=${{parameters.BASE_IMAGE}}'  --build-arg 'EMPOWER_USERNAME=$(EMPOWER_USERNAME)' --build-arg 'EMPOWER_PASSWORD=$(EMPOWER_PASSWORD)' --build-arg 'INSTALLER_VERSION=$(INSTALLER_VERSION)' --build-arg 'RELEASE=${{parameters.RELEASE}}' --build-arg 'ADMIN_PASSWORD=${{parameters.ADMIN_PASSWORD}}' --build-arg 'PRODUCTS=${{parameters.PRODUCTS}}' --build-arg 'ENTRYPOINT=${{parameters.ENTRYPOINT}}' -t ${{parameters.TAG}} own-entrypoint
+  displayName: 'Build Docker image'
+
+- script: |
+    echo 'Push image $(REGISTRY_HOST)/$(REGISTRY_PROJECT)/${{parameters.TAG}} ...'
+    docker tag '${{parameters.TAG}}' '$(REGISTRY_HOST)/$(REGISTRY_PROJECT)/${{parameters.TAG}}'
+    docker push '$(REGISTRY_HOST)/$(REGISTRY_PROJECT)/${{parameters.TAG}}'
+  displayName: 'Push image to public Docker registry'
+
+- script:
+    docker rmi '${{parameters.TAG}}' '$(REGISTRY_HOST)/$(REGISTRY_PROJECT)/${{parameters.TAG}}'
+  displayName: 'Remove local Docker images'
