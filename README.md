@@ -34,3 +34,7 @@ To adopt Microservices Runtime for you deployment and environment, there is a co
 ## Contributing
 
 If you want to contribute to this repository, please read the [contributing guidelines](./CONTRIBUTING.md) first.
+
+
+------------
+These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
