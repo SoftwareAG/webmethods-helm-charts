@@ -20,9 +20,9 @@
 apiVersion: apps/v1
 kind: {{ if .Values.statefulSet }}StatefulSet{{ else }}Deployment{{ end }}
 metadata:
-  name: {{ include "microservicesruntime.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   labels:
-    {{- include "microservicesruntime.labels" . | nindent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -32,26 +32,22 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "microservicesruntime.selectorLabels" . | nindent 6 }}
+      {{- include "common.labels.matchLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- if or .Values.podAnnotations .Values.prometheusAnnotations }}
       annotations:
-      {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.prometheusAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- end }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- include "common.prometheus.annotations" (dict "port" .Values.service.port) | nindent 8 }}
       labels:
-        {{- include "microservicesruntime.selectorLabels" . | nindent 8 }}
+        {{- include "common.labels.matchLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "microservicesruntime.serviceAccountName" . }}
+      serviceAccountName: {{ include "common.names.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
@@ -93,6 +89,7 @@ spec:
           {{- if .Values.extraEnvs }}
           {{- toYaml .Values.extraEnvs | nindent 10 }}
           {{- end }}
+          {{- include "common.metering.envs" . | nindent 10 }}
           ports:
           - containerPort: 5543
             name: https
@@ -176,20 +173,20 @@ spec:
               path: licenseKey.xml
         - name: application-properties
           configMap:
-            name: {{ include "microservicesruntime.fullname" . }}
+            name: {{ include "common.names.fullname" . }}
             items:
             - key:  application.properties
               path: application.properties
         - name: applicationfile-properties
           configMap:
-            name: {{ include "microservicesruntime.fullname" . }}
+            name: {{ include "common.names.fullname" . }}
             items:
             - key:  applicationFile.properties
               path: applicationFile.properties
         {{- if .Values.persistence.enabled }}
         - name: persistence-assets
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "microservicesruntime.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "common.names.fullname" .) }}
         {{- end }}
         {{- if .Values.extraVolumes }}
         # Currently some extra blocks accept strings

@@ -24,7 +24,7 @@ kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheu
 
 The default is to pull the image from Software AG Containers Registry `sagcr.azurecr.io/webmethods-microservicesruntime`.
 
-If you need to create an own image with additional webMethods product components, you can use the Azure pipelines provided by Git project [webmethods-image-creator](https://github.softwareag.com/PS/pswm-inno-container-image-creator.git). Please contact Software AG Professional Services for more information about image creation with Azure pipelines and getting [ReadMe](https://github.softwareag.com/PS/pswm-inno-container-image-creator/blob/main/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
+If you need to create an own image with additional webMethods product components, you can use the utility [image-creator-using-Azure-DevOps](../../utils/image-creator-using-azure-devops/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
 
 ### Licenses
 
@@ -99,8 +99,8 @@ helm install wm-msr webmethods/microservicesruntime   \
 | extraVolumes | list | `[]` | Exta volumes that should be mounted. |
 | fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
 | image.pullPolicy | string | `"IfNotPresent"` | Pull with policy |
-| image.repository | string | `"sagcr.azurecr.io/webmethods-microservicesruntime"` | Pull this image. Default is MSR from Software AG Container Registry |
-| image.tag | string | `"10.15.0.4"` | Tag of pulled the image |
+| image.repository | string | `"sagcr.azurecr.io/webmethods-microservicesruntime"` | Pull this image. Default is MSR from [Software AG Container Registry](https://containers.softwareag.com) |
+| image.tag | string | `"10.15"` | The default value pulls latest. In PROD it is recommended to use a specific fix level. |
 | imagePullSecrets | list | `["regcred"]` | Secret list to pull image from repository |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |
@@ -113,6 +113,19 @@ helm install wm-msr webmethods/microservicesruntime   \
 | ingress.hosts[0].paths[0].port | int | `5555` | Port of service |
 | ingress.tls | list | `[]` | TLS of Ingress |
 | lifecycle | object | `{}` | lifecycle hooks to execute on preStop / postStart,... |
+| metering.accumulationPeriod | string | `"1800"` | The period in seconds for which data is accumulated before a log record is produced. |
+| metering.enabled | bool | `true` | enable metering |
+| metering.logLevel | string | `nil` | The level of log messages that are logged on the console. Valid values are: *error - logs only ERROR messages. *warn (default) - logs ERROR and WARN messages. *info - logs ERROR, WARN, and INFO messages. *debug - logs ERROR, WARN, INFO, and DEBUG messages. Use as a Java system property or an environment variable to see the debug messages of the configuration initialization. |
+| metering.proxyAddress | string | `nil` | The proxy address in a <host>:<port> format that the metering client uses. Configure this property only if you use a metering proxy. |
+| metering.proxyPass | string | `nil` | The proxy password that the metering client uses. Configure this property only if you use a metering proxy with authentication. Depending on the method that you use to provide a password, ensure that you escape password characters that are specific for the selected method. Valid characters: *Letters: A-Z, a-z *Numbers: 0-9 *Special characters: !@#$%^&*()_+-=[]{}\/?,.<>; |
+| metering.proxyType | string | `"DIRECT"` | The type of the proxy that the metering client uses. Valid values are: *DIRECT (default). *HTTP *SOCKS Indicates that the metering client does not use a proxy. |
+| metering.reportPeriod | string | `"3600"` |  |
+| metering.runtimeAlias | string | `nil` | An alias of the webMethods product instance or a group of instances, for which usage data is measured. |
+| metering.serverConnectTimeout | string | `"60000"` | The time in milliseconds to establish the initial TCP connection when the metering client calls the server REST endpoint. This is also the time to start the request. |
+| metering.serverReadTimeout | string | `"300000"` | The maximum time in milliseconds without data transfer over the TCP connection to the server. This is also the time that it takes for the server to respond. When this time passes, the request fails. |
+| metering.serverUrl | string | `"https://metering.softwareag.cloud/api/measurements"` | The URL of the metering aggregator server REST API. |
+| metering.trustStoreFile | string | `nil` | The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases: *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP). *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud. |
+| metering.trustStorePassword | string | `nil` | The password for the metering client truststore. Configure this property only if you use a truststore. |
 | microservicesruntime.diagnosticPort | int | `9999` | Defies diagnostic port |
 | microservicesruntime.httpPort | int | `5555` | Defines administration port |
 | microservicesruntime.httpPortScheme | string | `"HTTP"` | Defines scheme of administration port |
@@ -140,7 +153,6 @@ helm install wm-msr webmethods/microservicesruntime   \
 | persistence.storageClassName | string | `""` |  |
 | podAnnotations | object | `{}` | pod annotations |
 | podSecurityContext.fsGroup | int | `1724` |  |
-| prometheusAnnotations | object | `{"prometheus.io/path":"/metrics","prometheus.io/port":"5555","prometheus.io/scheme":"http","prometheus.io/scrape":"true"}` | Prometheus annotations for scraping metrics from microservice runtime pod |
 | readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"http"},"timeoutSeconds":1}` | readiness probe for container, by default this will simply check for tcp socket connection. Adjust this in order to avoid routing traffing to non-ready Integration Servers (e.g. use the ping service via http call) |
 | replicaCount | int | `1` | Number of replicates in Deployment |
 | resources | object | `{}` |  |
@@ -157,4 +169,3 @@ helm install wm-msr webmethods/microservicesruntime   \
 | statefulSet | bool | `false` | StatefulSet or Deployment. You should only change this if you require Client Side queuing (CSQ) or functionality in IS which requires stable hostnames and filesystems. Default is false => Deployment. Keep in mind, you must disable CSQ on each webMethods messaging and JMS connection if you don't use stateful-sets. See examples in Process Engine deployment for disableing QSC. |
 | tolerations | list | `[]` |  |
 | volumeClaimTemplates | list | `[]` | Volume Claim Templates, only to be used when running as a Statefulset (e.g. using client-side queuing) |
-

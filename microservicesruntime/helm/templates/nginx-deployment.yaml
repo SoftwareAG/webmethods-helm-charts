@@ -21,15 +21,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "microservicesruntime.fullname" . }}-nginx
+  name: {{ include "common.names.fullname" . }}-nginx
   labels:
-    {{- include "microservicesruntime.labels" . | nindent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "microservicesruntime.selectorLabels" . | nindent 6 }}
+      {{- include "common.labels.matchLabels" . | nindent 6 }}
   strategy: 
     rollingUpdate:
       maxSurge: 1
@@ -39,7 +39,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        {{- include "microservicesruntime.labels" . | nindent 8 }}-nginx
+        {{- include "common.labels.standard" . | nindent 8 }}-nginx
     spec:
       containers:
       - name: nginx
@@ -67,7 +67,7 @@ spec:
       volumes:
         - name: nginx-config
           configMap:
-            name: {{ include "microservicesruntime.fullname" . }}-nginx
+            name: {{ include "common.names.fullname" . }}-nginx
             items:
             - key:  nginx.conf
               path: nginx.conf

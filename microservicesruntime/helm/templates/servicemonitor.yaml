@@ -20,10 +20,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "microservicesruntime.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "microservicesruntime.labels" . | nindent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
 spec:
   endpoints:
   - targetPort: {{ .Values.microservicesruntime.adminPort }} 

@@ -17,8 +17,8 @@
 #  *
 #  */
 
-{{- $fullName := include "microservicesruntime.fullname" . -}}
-{{- $labels   := include "microservicesruntime.labels" . -}}
+{{- $fullName := include "common.names.fullname" . -}}
+{{- $labels   := include "common.labels.standard" . -}}
 {{- $imagePullSecrets := .Values.imagePullSecrets -}}
 {{- $context := . }}
 

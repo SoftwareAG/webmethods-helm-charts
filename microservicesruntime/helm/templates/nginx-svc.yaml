@@ -21,9 +21,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "microservicesruntime.fullname" . }}-nginx
+  name: {{ include "common.names.fullname" . }}-nginx
   labels: 
-    {{- include "microservicesruntime.labels" . | nindent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
 
 spec:
   type: {{ .Values.service.type }}
@@ -43,5 +43,5 @@ spec:
     nodePort: null
     {{- end }}
   selector:
-    {{- include "microservicesruntime.selectorLabels" . | nindent 4 }}
+    {{- include "common.labels.matchLabels" . | nindent 4 }}
 {{- end }}

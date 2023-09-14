@@ -84,8 +84,8 @@ Following values are defined for Process Engine in [values.yaml](./values.yaml):
 | microservicesruntime.properties.peproperty.watt.prt.externalcluster | bool | `true` | Process Engine is running as external Cluster |
 | microservicesruntime.properties.peproperty.watt.prt.optimizeBrokerURL | string | `"{{ .Values.microservicesruntime.um.url }}"` | Process Engine connect to UM URL |
 | microservicesruntime.properties.peproperty.watt.prt.uploadMetadata | bool | `true` | Push BPM models to database |
-| microservicesruntime.properties.settings.watt.net.localhost | string | `"{{ include \"microservicesruntime.fullname\" . }}"` | Set hostname of this MSR deployment |
-| microservicesruntime.properties.settings.watt.server.scheduler.logical.hostname | string | `"{{ include \"microservicesruntime.fullname\" . }}"` | Set hostname of this MSR deployment |
+| microservicesruntime.properties.settings.watt.net.localhost | string | `"{{ include \"common.names.fullname\" . }}"` | Set hostname of this MSR deployment |
+| microservicesruntime.properties.settings.watt.server.scheduler.logical.hostname | string | `"{{ include \"common.names.fullname\" . }}"` | Set hostname of this MSR deployment |
 | microservicesruntime.properties.settings.watt.server.serverlogFilesToKeep | int | `1` | Number of days to keep server log files |
 | microservicesruntime.properties.settings.watt.server.stats.logFilesToKeep | int | `1` | Number of days to statistic log files |
 | microservicesruntime.properties.settings.watt.server.threadPool | int | `750` | Maximum number of available server threads  |

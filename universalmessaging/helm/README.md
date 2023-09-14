@@ -52,12 +52,15 @@ helm install um webmethods/universalmessaging
 | extraVolumeMounts | list | `[]` | Extra volume mounts |
 | extraVolumes | list | `[]` | Exta volumes that should be mounted. |
 | fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"sagcr.azurecr.io/universalmessaging-server","tag":"10.15.0.10"}` | Run this image |
+| image | object | `{"pullPolicy":"Always","repository":"sagcr.azurecr.io/universalmessaging-server","tag":"10.15"}` | Run this image |
+| image.pullPolicy | string | `"Always"` | Pull with policy |
+| image.repository | string | `"sagcr.azurecr.io/universalmessaging-server"` | Pull this image. Default is UM from [Software AG Container Registry](https://containers.softwareag.com) |
+| image.tag | string | `"10.15"` | The default value pulls latest. In PROD it is recommended to use a specific fix level. |
 | imagePullSecrets | list | `["regcred"]` | Secret list to pull image from repository |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |
 | ingress.defaultHostname | string | `"um.mydomain.com"` |  |
-| ingress.enabled | bool | `false` | Enable or disable Ingress, default is disabled. On enabling Ingress, only the first `-0´ replica is currently supported.  |
+| ingress.enabled | bool | `false` | Enable or disable Ingress, default is disabled. On enabling Ingress, only the first `-0` replica is currently supported.  |
 | ingress.hosts[0] | object | `{"host":"","paths":[{"path":"/","pathType":"Prefix","port":9000}]}` | Hostname of Ingress. By default the defaultHostname is used. For more complex rules or addtional hosts, you will need to overwrite this section. |
 | ingress.hosts[0].paths | list | `[{"path":"/","pathType":"Prefix","port":9000}]` | Address the backend |
 | ingress.hosts[0].paths[0] | object | `{"path":"/","pathType":"Prefix","port":9000}` | Path to address the backend |
@@ -69,6 +72,7 @@ helm install um webmethods/universalmessaging
 | livenessProbe | object | `{"failureThreshold":5,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":60}` | Configure liveness probe |
 | nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | nodeSelector | object | `{}` |  |
+| podAnnotations | object | `{}` | pod annotations |
 | podSecurityContext.fsGroup | int | `1724` |  |
 | readinessProbe | object | `{"failureThreshold":5,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":60}` | Configure readiness probe |
 | replicaCount | int | `1` | Number of replicas |
@@ -77,6 +81,9 @@ helm install um webmethods/universalmessaging
 | service.metricPort | int | `9200` | Metrics port |
 | service.port | int | `9000` | Universal Messaging default port |
 | service.type | string | `"ClusterIP"` |  |
+| serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
+| serviceAccount.create | bool | `false` | Specifies whether a service account should be created |
+| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | storage.configurationSize | string | `"2Mi"` | Storage size of configuration files |
 | storage.dataSize | string | `"2Gi"` | Storage size of data |
 | storage.logsSize | string | `"2Gi"` | Storage size of logs |
@@ -89,4 +96,3 @@ helm install um webmethods/universalmessaging
 | um.maxJavaMemSize | string | `"1024"` | Maximum Java Heap Size (in MB) |
 | um.realmName | string | `""` | Name of the Universal Messaging realm |
 | um.startupCommand | string | `""` | Startup command to be executed after UM was started. This can be used to enable / disable configurations or ensure that specific channels are created Example: runUMTool.sh EditRealmConfiguration -rname=nsp://localhost:9000 -JVM_Management.EnableJMX=false Next sample is to create JMS Connection Factory: runUMTool.sh CreateConnectionFactory -rname=nsp://localhost:9000 -factoryname=local_um -factorytype=default -connectionurl=nsp://{{ include \"common.names.fullname\" . }}:9000 -durabletype=S |
-

@@ -24,7 +24,7 @@ kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheu
 
 The default is to pull the image from Software AG Containers Registry `sagcr.azurecr.io/webmethods-microservicesruntime`.
 
-If you need to create an own image with additional webMethods product components, you can use the Azure pipelines provided by Git project [webmethods-image-creator](https://github.softwareag.com/PS/pswm-inno-container-image-creator.git). Please contact Software AG Professional Services for more information about image creation with Azure pipelines and getting [ReadMe](https://github.softwareag.com/PS/pswm-inno-container-image-creator/blob/main/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
+If you need to create an own image with additional webMethods product components, you can use the utility [image-creator-using-Azure-DevOps](../../utils/image-creator-using-azure-devops/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
 
 ### Licenses
 

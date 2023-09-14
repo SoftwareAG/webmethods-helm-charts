@@ -7,9 +7,12 @@ replicaCount: 1
 
 # -- Run this image
 image:
+  # -- Pull this image. Default is UM from [Software AG Container Registry](https://containers.softwareag.com)
   repository: sagcr.azurecr.io/universalmessaging-server
-  pullPolicy: IfNotPresent
-  tag: "10.15.0.10"
+  # -- Pull with policy
+  pullPolicy: Always
+  # -- The default value pulls latest. In PROD it is recommended to use a specific fix level.
+  tag: "10.15"
 
 # -- Name of the licence config map
 licenseConfigMap: "universalmessaging-licence-key"
@@ -88,6 +91,18 @@ customServerConfig:
 customMetricExporterConfig: 
   content: |
 
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: false
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# -- pod annotations
+podAnnotations: {}
+
 podSecurityContext: 
   fsGroup: 1724
   
@@ -114,7 +129,7 @@ storage:
   configurationSize: 2Mi
 
 ingress:
-  # -- Enable or disable Ingress, default is disabled. On enabling Ingress, only the first `-0´ replica is currently supported. 
+  # -- Enable or disable Ingress, default is disabled. On enabling Ingress, only the first `-0` replica is currently supported. 
   enabled: false
   defaultHostname: um.mydomain.com
   className: ""

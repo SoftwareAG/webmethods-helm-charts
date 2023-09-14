@@ -29,7 +29,7 @@ helm install wm-mws-db bitnami/postgresql --namespace msr \
 
 ## Create webMethods Database Components
 
-Before starting MSR, the `wmdb` database must be filled with assets using Database Component Configurator (DCC). See GitHub project [webMethods Image Creator](https://github.softwareag.com/PS/pswm-inno-container-image-creator) to create an image for DCC. After DCC image `wm-dcc:10.15` is created, use following Kubernetes `run` command to create the *product* components `IS` in `wm-mws-db`:
+Before starting MSR, the `wmdb` database must be filled with assets using Database Component Configurator (DCC). You can use the utility [image-creator-using-Azure-DevOps](../../../utils/image-creator-using-azure-devops/README.md) to create an image for DCC. After DCC image `wm-dcc:10.15` is created, use following Kubernetes `run` command to create the *product* components `IS` in `wm-mws-db`:
 
 ```shell
 kubectl run wm-dcc-client --rm --tty -i --restart='Never' --image wm-dcc:10.15 --namespace msr --command -- /opt/softwareag/common/db/bin/dbConfigurator.sh -a CREATE -l "jdbc:wm:postgresql://wm-msr-db:5432;databaseName=wmdb" --dbms postgresql -u wm -p "manage" -pr IS
@@ -53,8 +53,8 @@ Following values are provided in [values.yaml](./values.yaml).
 | microservicesruntime.properties.jdbcfunc.ProcessAudit.connPoolAlias | string | `"data"` | Assign JDBC pool `pa` to Functions `ProcessAudit` |
 | microservicesruntime.properties.jdbcfunc.ProcessEngine.connPoolAlias | string | `"data"` | Assign JDBC pool `pe` to Functions `ProcessEngine` |
 | microservicesruntime.properties.jdbcfunc.Xref.connPoolAlias | string | `"data"` | Assign JDBC pool `pe` to Functions `Xref` |
-| microservicesruntime.properties.settings.watt.net.localhost | string | `"{{ include \"microservicesruntime.fullname\" . }}"` | Set hostname of this MSR deployment |
-| microservicesruntime.properties.settings.watt.server.scheduler.logical.hostname | string | `"{{ include \"microservicesruntime.fullname\" . }}"` | Set hostname of this MSR deployment |
+| microservicesruntime.properties.settings.watt.net.localhost | string | `"{{ include \"common.names.fullname\" . }}"` | Set hostname of this MSR deployment |
+| microservicesruntime.properties.settings.watt.server.scheduler.logical.hostname | string | `"{{ include \"common.names.fullname\" . }}"` | Set hostname of this MSR deployment |
 | microservicesruntime.properties.settings.watt.server.serverlogFilesToKeep | int | `1` | Number of days to keep server log files |
 | microservicesruntime.properties.settings.watt.server.stats.logFilesToKeep | int | `1` | Number of days to statistic log files |
 | microservicesruntime.properties.settings.watt.server.threadPool | int | `750` | Maximum number of available server threads  |

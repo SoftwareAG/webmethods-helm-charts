@@ -83,10 +83,10 @@ microservicesruntime:
           scheduler:
             logical:
               # -- Set hostname of this MSR deployment
-              hostname: "{{ include \"microservicesruntime.fullname\" . }}"
+              hostname: "{{ include \"common.names.fullname\" . }}"
         net:
           # -- Set hostname of this MSR deployment
-          localhost: "{{ include \"microservicesruntime.fullname\" . }}"
+          localhost: "{{ include \"common.names.fullname\" . }}"
 
     statisticsdatacollector:
       monitorConfig:

@@ -21,9 +21,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "microservicesruntime.fullname" . }}-nginx
+  name: {{ include "common.names.fullname" . }}-nginx
   labels:
-    {{- include "microservicesruntime.labels" . | nindent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
 
 data:
   nginx.conf: |
@@ -52,11 +52,11 @@ data:
         gzip  on;
      
         upstream msr-rt {
-            server {{ include "microservicesruntime.fullname" . }}:{{ int .Values.microservicesruntime.runtimePort }};
+            server {{ include "common.names.fullname" . }}:{{ int .Values.microservicesruntime.runtimePort }};
         }
      
         upstream msr-admin {
-            server {{ include "microservicesruntime.fullname" . }}:{{ int .Values.microservicesruntime.adminPort }};
+            server {{ include "common.names.fullname" . }}:{{ int .Values.microservicesruntime.adminPort }};
         }
      
         server {

@@ -10,12 +10,12 @@ statefulSet: false
 serviceMonitor: false
 
 image:
-  # -- Pull this image. Default is MSR from Software AG Container Registry
+  # -- Pull this image. Default is MSR from [Software AG Container Registry](https://containers.softwareag.com)
   repository: "sagcr.azurecr.io/webmethods-microservicesruntime"
   # -- Pull with policy
   pullPolicy: IfNotPresent
-  # -- Tag of pulled the image
-  tag:        "10.15.0.4"
+  # -- The default value pulls latest. In PROD it is recommended to use a specific fix level.
+  tag:        "10.15"
 
 # -- Secret list to pull image from repository
 imagePullSecrets: [regcred]
@@ -177,13 +177,6 @@ serviceAccount:
 # -- pod annotations
 podAnnotations: {}
 
-# -- Prometheus annotations for scraping metrics from microservice runtime pod
-prometheusAnnotations: 
-  prometheus.io/scrape: "true"
-  prometheus.io/path: "/metrics"
-  prometheus.io/port: "5555"
-  prometheus.io/scheme: "http"
-
 podSecurityContext:
   fsGroup: 1724
 
@@ -277,3 +270,50 @@ persistence:
   logs:             true
   # -- if persistence.enabled=true, use configuration settings from persistent volume
   configs:          true
+
+metering:
+  # -- enable metering
+  enabled: true
+  # -- The URL of the metering aggregator server REST API.
+  serverUrl: "https://metering.softwareag.cloud/api/measurements"
+  # -- The type of the proxy that the metering client uses.
+  # Valid values are:
+  # *DIRECT (default).
+  # *HTTP
+  # *SOCKS
+  # Indicates that the metering client does not use a proxy.
+  proxyType: "DIRECT"
+  # -- The proxy address in a <host>:<port> format that the metering client uses.
+  # Configure this property only if you use a metering proxy.
+  proxyAddress:
+  # -- The proxy password that the metering client uses.
+  # Configure this property only if you use a metering proxy with authentication.
+  # Depending on the method that you use to provide a password, ensure that you escape password characters that are specific for the selected method.
+  # Valid characters:
+  # *Letters: A-Z, a-z
+  # *Numbers: 0-9
+  # *Special characters: !@#$%^&*()_+-=[]{}\/?,.<>;
+  proxyPass:
+  # -- The time in milliseconds to establish the initial TCP connection when the metering client calls the server REST endpoint. This is also the time to start the request.
+  serverConnectTimeout: "60000"
+  # -- The maximum time in milliseconds without data transfer over the TCP connection to the server. This is also the time that it takes for the server to respond. When this time passes, the request fails.
+  serverReadTimeout: "300000"
+  # -- The period in seconds for which data is accumulated before a log record is produced.
+  accumulationPeriod: "1800"
+  reportPeriod: "3600"
+  # -- An alias of the webMethods product instance or a group of instances, for which usage data is measured.
+  runtimeAlias:
+  # -- The level of log messages that are logged on the console.
+  # Valid values are:
+  # *error - logs only ERROR messages.
+  # *warn (default) - logs ERROR and WARN messages.
+  # *info - logs ERROR, WARN, and INFO messages.
+  # *debug - logs ERROR, WARN, INFO, and DEBUG messages. Use as a Java system property or an environment variable to see the debug messages of the configuration initialization.
+  logLevel:
+  # -- The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases:
+  # *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP).
+  # *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud.
+  trustStoreFile:
+  # -- The password for the metering client truststore.
+  # Configure this property only if you use a truststore.
+  trustStorePassword:
