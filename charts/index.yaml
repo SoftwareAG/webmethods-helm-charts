@@ -6,10 +6,10 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-08-16T10:35:44.554885+02:00"
+    created: "2023-09-21T15:52:25.872684+02:00"
     description: A Library Helm Chart for grouping common logic between SoftwareAG
       charts. This chart is not deployable by itself.
-    digest: 09f3a27733e7d6d0d14d941fbc5ec81e7eb6f2fe21ab63db8bfa148ada845eeb
+    digest: 4898d5adb1ceaafbe6c438c3347c8b3e063c6d2fb423a78729615f9e31ed802c
     home: https://softwareag.com
     icon: https://softwareag.com/downloads/logos/softwareag-mark.png
     keywords:
@@ -28,4 +28,15 @@ entries:
     urls:
     - common-1.0.0.tgz
     version: 1.0.0
-generated: "2023-08-16T10:35:44.554106+02:00"
+  microservicesruntime:
+  - apiVersion: v2
+    appVersion: "10.15"
+    created: "2023-09-21T15:52:25.873569+02:00"
+    description: A Microservices Runtime (MSR) Helm chart for Kubernetes
+    digest: 79c75f859cdff52a0d56526f3d36929c499aad586350260b0a851fd0a3a3596d
+    name: microservicesruntime
+    type: application
+    urls:
+    - microservicesruntime-1.1.0.tgz
+    version: 1.1.0
+generated: "2023-09-21T15:52:25.866486+02:00"
