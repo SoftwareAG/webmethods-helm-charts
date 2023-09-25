@@ -56,9 +56,10 @@ jobs:
         run: |
           git config --global user.name "${{ github.event.actor.login }}"
           git clone git@github.com:SoftwareAG/webmethods-helm-charts.git -b gh-pages
-          cp    *.tgz                         webmethods-helm-charts/
           cp    *.md                          webmethods-helm-charts/
-          cd                                  webmethods-helm-charts/
+          mkdir -p                            webmethods-helm-charts/charts
+          cp    *.tgz                         webmethods-helm-charts/charts
+          cd                                  webmethods-helm-charts/charts
           helm repo index . --url https://open-source.softwareag.com/webmethods-helm-charts/charts
           git add .
           git commit -am "${{ github.event.head_commit.message }}"
