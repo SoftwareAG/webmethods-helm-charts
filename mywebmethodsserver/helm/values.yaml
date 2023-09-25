@@ -1,0 +1,221 @@
+replicaCount: 1
+
+image:
+  # -- The image name / location of the custom MyWebmethodsRepository
+  repository: mywebmethodsserver
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+
+# -- Exta environment properties to be passed on to the MyWebMethods Server
+extraEnvs: {}
+
+# -- Exta volumes that should be mounted.
+# Example:   
+# - metadata:
+#        name: shared-volume
+#      spec:
+#        accessModes: ["ReadWriteMany"]
+#        storageClassName: nfs
+#        resources:
+#          requests:
+#            storage: 10
+extraVolumeClaimTemplates: []
+
+# -- Extra volume mounts
+# - name: extras
+#   mountPath: /usr/share/extras
+#   readOnly: true
+extraVolumeMounts: [] 
+
+# -- Extra containers which should run in addtion to the main container as a sidecar
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+extraContainers: 
+
+# -- Extra init containers that are executed before starting the main container
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+extraInitContainers: []
+
+# -- Extra config maps for addtional configurations such as extra ports, etc.
+extraConfigMaps: []
+
+# -- lifecycle hooks to execute on preStop / postStart,...
+# preStop:
+#   exec:
+#     command: ["/bin/sh", "-c", "echo Hello from the preStop handler > /usr/share/message"]
+# postStart:
+#   exec:
+#     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+lifecycle: {}
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# -- The security context the pods should run in.
+# capabilities:
+#   drop:
+#   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
+securityContext: {}
+
+# -- The service type of the MyWebMethodsServer service
+service:
+  type: ClusterIP
+  port: 8585
+
+# -- Ingress Settings
+ingress:
+  # -- Enables deployment of an ingress
+  enabled: true
+  defaultHostname: msr.mydomain.com
+  className: ""
+  annotations: {}
+  hosts:
+    # -- Hostname of Ingress. By default the defaultHostname is used. For more complex rules or addtional hosts, you will need to overwrite this section.
+    - host: ""
+      # --  Address the backend
+      paths:
+        # -- Path to address the backend
+        - path: /
+          # -- Path type to address the backend
+          pathType: Prefix
+          # -- Port of service
+          port: 8585
+  # -- TLS of Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+#- storage settings for the different application directories
+storage:
+  # -- The default storage class for all application directories
+  defaultStorageClass: 
+  # -- Storage claim request size
+  defaultStorageRequest: 1Gi
+  # -- The default access mode
+  defaultAccessMode: ["ReadWriteOnce"]
+  # -- The default volume name.
+  defaultVolume: data
+
+  dirs:
+    # -- A directory on the container file system which contains the custom assets and applications to copy to the MWS/deploy directory of the My webMethods Server instance, and installed on container startup. If not specified, My webMethods Server uses the default SAGHOME/MWS/volumes/apps directory in the container. Assets and applications are sourced through a bind-mounted host directory, or an external volume, mounted to the apps directory location in the container. Valid asset formats are war, cdp, pdp, jar. For more information about deploying applications to a My webMethods Server Docker container, see Custom Applications in My webMethods Server Containers.
+    appsdir:
+      path: /opt/softwareag/MWS/volumes/apps
+      storageClass: 
+      accessMode: []
+      storageRequest:
+      # -- when set to true, a separate volume will be created for this directory. Otherwise, the directory will be created on the defaultVolume.
+      volume: 
+    # -- A directory on the container file system which contains miscellaneous configuration files that My webMethods Server loads on container startup. If not specified, the container startup script for My webMethods Server uses the default SAGHOME/MWS/volumes/configs and checks for a configs directory on the volume, mounted to the SAGHOME/MWS/volumes/configs directory on the container file system if such volume is available.
+    # The configs directory on the mounted volume can contain one or more of the following subdirectories:
+    # *assets_cfg - for supplying xmlImport files and My webMethods Server skins.
+    # *cluster_cfg - stores custom configuration files for the My webMethods Server cluster, for example the cluster.xml file.
+    # *instance_cfg - stores custom configuration files for the My webMethods Server instance, for example the mws.db.xml and server.properties files.
+    # *jvm_cfg - for supplying custom JVM configuration files and certificates.
+    # *profile_cfg - stores custom configuration files for the My webMethods Server OSGi profile, for example the custom_wrapper.conf file.
+    # For more information about modifying the configuration of a My webMethods Server Docker container through an external volume, see Modifying the Configuration of a Container
+    configsdir:
+      path: /opt/softwareag/MWS/volumes/configs
+      storageClass:
+      accessMode: []
+      storageRequest: 
+      # -- when set to true, a separate volume will be created for this directory. Otherwise, the directory will be created on the defaultVolume.
+      volume:
+    # -- Directory on the container file system to which My webMethods Server stores runtime data, such as search indexes and information about the deployed applications, and persists events from the Task Engine event queue. If not specified, My webMethods Server uses the default SAGHOME/MWS/volumes/data directory on the container file system.
+    datadir:
+      path: /opt/softwareag/MWS/volumes/data
+      storageClass:
+      accessMode: []
+      storageRequest: 
+      # -- when set to true, a separate volume will be created for this directory. Otherwise, the directory will be created on the defaultVolume.
+      volume:
+    # -- Directory on the container file system that holds third-party libraries or other custom jar files to be copied to the MWS/lib directory of the My webMethods Server instance and loaded by My webMethods Server on container startup. If not specified, the container startup script for My webMethods Server uses the default directory SAGHOME/MWS/volumes/libs on the container file system. Libraries and jars are sourced through a bind-mounted host directory or an external volume. For more information about using third-party libraries and custom jars in a My webMethods Server Docker container, see Using External Libraries in My webMethods Server Containers.      
+    libsdir:
+      path: /opt/softwareag/MWS/volumes/libs
+      storageClass:
+      accessMode: []
+      storageRequest: 
+      # -- when set to true, a separate volume will be created for this directory. Otherwise, the directory will be created on the defaultVolume.
+      volume:
+    # -- Directory on the container file system to which My webMethods Server persists all log files, generated by the My webMethods Server instance. By default, the directory contains the following subdirectories:
+    # *instance_logs - corresponds to the default SAGDir/MWS/server/instanceName/logs directory of an on-premise My webMethods Server installation.
+    # *profile_logs - corresponds to the SAGDir/profiles/MWS_default/logs directory of an on-premise My webMethods Server installation.
+    # *cli_logs - for all logs, stored in the SAGDir/MWS/bin directory of an on-premise installation. Logs for OSGi profile-related operations that My webMethods Server executes during operation, for example, when adding external libraries, are stored in cli_logs/archive.
+    # If not specified, My webMethods Server uses the default directory SAGHOME/MWS/volumes/logs on the container file system.    
+    logsdir:
+      path: /opt/softwareag/MWS/volumes/logs
+      storageClass:
+      accessMode: []
+      storageRequest: 
+      # -- when set to true, a separate volume will be created for this directory. Otherwise, the directory will be created on the defaultVolume.
+      volume:
+
+# -- MyWebMethods Server specific configurations
+mws:
+  # -- The secret name containing user and password for the JDBC connection
+  # By default the secret name contains of the full name + "-mws-secret". 
+  # Provide a value if you setup a secret manually. Example:
+  # kubectl create secret mws-secret --from-literal=user=mwsuser --from-literal=password=mypassword
+  # and use "secretName: mws-secret" in your values file
+  secretName: 
+  jdbc:
+    # -- Database connection URL, based on the type of database and the driver.
+    dbURL: "jdbc:wm:postgresql://mws-db-postgresql:5432;databaseName=wmdb"
+    # -- The type of database used by the server instance. Valid values are:
+    # *ms - Microsoft SQL Server
+    # *oracle - Oracle
+    # *db2 - DB2
+    # *mysqlee - MySQL Enterprise Edition
+    # *mysqlce - MySQL Community Edition
+    # *postgresql - PostgreSQL
+    type: postgresql
+    # -- The user name to use when connecting to the My webMethods Server database.
+    # If user and password are provided a secret will automatically generated initially. 
+    # E.g. helm install webmethods/mywebmethodsserver mws --set mws.jdbc.user=mwsuser --set mws.jdbc.password=mydbpassword
+    # Do not save this information in a plain value file, use --set and reference it from an environment variable, or setup manually
+    user: 
+    # -- The password of the My webMethods Server database user.
+    # If user and password are provided a secret will automatically generated initially.
+    # E.g. helm install webmethods/mywebmethodsserver mws --set mws.jdbc.user=mwsuser --set mws.jdbc.password=mydbpassword
+    # Do not save this information in a plain value file, use --set and reference it from an environment variable, or setup manually
+    password:

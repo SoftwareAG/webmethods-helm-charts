@@ -11,8 +11,8 @@ Params:
 {{- $scrape := default "true" .scrape -}}
 {{- $scheme := default "http" .scheme -}}
 {{- $path := default "/metrics" .path -}}
-prometheus.io/scrape: "true"
-prometheus.io/path: "/metrics"
+prometheus.io/scrape: {{ $scrape | quote }}
+prometheus.io/path: {{ $path | quote  }} 
 prometheus.io/port: {{ $port | quote }}
-prometheus.io/scheme: "http"
+prometheus.io/scheme: {{ $scheme | quote }}
 {{- end -}}

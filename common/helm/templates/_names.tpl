@@ -63,3 +63,25 @@ Create a fully qualified app name adding the installation's namespace.
 {{- define "common.names.fullname.namespace" -}}
 {{- printf "%s-%s" (include "common.names.fullname" .) (include "common.names.namespace" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "common.names.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "common.names.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the name of the role to use
+*/}}
+{{- define "common.names.roleName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "common.names.fullname" .) .Values.serviceAccount.roleName }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.roleName }}
+{{- end }}
+{{- end }}

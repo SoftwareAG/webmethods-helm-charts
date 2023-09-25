@@ -8,7 +8,7 @@ user.Administrator.password=
 
 # Set Pod host/container name (following sample retrieves the hostname from Helm Chart) ...
 settings.watt.net.localhost="{{ include \"common.names.fullname\" . }}"
-settings.watt.server.scheduler.logical.hostname=="{{ include \"common.names.fullname\" . }}"
+settings.watt.server.scheduler.logical.hostname="{{ include \"common.names.fullname\" . }}"
 
 # Avoid creating backup files for config changes ...
 settings.watt.server.saveConfigFiles=false 

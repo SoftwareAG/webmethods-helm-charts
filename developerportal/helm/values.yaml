@@ -1,0 +1,253 @@
+replicaCount: 1
+
+image:
+  # -- The repository for the image. By default, 
+  # this points to the Software AG container repository. 
+  # Change this for air-gapped installations or custom images.
+  # For the Software AG container repository you need to have a 
+  # valid access token stored as registry credentials
+  repository: sagcr.azurecr.io/devportal
+  pullPolicy: IfNotPresent
+  # -- The image tag of the apigateway image default this will be the latest version. 
+  # For realworld scenarios SAG recommends to use a 
+  # specific version to not accidently change production versions with newer images.
+  tag: "10.15"
+
+# -- Image pull secret reference. By default looks for regcred.
+imagePullSecrets: 
+  - name: regcred
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # If not set and create is true, a name is generated using the fullname template
+  roleName: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  defaultHostname: devportal.mydomain.com
+  className: ""
+  # -- Ingress annotations
+  annotations: 
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/app-root: /portal
+    traefik.ingress.kubernetes.io/app-root: /portal
+    traefik.ingress.kubernetes.io/affinity: "true"
+  hosts:
+    # -- Hostname of Ingress. By default the defaultHostname is used. For more complex rules or addtional hosts, you will need to overwrite this section.
+    - host: ""
+      # --  Address the backend
+      paths:
+        # -- Path to address the backend
+        - path: /
+          # -- Path type to address the backend
+          pathType: Prefix
+          # -- Port of service
+          port: 80
+  # -- TLS of Ingress
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  devportalContainer:
+    requests:
+      cpu: 1
+      memory: 1Gi
+    limits:
+      # use a high cpu limit to avaoid the container being throttled
+      cpu: 1
+      memory: 4Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# -- Exta environment properties to be passed on to the container
+extraEnvs: {}
+
+# -- Exta volumes that should be mounted.
+extraVolumes: []
+# - name: extras
+#   emptyDir: {}
+
+# -- Extra volume mounts
+extraVolumeMounts: []
+# - name: extras
+#   mountPath: /usr/share/extras
+#   readOnly: true
+
+# -- Extra containers which should run in addition to the main container as a sidecar
+extraContainers: []
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+
+# -- Extra init containers that are executed before starting the main container
+extraInitContainers: []
+# - name: do-something
+#   image: busybox
+#   command: ['do', 'something']
+
+# -- Extra config maps for additional configurations such as extra ports, etc.
+extraConfigMaps: []
+
+# -- lifecycle hooks to execute on preStop / postStart,...
+lifecycle: {}
+# preStop:
+#   exec:
+#     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+# postStart:
+#   exec:
+#     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+
+devportal: 
+  port: 8083
+  # -- Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch  
+  elasticSearchDeployment: true
+  clusterPorts:
+    start:  47500 
+    end:    47509
+  # -- csp domains for SSO usage with external Identity providers. This should point to your identity provider domains. 
+  # Controls the PORTAL_SERVER_CONFIG_HEADERS_CONTENT_SECURITY_POLICY environment variable for developer portal
+  cspDomains: ""
+  # -- Use the default anti pod affinity.
+  # Specifies a Pod Anti-Affinity rule for Kubernetes pods. 
+  # The default Pod Anti-Affinity is a scheduling preference that indicates 
+  # how Kubernetes should distribute pods across nodes to avoid having multiple 
+  # pods of the same application or with specific labels running on the same node.
+  # If you want to use your on rules, refer to affinity value and provide your own configuration.
+  useDefaultAffinityRule: true
+
+prometheus:
+  path: "/portal/rest/v1/prometheus"
+  port: "8083"
+  scheme: "http"
+  scrape: "true"
+
+elasticsearch:
+
+  # -- Deploy elastic search instance 
+  deploy: true
+
+  # -- The ECK version to be used
+  version: 8.2.3
+
+  # -- The image that should be used.
+  # By default ECK will use the official Elasticsearch images. 
+  # Overwrite this to use an image from an internal registry or any custom images.
+  # Make sure that the image corresponds to the version field.
+  image: 
+
+  # -- The elasticsearch http service name that Developer Portal uses.
+  # The default is compiled of the fullname (releasename + chart name) + "-http" 
+  # You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart.
+  serviceName: ""
+  # -- The default elasticsearch instance http communication port
+  port: 9200
+  # -- The secret name that holds the sag es user for Developer Portal.
+  secretName: ""
+
+  # -- Whether the communication from Developer Portal should be HTTPS
+  # Note: you will need to create certificate and a separate truststore for the communication.
+  tlsEnabled: false
+
+  # -- The secret name that holds the keystore password  
+  keystoreSecretName: ""
+
+  # -- The name of the secret holding the tls secret
+  # By default the name will be fullname of release + "es-tls-secret"
+  certificateSecretName: "{{ include \"common.names.fullname\" .}}-es-tls-secret"
+  
+  # -- Node sets. See official ElasticSearch documentation at:
+  # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-orchestration.html
+  # if you specify node sets here the defaultNodeSet will not be used.
+  nodeSets: {}
+  
+  # -- Default Node Set
+  defaultNodeSet:
+
+    # -- the number of replicas for Elastic Search
+    count: 1
+    # -- Set this to true for production workloads, this will also 
+    # use an init container to increase the vm.max_map_count to 262144 on the nodes.
+    memoryMapping: false    
+
+    # -- Controls whether to start an init container that increases the vm.max_map_count to 262144 on the node.
+    # Set memoryMapping to true and this setting also to true to run the init container.
+    # Note that this requires the ability to run privileged containers, which is likely not the case on many secure clusters.
+    setMaxMapCount: true     
+
+    # -- install plugins at startup from Elasticsearch
+    # by default the mapper-size plugin is required. Set this to [] in order to avoid installation of any plugins and you 
+    # are providing a custom Elasticsearch image with the required plugins.
+    installPlugins:
+      - mapper-size
+
+
+    # -- Extra configuration parameters for Elasticsearch nodes to be appended to the default (none).
+    # See https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-node-configuration.html
+    extraConfig: {}
+
+    # -- Extra init containers to be started before Elasticsearch nodes are started.
+    # See https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-init-containers-plugin-downloads.html
+    extraInitContainers: {}  
+
+prometheus-elasticsearch-exporter:
+  es:
+    uri: "{{ .Release.Name }}-developerportal-es-http:9200"
+
+  serviceMonitor:
+    enabled: true
+    jobLabel: "devportal"    
+  
+  image:
+    repository: quay.io/prometheuscommunity/elasticsearch-exporter
+    tag: v1.5.0
+    pullPolicy: IfNotPresent
+    pullSecret: ""

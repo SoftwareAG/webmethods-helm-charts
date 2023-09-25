@@ -1,0 +1,42 @@
+# webMethods MyWebMethods Server Helm Chart
+
+This Helm Chart installs and configures a MyWebMethods Server (MWS) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section. 
+
+## Prerequisites
+
+### Create Image for MyWebMethods Server
+
+Software AG does not offer currently ready-made container images for MyWebMethods Server. Therefore you will need to create an image on your own. You can follow the instructions
+from the build directory of this repository here: [building My webMethods Server Image](../examples/image-builder/README.md).
+
+## Examples for Use-cases
+
+Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values. 
+
+| Use-case | Description |
+|-----|------|
+| [mws-postgresql](../examples/postgresql/README.md) | Using MWS with external PostgreSQL database |
+
+## Install MyWebMethods Server Release
+
+Install release with pulling image and setting secret (to pull image) ...
+
+```shell
+helm install wm-mws microservicesruntime
+```
+
+... define default domain name of Ingress service host ...
+
+```shell
+  --set "ingress.defaultHost="
+```
+
+... define hostname of Ingress service ...
+
+```shell  
+  --set "ingress.hosts[0].paths[0].path=/"            \
+  --set "ingress.hosts[0].paths[0].pathType=Prefix"   \
+  --set "ingress.hosts[0].paths[0].port=5555"
+```
+
+{{ template "chart.valuesSection" . }}

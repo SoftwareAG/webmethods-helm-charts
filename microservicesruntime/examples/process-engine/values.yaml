@@ -169,3 +169,29 @@ microservicesruntime:
       monitorConfig:
         # -- Enable or disable IS internal statistic data collector. (Statistic data are visible on Monitor page.) We disable statistic data collector because of using Grafana and Prometheus.
         enabled: false
+
+jobs:
+# -- Create PE topics in UM on Helm post-install hook 
+- name: deploy-PE-assets-to-um
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  image:
+    repository: sagcr.azurecr.io/universalmessaging-tools
+    tag: 10.15
+  imagePullPolicy: IfNotPresent
+  restartPolicy: Never
+  env:
+    # -- Environment variable for Shell script
+    - name:  UM_URL
+      # -- Set UM Realm URL from this file
+      value: "{{ .Values.microservicesruntime.um.url }}"
+  command: ["/bin/bash"]
+  # -- Shell script to deploy / create assets in UM using runUMTool.sh
+  args:
+    - -c
+    - >-
+        echo Deploying Assets in UM [$UM_HOST] ...;
+        runUMTool.sh CreateJMSTopic          -rname=$UM_URL -channelname=PEBroadcastTopic -synceachwrite=true
+        runUMTool.sh CreateJMSTopic          -rname=$UM_URL -channelname=PERestartTopic   -synceachwrite=true

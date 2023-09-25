@@ -32,6 +32,10 @@ Following values are defined for Process Engine in [values.yaml](./values.yaml):
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| jobs[0] | object | `{"annotations":{"helm.sh/hook":"post-install","helm.sh/hook-delete-policy":"hook-succeeded","helm.sh/hook-weight":"0"},"args":["-c","echo Deploying Assets in UM [$UM_HOST] ...; runUMTool.sh CreateJMSTopic          -rname=$UM_URL -channelname=PEBroadcastTopic -synceachwrite=true runUMTool.sh CreateJMSTopic          -rname=$UM_URL -channelname=PERestartTopic   -synceachwrite=true"],"command":["/bin/bash"],"env":[{"name":"UM_URL","value":"{{ .Values.microservicesruntime.um.url }}"}],"image":{"repository":"sagcr.azurecr.io/universalmessaging-tools","tag":10.15},"imagePullPolicy":"IfNotPresent","name":"deploy-PE-assets-to-um","restartPolicy":"Never"}` | Create PE topics in UM on Helm post-install hook  |
+| jobs[0].args | list | `["-c","echo Deploying Assets in UM [$UM_HOST] ...; runUMTool.sh CreateJMSTopic          -rname=$UM_URL -channelname=PEBroadcastTopic -synceachwrite=true runUMTool.sh CreateJMSTopic          -rname=$UM_URL -channelname=PERestartTopic   -synceachwrite=true"]` | Shell script to deploy / create assets in UM using runUMTool.sh |
+| jobs[0].env[0] | object | `{"name":"UM_URL","value":"{{ .Values.microservicesruntime.um.url }}"}` | Environment variable for Shell script |
+| jobs[0].env[0].value | string | `"{{ .Values.microservicesruntime.um.url }}"` | Set UM Realm URL from this file |
 | microservicesruntime.mws.host | string | `nil` | Connect to My webMethods Server hostname |
 | microservicesruntime.mws.password | string | `nil` | Connect to My webMethods Server Administrator password |
 | microservicesruntime.properties.jdbc.archive.dbURL | string | `nil` | JDBC pool Archive database URL |
@@ -85,13 +89,13 @@ Following values are defined for Process Engine in [values.yaml](./values.yaml):
 | microservicesruntime.properties.peproperty.watt.prt.optimizeBrokerURL | string | `"{{ .Values.microservicesruntime.um.url }}"` | Process Engine connect to UM URL |
 | microservicesruntime.properties.peproperty.watt.prt.uploadMetadata | bool | `true` | Push BPM models to database |
 | microservicesruntime.properties.settings.watt.net.localhost | string | `"{{ include \"common.names.fullname\" . }}"` | Set hostname of this MSR deployment |
+| microservicesruntime.properties.settings.watt.server.audit.logFilesToKeep | int | `1` | Number of days to audit log files |
 | microservicesruntime.properties.settings.watt.server.scheduler.logical.hostname | string | `"{{ include \"common.names.fullname\" . }}"` | Set hostname of this MSR deployment |
 | microservicesruntime.properties.settings.watt.server.serverlogFilesToKeep | int | `1` | Number of days to keep server log files |
 | microservicesruntime.properties.settings.watt.server.stats.logFilesToKeep | int | `1` | Number of days to statistic log files |
 | microservicesruntime.properties.settings.watt.server.threadPool | int | `750` | Maximum number of available server threads  |
 | microservicesruntime.properties.statisticsdatacollector.monitorConfig.enabled | bool | `false` | Enable or disable IS internal statistic data collector. (Statistic data are visible on Monitor page.) We disable statistic data collector because of using Grafana and Prometheus. |
 | microservicesruntime.um.url | string | `nil` | Universal Messaging (UM) connection URL, e.g. nsp://my-um-realm:9000 |
-
 ## Values (as plain text)
 
 Add following properties as text in value `applicationFile.properties`:

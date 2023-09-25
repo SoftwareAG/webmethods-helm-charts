@@ -1,0 +1,185 @@
+# /*
+#  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+#  *
+#  * SPDX-License-Identifier: Apache-2.0
+#  *
+#  *   Licensed under the Apache License, Version 2.0 (the "License");
+#  *   you may not use this file except in compliance with the License.
+#  *   You may obtain a copy of the License at
+#  *
+#  *       http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  *   Unless required by applicable law or agreed to in writing, software
+#  *   distributed under the License is distributed on an "AS IS" BASIS,
+#  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  *   See the License for the specific language governing permissions and
+#  *   limitations under the License.
+#  *
+#  */
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  serviceName: {{ include "common.names.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "common.labels.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:      
+        {{- include "common.prometheus.annotations" (dict "port" .Values.service.metricPort) | nindent 8 }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "common.labels.matchLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ . }}
+      {{- end }}
+      serviceAccountName: {{ include "common.names.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: change-ownership
+          image: busybox
+          command: ["sh", "-c", "chown -R 1724:1724 {{- range $key,$value := .Values.storage.dirs }} {{ get $value "path" }} {{- end }}"]
+          volumeMounts:
+            {{- range $key,$value := .Values.storage.dirs }}
+            - name: {{ if $value.volume }} {{ $key }} {{ else }} {{ $.Values.storage.defaultVolume }} {{ end }}
+              mountPath: {{ get $value "path" }}
+            {{- end }}
+        {{- if .Values.extraInitContainers -}}
+        {{- toYaml .Values.extraInitContainers | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{ if .Values.image.tag  }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- else -}}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+          - name: DB_URL
+            value: {{ .Values.mws.jdbc.dbURL | quote }}
+          - name: DB_TYPE
+            value: {{ .Values.mws.jdbc.type }} 
+          - name: DB_USERNAME
+            valueFrom: 
+              secretKeyRef:
+                name: {{ include "common.names.fullname" . }}-mws-secrets
+                key: user               
+          - name: DB_PASSWORD
+            valueFrom: 
+              secretKeyRef:
+                name: {{ include "common.names.fullname" . }}-mws-secrets
+                key: password
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: APPS_DIR
+            value: {{ .Values.storage.dirs.appsdir.path }}/{{ .Values.storage.dirs.appsdir.subPath }}
+          - name: CONFIGS_DIR
+            value: {{ .Values.storage.dirs.configsdir.path }}/{{ .Values.storage.dirs.configsdir.subPath }}
+          - name: DATA_DIR
+            value: {{ .Values.storage.dirs.datadir.path }}/{{ .Values.storage.dirs.datadir.subPath }}
+          - name: LIBS_DIR
+            value: {{ .Values.storage.dirs.libsdir.path }}/{{ .Values.storage.dirs.libsdir.subPath }}
+          - name: LOGS_DIR
+            value: {{ .Values.storage.dirs.logsdir.path }}/{{ .Values.storage.dirs.logsdir.subPath }}
+          {{- if .Values.extraEnvs }}
+          {{- range $key, $val := .Values.extraEnvs }}
+          - name: {{ $key }}
+            value: {{ $val }}
+          {{- end }}
+          {{- end }}                
+          {{- if .Values.lifecycle }}
+          lifecycle:
+          {{ toYaml .Values.lifecycle | indent 10 }}
+          {{- end }}
+          startupProbe:
+            tcpSocket:
+              port: http
+            failureThreshold: 60
+            periodSeconds: 10            # wait 10 * 60 seconds for starting readinessProbe and livenessProbe
+          readinessProbe:
+            httpGet:
+              path:              /metrics
+              port:              http
+              scheme:            HTTP 
+            failureThreshold:    10
+            initialDelaySeconds: 30
+            periodSeconds:       30
+            successThreshold:    1
+            timeoutSeconds:      1
+          volumeMounts:
+          {{- range $key,$value := .Values.storage.dirs }}
+          - name: {{ if $value.volume }} {{ $key }} {{ else }} {{ $.Values.storage.defaultVolume }} {{ end }}
+            mountPath: {{ get $value "path" }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{ if .Values.extraContainers }}    
+        {{- toYaml .Values.extraContainers | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.extraVolumeMounts }}
+      {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
+        {{- tpl .Values.extraVolumeMounts . | nindent 6 }}              
+      {{- else }}
+        {{- toYaml .Values.extraVolumeMounts | nindent 6 }}
+      {{- end }}      
+      {{- end }}
+  volumeClaimTemplates:
+    {{ $defaultVolumeNotMapped := true }}
+    {{- range $key,$value := .Values.storage.dirs }}
+    {{- if $value.volume }}
+    - metadata:
+        name: {{ $key }}
+      spec:
+        accessModes: {{ default $.Values.storage.defaultAccessMode $value.accessMode }}
+        storageClassName: {{ default $.Values.storage.defaultStorageClass $value.storageClass | quote }} 
+        resources:
+          requests:
+            storage: {{ default $.Values.storage.defaultStorageRequest $value.storageRequest }}                  
+    {{- else if $defaultVolumeNotMapped }}
+    - metadata:
+        name: {{ $.Values.storage.defaultVolume }}
+      spec:
+        accessModes: {{ default $.Values.storage.defaultAccessMode $value.accessMode }}
+        storageClassName: {{ default $.Values.storage.defaultStorageClass $value.storageClass | quote }} 
+        resources:
+          requests:
+            storage: {{ default $.Values.storage.defaultStorageRequest $value.storageRequest }}                  
+      {{- $defaultVolumeNotMapped = false -}}
+    {{- end }}
+    {{- end }}
+  {{- if .Values.extraVolumeClaimTemplates }}
+  {{- toYaml .Values.extraVolumeClaimTemplates | nindent 4 }}
+  {{- end }}

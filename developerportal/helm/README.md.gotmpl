@@ -1,0 +1,45 @@
+# webMethods Developer Portal Helm Chart
+
+This Helm Chart installs and configures a webMethods Developer Portal container.
+
+## Default deployment
+
+![Deployment](../docs/diagrams/developer_portal.png)
+
+## Prerequisites
+
+### ECK / Elasticsearch
+
+This deployment uses the ECK Operator to deploy Elasticsearch. You can use Helm to deploy the operator with the following commands:
+
+#### Register the Elasticsearch Helm Repository
+
+```
+helm repo add elastic https://helm.elastic.co
+helm repo update
+```
+
+#### Install ECK (Cluster-wide)
+
+```
+helm install elastic-operator elastic/eck-operator -n elastic-system --create-namespace
+```
+
+For more information please see: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-install-helm.html
+
+### Image Pull Secret
+
+If you want to pull image from [Software AG Containers Registry](https://containers.softwareag.com), create secret with your Software AG Containers Registry credentials ...
+
+```
+kubectl create secret docker-registry regcred --docker-server=sagcr.azurecr.io --docker-username=<your-name> --docker-password=<your-pwd> --docker-email=<your-email>
+```
+
+## Install Developer Portal Release
+
+```
+helm install webmethods/developerportal devportal
+```
+
+
+{{ template "chart.valuesSection" . }}
