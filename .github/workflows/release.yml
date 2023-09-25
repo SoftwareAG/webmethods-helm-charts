@@ -36,7 +36,7 @@ jobs:
 
       - name: Build Helm dependencies
         run: |
-          helm helm repo add webmethods https://open-source.softwareag.com/webmethods-helm-charts/charts
+          helm repo add webmethods https://open-source.softwareag.com/webmethods-helm-charts/charts
           #helm dependency build apigateway/helm
           #helm dependency build developerportal/helm
           helm dependency build microservicesruntime/helm
