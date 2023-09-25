@@ -34,18 +34,9 @@ jobs:
           sh ./get_helm.sh
           rm ./get_helm.sh
 
-      - name: Build Helm dependencies
-        run: |
-          helm repo add webmethods https://open-source.softwareag.com/webmethods-helm-charts/charts
-          #helm dependency build apigateway/helm
-          helm dependency build developerportal/helm
-          helm dependency build microservicesruntime/helm
-          helm dependency build mywebmethodsserver/helm
-          helm dependency build universalmessaging/helm
-
       - name: Generate Helm repo files
         run: |
-          helm package common/helm
+          helm package -u common/helm
           #helm package -u apigateway/helm
           helm package -u developerportal/helm
           helm package -u microservicesruntime/helm
@@ -54,7 +45,7 @@ jobs:
 
       - name: Push Helm Charts to this GitHub repo branch 'gh-pages' 
         run: |
-          git config --global user.name "${{ github.event.actor.login }}"
+          git config --global user.name "${{ github.event.head_commit.committer }}"
           git clone git@github.com:SoftwareAG/webmethods-helm-charts.git -b gh-pages
           cp    *.md                          webmethods-helm-charts/
           mkdir -p                            webmethods-helm-charts/charts
