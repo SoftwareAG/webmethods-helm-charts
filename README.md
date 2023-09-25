@@ -28,7 +28,7 @@ To adopt Microservices Runtime for you deployment and environment, there is a co
 | [image-builder-dcc](./utils/image-builder-dcc/README.md) | Script to create Image for Database Component Configurator (DCC) |
 | [PostgreSQL](./utils/postgresql/README.md) | Information to deploy a PostgreSQL database |
 | [BPM Demo](./utils/bpm-demo/README.md) | BPM scenarios to deploy MSR as Process Engine |
-| [Image Creator using Azure DevOps](./utils/image-creator-using-azure-devops/README.md) | webMethods Image creator using Azure DevOps pipeline |
+| [Image Builder using Azure DevOps](./utils/image-builder-using-azure-devops/README.md) | webMethods Image builder using Azure DevOps pipelines |
 
 
 ## Contributing
