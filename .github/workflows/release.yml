@@ -1,0 +1,65 @@
+name: Release Charts
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: self-hosted
+    steps:
+      - name: Clean workspace
+        run: |
+          rm -Rf *
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate Helm README Documentation with jnorwood
+        run: |
+          sudo docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
+
+      - name: Remove README.md template files
+        run: |
+          find . -name "README.md.gotmpl" | xargs rm
+
+      - name: Install Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          sh ./get_helm.sh
+          rm ./get_helm.sh
+
+      - name: Generate Helm repo files
+        run: |
+          helm package common/helm
+          #helm package apigateway/helm
+          #helm package developerportal/helm
+          helm package microservicesruntime/helm
+          #helm package mywebmethodsserver/helm
+          helm package universalmessaging/helm
+
+      - name: Build Helm dependencies
+        run: |
+          #helm dependency build apigateway/helm
+          #helm dependency build developerportal/helm
+          helm dependency build microservicesruntime/helm
+          helm dependency build universalmessaging/helm
+
+      - name: Push Helm Charts to this GitHub repo branch 'gh-pages' 
+        run: |
+          git clone git@github.com:SoftwareAG/webmethods-helm-charts.git -b gh-pages
+          cp    *.tgz                         webmethods-helm-charts/
+          cp    *.md                          webmethods-helm-charts/
+          cp -R microservicesruntime          webmethods-helm-charts/
+          cp -R universalmessaging            webmethods-helm-charts/
+          cd                                  webmethods-helm-charts/
+          helm repo index . --url https://open-source.softwareag.com/webmethods-helm-charts/charts
+          git add .
+          git commit -am "${{ github.event.head_commit.message }}"
+          git branch -M      gh-pages
+          git push -f origin gh-pages
