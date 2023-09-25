@@ -45,7 +45,7 @@ jobs:
 
       - name: Push Helm Charts to this GitHub repo branch 'gh-pages' 
         run: |
-          git config --global user.name  "${{ github.event.head_commit.committer.username  }}"
+          git config --global user.name  "${{ github.event.head_commit.committer.name  }}"
           git config --global user.email "${{ github.event.head_commit.committer.email }}"
           git clone git@github.com:SoftwareAG/webmethods-helm-charts.git -b gh-pages
           cp    *.md                          webmethods-helm-charts/
