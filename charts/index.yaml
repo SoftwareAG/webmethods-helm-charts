@@ -6,10 +6,10 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-09-25T20:32:15.162598311+02:00"
+    created: "2023-09-25T20:38:25.022696238+02:00"
     description: A Library Helm Chart for grouping common logic between SoftwareAG
       charts. This chart is not deployable by itself.
-    digest: 5646eba0704bc9fd6e719d0b9a3c4cfa57e3c0f20b23b7688c832dd3ca8f43b2
+    digest: 18bdc7f38fd8c26682e48102954b4b3dcb37628a8fe288a966c80342404b389a
     home: https://softwareag.com
     icon: https://softwareag.com/downloads/logos/softwareag-mark.png
     keywords:
@@ -31,7 +31,7 @@ entries:
   developerportal:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-09-25T20:32:15.166361108+02:00"
+    created: "2023-09-25T20:38:25.024949728+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -44,7 +44,7 @@ entries:
       - prometheus-elasticsearch-exporter
       version: 5.0.0
     description: Helm chart for webMethods Developer Portal
-    digest: 01d3c9120b571a3221f73adedbe770ce735a61afbf5d8e92cf43053a2bdf0ee2
+    digest: 0fe54d1045b75dbc28bea94568725f67679282d7115b0db29be2c5cef289fde5
     name: developerportal
     type: application
     urls:
@@ -53,7 +53,7 @@ entries:
   microservicesruntime:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-09-25T20:32:15.168333024+02:00"
+    created: "2023-09-25T20:38:25.02731634+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -61,7 +61,7 @@ entries:
       - softwareag-common
       version: 1.x.x
     description: Microservices Runtime (MSR) Helm Chart for Kubernetes
-    digest: 7b30ab870658be9a2a40033d116bf90f008c4bef393822be324eccf4e0cf8320
+    digest: ea11c60e13e8edc75ca2a1d852d9ad0e86d7485a2e07fb475b5cf188bca3a505
     name: microservicesruntime
     type: application
     urls:
@@ -70,9 +70,9 @@ entries:
   mywebmethodsserver:
   - apiVersion: v1
     appVersion: "10.15"
-    created: "2023-09-25T20:32:15.169753837+02:00"
+    created: "2023-09-25T20:38:25.029143834+02:00"
     description: MyWebMethods Server Helm chart for Kubernetes
-    digest: 47e6c7929ed105e649bf321e418fe1f05083408bb3b553b2a2c30bce1c8a7904
+    digest: 5a58c65bc929e4c31ae776adb238712adb03490389674ab034851a360d6d45a0
     name: mywebmethodsserver
     urls:
     - https://open-source.softwareag.com/webmethods-helm-charts/charts/mywebmethodsserver-1.0.0.tgz
@@ -80,7 +80,7 @@ entries:
   universalmessaging:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-09-25T20:32:15.171136143+02:00"
+    created: "2023-09-25T20:38:25.030504613+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -88,10 +88,10 @@ entries:
       - softwareag-common
       version: 1.x.x
     description: Universal Messaging (UM) Helm Chart for Kubernetes
-    digest: e12cca671bcce75ec5f9aa6f39d32e51388bdfd06a569544c733395bcb088920
+    digest: 7b7e14a1eb84cd266b893831a3ba8a01ca0b799c0256b057a92141a8690a0ecf
     name: universalmessaging
     type: application
     urls:
     - https://open-source.softwareag.com/webmethods-helm-charts/charts/universalmessaging-1.0.0.tgz
     version: 1.0.0
-generated: "2023-09-25T20:32:15.161759712+02:00"
+generated: "2023-09-25T20:38:25.021873924+02:00"
