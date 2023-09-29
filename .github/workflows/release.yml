@@ -37,7 +37,7 @@ jobs:
       - name: Generate Helm repo files
         run: |
           helm package -u common/helm
-          #helm package -u apigateway/helm
+          helm package -u apigateway/helm
           helm package -u developerportal/helm
           helm package -u microservicesruntime/helm
           helm package -u mywebmethodsserver/helm
