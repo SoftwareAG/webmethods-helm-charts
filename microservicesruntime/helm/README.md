@@ -1,6 +1,6 @@
 # webMethods Microservices Runtime Helm Chart
 
-This Helm Chart installs and configures a Microservices Runtime (MSR) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section. 
+This Helm Chart installs and configures a Microservices Runtime (MSR) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section.
 
 ## Prerequisites
 
@@ -14,17 +14,17 @@ kubectl create secret docker-registry regcred --docker-server=sagcr.azurecr.io -
 
 ### Service Monitor
 
-A Service Monitor CRD can be created optional. Anywhere, the custom kind `ServiceMonitor` must be registered as Kubernetes object. If not, you can apply it with ... 
+A Service Monitor CRD can be created optional. Anywhere, the custom kind `ServiceMonitor` must be registered as Kubernetes object. If not, you can apply it with ...
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml
 ```
 
-### Create Image for Microservices Runtime
+### Build Image for Microservices Runtime
 
 The default is to pull the image from Software AG Containers Registry `sagcr.azurecr.io/webmethods-microservicesruntime`.
 
-If you need to create an own image with additional webMethods product components, you can use the utility [image-creator-using-Azure-DevOps](../../utils/image-creator-using-azure-devops/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
+If you need to build an own image with additional webMethods product components, you can use the utility [image-builder-using-Azure-DevOps](../../utils/image-builder-using-azure-devops/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
 
 ### Licenses
 
@@ -38,7 +38,7 @@ kubectl create configmap microservicesruntime-license-key --from-file=licenseKey
 
 ## Examples for Use-cases
 
-Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values. 
+Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values.
 
 | Use-case | Description |
 |-----|------|
@@ -71,7 +71,6 @@ helm install wm-msr webmethods/microservicesruntime   \
 ```
 
 ... instead of using default image, use your own ...
-
 
 ```shell
   --set "image.repository=<Your-Docker-registry>/wm-msr-db" \

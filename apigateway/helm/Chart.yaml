@@ -17,8 +17,8 @@
 #  *
 #  */
 apiVersion: v2
-name: developerportal
-description: webMethods Developer Portal Helm Chart for Kubernetes
+name: apigateway
+description: API Gateway Helm Chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -38,8 +38,7 @@ version: 1.0.0
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
-# It is recommended to use it with quotes.
-appVersion: "10.15"
+appVersion: 10.15
 
 dependencies:
 - name: common

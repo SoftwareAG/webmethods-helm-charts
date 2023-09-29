@@ -19,7 +19,7 @@ Create a PostgresQL database ...
 ```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
-helm install wm-mws-db bitnami/postgresql --namespace msr \
+helm install wm-msr-db bitnami/postgresql --namespace msr \
   --set global.postgresql.auth.postgresPassword=manage    \
   --set global.postgresql.auth.username=wm                \
   --set global.postgresql.auth.password=manage            \
@@ -29,7 +29,7 @@ helm install wm-mws-db bitnami/postgresql --namespace msr \
 
 ## Create webMethods Database Components
 
-Before starting MSR, the `wmdb` database must be filled with assets using Database Component Configurator (DCC). You can use the utility [image-creator-using-Azure-DevOps](../../../utils/image-creator-using-azure-devops/README.md) to create an image for DCC. After DCC image `wm-dcc:10.15` is created, use following Kubernetes `run` command to create the *product* components `IS` in `wm-mws-db`:
+Before starting MSR, the `wmdb` database must be filled with assets using Database Component Configurator (DCC). You can use the utility [image-builder-using-Azure-DevOps](../../../utils/image-builder-using-azure-devops/README.md) or [image-builder-dcc](../../../utils/image-builder-dcc/README.md) to build an image for DCC. After DCC image `wm-dcc:10.15` is created, use following Kubernetes `run` command to create the *product* components `IS` in `wm-msr-db`:
 
 ```shell
 kubectl run wm-dcc-client --rm --tty -i --restart='Never' --image wm-dcc:10.15 --namespace msr --command -- /opt/softwareag/common/db/bin/dbConfigurator.sh -a CREATE -l "jdbc:wm:postgresql://wm-msr-db:5432;databaseName=wmdb" --dbms postgresql -u wm -p "manage" -pr IS

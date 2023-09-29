@@ -1,0 +1,64 @@
+# /*
+#  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+#  *
+#  * SPDX-License-Identifier: Apache-2.0
+#  *
+#  *   Licensed under the Apache License, Version 2.0 (the "License");
+#  *   you may not use this file except in compliance with the License.
+#  *   You may obtain a copy of the License at
+#  *
+#  *       http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  *   Unless required by applicable law or agreed to in writing, software
+#  *   distributed under the License is distributed on an "AS IS" BASIS,
+#  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  *   See the License for the specific language governing permissions and
+#  *   limitations under the License.
+#  *
+#  */
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: {{ include "common.names.fullname" . }}
+spec:
+  version: 8.5.3
+  count: 1
+  config:
+    xpack.security.authc.providers:
+      anonymous.anonymous1:
+        order: 0
+        credentials:
+          username: "${KIBANA_USER}"
+          password: "${KIBANA_PASSWORD}"
+    {{- $apigwname := (include "common.names.fullname" $ ) }}
+    {{- $defaultHost := default (printf "%s%s.%s" $apigwname "ui" .Values.ingress.defaultDomain ) .Values.ingresses.ui.defaultHost }}
+    server.publicBaseUrl: https://{{ $defaultHost }}/apigatewayui/dashboardproxy
+    server.basePath: /apigatewayui/dashboardproxy
+    server.rewriteBasePath: false
+    
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  elasticsearchRef:
+    name: {{ include "common.names.fullname" . }}
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          env:
+            - name: KIBANA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "apigateway.elasticsecret" . }}-kb
+                  key: username
+            - name: KIBANA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "apigateway.elasticsecret" . }}-kb
+                  key: password
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 5601
+              scheme: HTTP

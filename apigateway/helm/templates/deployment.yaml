@@ -1,0 +1,227 @@
+# /*
+#  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+#  *
+#  * SPDX-License-Identifier: Apache-2.0
+#  *
+#  *   Licensed under the Apache License, Version 2.0 (the "License");
+#  *   you may not use this file except in compliance with the License.
+#  *   You may obtain a copy of the License at
+#  *
+#  *       http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  *   Unless required by applicable law or agreed to in writing, software
+#  *   distributed under the License is distributed on an "AS IS" BASIS,
+#  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  *   See the License for the specific language governing permissions and
+#  *   limitations under the License.
+#  *
+#  */
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "common.labels.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- include "common.prometheus.annotations" (dict "port" .Values.prometheus.port "scrape" .Values.prometheus.scrape "path" .Values.prometheus.path "scheme" .Values.prometheus.scheme) | nindent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        {{- include "common.labels.matchLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "common.names.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      {{ if .Values.elasticsearch.deploy }} 
+      - name: waitforelasticsearch
+        image: {{ .Values.global.curlImage }}
+        imagePullPolicy: IfNotPresent
+        resources:
+          {{- toYaml .Values.resources.apigwInitContainer | nindent 10 }}
+        envFrom:
+          - secretRef:
+              name: {{ include "apigateway.elasticsecret" . }}-es
+        command:
+          - sh
+          - -ec
+          - |
+            {{- $esSvc := ( include "apigateway.elasticservice" . ) }}
+            {{- $esUrl := printf "%s://%s:%s/_cluster/health?pretty" (ternary "https" "http" .Values.elasticsearch.tlsEnabled ) $esSvc ( .Values.elasticsearch.port | toString) }}
+            curl -s {{ $esUrl }} -u $username:$password | tee /tmp/tmpfile
+            until grep "status" /tmp/tmpfile | grep "green" ; do
+              echo "waiting for {{ $esSvc }}: status not yet 'green'."
+              sleep 2
+              curl -k -s {{ $esUrl }} -u $username:$password | tee /tmp/tmpfile
+            done
+      {{ end }}
+      {{-  if .Values.extraInitContainers }}
+      {{- toYaml .Values.extraInitContainers | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: SAG_IS_CONFIG_PROPERTIES
+          value: {{ .Values.apigw.sagIsConfigProperties }}
+        {{- include "common.metering.envs" . | nindent 8 }}
+        - name: apigw_wrapper_java_initmemory
+          value: {{ .Values.apigw.initMemory }}
+        - name: apigw_wrapper_java_maxmemory
+          value: {{ .Values.apigw.maxMemory }}
+        - name: ADMINISTRATOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "common.names.fullname" . }}-admin-password
+              key: password
+        - name: apigw_elasticsearch_http_password
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "apigateway.elasticsecret" . }}-es
+              key: password 
+        - name: apigw_elasticsearch_http_username
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "apigateway.elasticsecret" . }}-es
+              key: username
+        - name: apigw_elasticsearch_https_keystorePassword
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "apigateway.elastickeystoresecret" . }}
+              key: password     
+        - name: apigw_elasticsearch_https_truststorePassword
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "apigateway.elastickeystoresecret" . }}
+              key: password     
+        {{- if .Values.extraEnvs }}
+        {{- toYaml .Values.extraEnvs | nindent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ int .Values.apigw.runtimePort }}
+          name: rt-port
+          protocol: TCP
+        - containerPort: {{ int .Values.apigw.diagPort }}
+          name: diag-port
+          protocol: TCP
+        - containerPort: {{ int .Values.apigw.uiPort }}
+          name: ui-http
+          protocol: TCP
+        - containerPort: {{ int .Values.apigw.adminPort }}
+          name: admin-http
+          protocol: TCP
+        - containerPort: {{ int .Values.apigw.runtimeExternalPort }} 
+          name: external-http
+          protocol: TCP
+        {{- if .Values.extraPorts }}
+        {{- toYaml .Values.extraPorts | nindent 10 }}
+        {{- end }}                  
+        livenessProbe:
+          tcpSocket:
+            port: {{ int .Values.apigw.adminPort }}
+          failureThreshold: 3
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+          
+        readinessProbe:
+          httpGet:
+            path: /rest/apigateway/health
+            port: {{ int .Values.apigw.adminPort }}
+            scheme: {{ .Values.apigw.readinessProbe.scheme }} 
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          {{- toYaml .Values.resources.apigwContainer | nindent 10 }}
+        volumeMounts:
+          - name: apigw-config
+            mountPath: /opt/softwareag/IntegrationServer/instances/default/packages/WmAPIGateway/resources/configuration
+          - name: apigw-license
+            mountPath: /opt/softwareag/IntegrationServer/instances/default/config/licenseKey.xml
+            subPath:   licenseKey.xml
+            readOnly:  false
+          - name: apigw-config
+            mountPath: /config/application.properties
+            subPath:    application.properties
+          {{- if .Values.extraVolumeMounts }}
+          {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
+            {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              
+          {{- else }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+          {{- end }}                      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: apigw-config
+        configMap:
+          name: {{ include "common.names.fullname" . }}-config
+          items:
+          - key:  config-sources.yml
+            path: config-sources.yml
+          - key:  apigw-config.yml
+            path: apigw-config.yml
+          - key:  application.properties
+            path: application.properties  
+      - name: apigw-license
+        configMap:
+          name: {{ include "common.names.fullname" . }}-license
+          defaultMode: 0666
+          items:
+          - key:  licensekey
+            path: licenseKey.xml
+      {{- if .Values.elasticsearch.tlsEnabled }}
+      - name: elastic-tls
+        secret: 
+          secretName: {{ include "apigateway.elastictls" .}}
+          items:
+            - key: truststore.jks
+              path: truststore.jks
+            - key: keystore.jks
+              path: keystore.jks
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+      # Currently some extra blocks accept strings
+      # to continue with backwards compatibility this is being kept
+      # whilst also allowing for yaml to be specified too.
+      {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
+        {{ tpl .Values.extraVolumes . | nindent 8 }}
+      {{- else }}
+        {{ toYaml .Values.extraVolumes | nindent 8 }}
+      {{- end }}
+      {{- end }}
+
+      
+      

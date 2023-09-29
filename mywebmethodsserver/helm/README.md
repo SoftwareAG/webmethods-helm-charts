@@ -1,6 +1,6 @@
 # webMethods MyWebMethods Server Helm Chart
 
-This Helm Chart installs and configures a MyWebMethods Server (MWS) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section. 
+This Helm Chart installs and configures a MyWebMethods Server (MWS) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section.
 
 ## Prerequisites
 
@@ -11,7 +11,7 @@ from the build directory of this repository here: [building My webMethods Server
 
 ## Examples for Use-cases
 
-Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values. 
+Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values.
 
 | Use-case | Description |
 |-----|------|

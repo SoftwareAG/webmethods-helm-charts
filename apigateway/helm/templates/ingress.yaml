@@ -1,0 +1,91 @@
+---
+# /*
+#  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+#  *
+#  * SPDX-License-Identifier: Apache-2.0
+#  *
+#  *   Licensed under the Apache License, Version 2.0 (the "License");
+#  *   you may not use this file except in compliance with the License.
+#  *   You may obtain a copy of the License at
+#  *
+#  *       http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  *   Unless required by applicable law or agreed to in writing, software
+#  *   distributed under the License is distributed on an "AS IS" BASIS,
+#  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  *   See the License for the specific language governing permissions and
+#  *   limitations under the License.
+#  *
+#  */
+
+{{- $labels := include "common.labels.standard" . -}}
+{{- $gitVersion := .Capabilities.KubeVersion.GitVersion -}}
+{{- range $name, $ing := .Values.ingresses -}}
+{{- if $ing.enabled -}}
+{{- $apigwname := (include "common.names.fullname" $ ) -}}
+{{- $defaultHost := default (printf "%s%s.%s" $apigwname $name $.Values.ingress.defaultDomain ) $ing.defaultHost -}}
+{{- if and $ing.className (not (semverCompare ">=1.18-0" $gitVersion)) }}
+  {{- if not (hasKey $ing.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set $ing.annotations "kubernetes.io/ingress.class" .className}}
+  {{- end }}
+{{- end }}
+{{ if semverCompare ">=1.19-0" $gitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{ else if semverCompare ">=1.14-0" $gitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{ else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "common.names.fullname" $ }}- {{- $name }}
+  labels:
+    {{- $labels | nindent 4 }}
+  {{- with .annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and $ing.className (semverCompare ">=1.18-0" $gitVersion) }}
+  ingressClassName: {{ $ing.className }}
+  {{- end }}
+  {{- if $ing.tls }}
+  tls:
+    {{- range $tls := $ing.tls }}
+    - hosts:
+        {{- if not $tls.hosts }}
+        - {{ $defaultHost }}
+        {{- end }}
+        {{- range $tls.hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- $secretName := default (printf "%s-%s" $apigwname "tls" ) $tls.secretName }}
+      secretName: {{ $secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range $rules := $ing.hosts }}
+    - host: {{ default $defaultHost $rules.host | quote }}
+      http:
+        paths:
+          {{- range $paths := $rules.paths }}
+          - path: {{ $paths.path }}
+            {{- if and $paths.pathType (semverCompare ">=1.18-0" $gitVersion) }}
+            pathType: {{ $paths.pathType }}
+            {{- end }}
+            backend:
+              {{- $svcName := default (printf "%s-%s" (include "common.names.fullname" $) $name ) $ing.svcName -}}
+              {{- if semverCompare ">=1.19-0" $gitVersion }}
+              service:
+                name: {{ $svcName }}
+                port:
+                  name: {{ default (printf "%s%s" $name "port") $ing.svcPort  }}
+              {{- else }}
+              serviceName: {{ $svcName }}
+              servicePort: {{ default (printf "%s%s" $name "port") $ing.svcPort  }}
+              {{- end }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+---
+{{- end -}}

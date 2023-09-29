@@ -29,7 +29,7 @@ helm install wm-mws-db bitnami/postgresql --namespace mws \
 Before starting MyWebMethods Server, the `wmdb` database must be filled with assets using Database Component Configurator (DCC). See [Database Component Creator (DCC)](../../utils/dcc/README.md) to create an image for DCC. After DCC image `wm-dcc:10.15` is created, use following Kubernetes `run` command to create the *product* components `IS` in `wm-mws-db`:
 
 ```shell
-kubectl run wm-dcc-client --rm --tty -i --restart='Never' --image wm-dcc:10.15 --namespace mws --command -- /opt/softwareag/common/db/bin/dbConfigurator.sh -a CREATE -l "jdbc:wm:postgresql://wm-mws-db:5432;databaseName=wmdb" --dbms postgresql -u wm -p "manage" -pr IS
+kubectl run wm-dcc-client --rm --tty -i --restart='Never' --image wm-dcc:10.15 --namespace mws --command -- /opt/softwareag/common/db/bin/dbConfigurator.sh -a CREATE -l "jdbc:wm:postgresql://wm-mws-db:5432;databaseName=wmdb" --dbms postgresql -u wm -p "manage" -pr MWS
 ```
 
 ## Install MyWebMethods Server Release

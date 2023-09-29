@@ -1,3 +1,5 @@
+{{ if .Values.license }}
+---
 # /*
 #  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
 #  *
@@ -16,15 +18,16 @@
 #  *   limitations under the License.
 #  *
 #  */
-apiVersion: v2
-appVersion: "10.15"
-description: My webMethods Server (MWS) Helm Chart for Kubernetes
-name: mywebmethodsserver
-version: 1.0.0
 
-dependencies:
-- name: common
-  repository: "https://open-source.softwareag.com/webmethods-helm-charts/charts"
-  tags:
-    - softwareag-common
-  version: 1.x.x
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.names.fullname" . }}-license
+  labels:  
+    {{- include "common.labels.standard" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+data:
+  licensekey:
+    {{ .Values.license | toYaml }}
+{{- end }}

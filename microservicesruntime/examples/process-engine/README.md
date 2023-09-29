@@ -26,6 +26,14 @@ There are 2 possibilities to inject MSR application properties
 * as YAML
 * as plain text file `application.properties` 
 
+## Create webMethods Database Components
+
+Before starting MSR, the `wmdb` database must be filled with assets using Database Component Configurator (DCC). You can use the utility [image-builder-using-Azure-DevOps](../../../utils/image-builder-using-azure-devops/README.md) or [image-builder-dcc](../../../utils/image-builder-dcc/README.md) to build an image for DCC. After DCC image `wm-dcc:10.15` is created, use following Kubernetes `run` command to create the *product* components `IS` in `wm-msr-db`:
+
+```shell
+kubectl run wm-dcc-client --rm --tty -i --restart='Never' --image wm-dcc:10.15 --namespace msr --command -- /opt/softwareag/common/db/bin/dbConfigurator.sh -a CREATE -l "jdbc:wm:postgresql://wm-msr-db:5432;databaseName=wmdb" --dbms postgresql -u wm -p "manage" -pr IS,PRE
+```
+
 ## Values (as YAML)
 
 Following values are defined for Process Engine in [values.yaml](./values.yaml):
