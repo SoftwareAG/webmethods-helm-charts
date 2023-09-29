@@ -3,4 +3,4 @@ dependencies:
   repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
   version: 1.0.0
 digest: sha256:fceb64f0194778d9eca253253b79091debb4d4a72654bd1cfa0fc3eab10147c2
-generated: "2023-09-29T08:23:48.642050882+02:00"
+generated: "2023-09-29T08:45:05.7296368+02:00"

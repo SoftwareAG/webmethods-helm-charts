@@ -1,6 +1,6 @@
-# Deployment with external PostgreQL Database
+# Deployment with external PostgresQL Database
 
-Following values (application.properties) can be used to deploy MSR with connection to external PostgreQL database.
+Following values (application.properties) can be used to deploy MSR with connection to external PostgresQL database.
 
 ## Prerequisites
 
