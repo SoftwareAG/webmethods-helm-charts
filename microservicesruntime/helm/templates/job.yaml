@@ -110,7 +110,7 @@ spec:
           volumes:
 {{ toYaml . | indent 12 }}
           {{- end }}
-          {{- range $imagePullSecrets }}
+          {{- with $imagePullSecrets }}
           imagePullSecrets:
 {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -191,7 +191,7 @@ spec:
       volumes:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- range $imagePullSecrets }}
+      {{- with $imagePullSecrets }}
       imagePullSecrets:
 {{- toYaml . | nindent 8 }}
       {{- end }}
