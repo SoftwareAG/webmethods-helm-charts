@@ -61,7 +61,7 @@ spec:
             readOnly:  false
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ . }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
             
       volumes:

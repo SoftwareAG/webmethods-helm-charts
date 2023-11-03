@@ -112,7 +112,7 @@ spec:
           {{- end }}
           {{- range $imagePullSecrets }}
           imagePullSecrets:
-            - name: {{ . }}
+{{- toYaml . | nindent 12 }}
           {{- end }}
   schedule: {{ $job.schedule | quote }}
   successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit }}
@@ -193,7 +193,7 @@ spec:
       {{- end }}
       {{- range $imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ . }}
+{{- toYaml . | nindent 8 }}
       {{- end }}
  
   {{ end }}
