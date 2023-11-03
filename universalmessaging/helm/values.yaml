@@ -17,8 +17,9 @@ image:
 # -- Name of the licence config map
 licenseConfigMap: "universalmessaging-licence-key"
 
-# -- Secret list to pull image from repository
-imagePullSecrets: [regcred]
+# -- Image pull secret reference. By default looks for `regcred`.
+imagePullSecrets: 
+  - name: regcred
 
 # -- Exta environment properties to be passed on to the container
 extraEnvs: {}

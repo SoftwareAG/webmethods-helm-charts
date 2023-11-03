@@ -7,8 +7,13 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-imagePullSecrets: []
+# -- Image pull secret reference. By default looks for `regcred`.
+imagePullSecrets: 
+  - name: regcred
+
+# -- Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`.
 nameOverride: ""
+# -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
 fullnameOverride: ""
 
 serviceAccount:
