@@ -166,10 +166,10 @@ spec:
         {{- end }}
         - name: microservicesruntime-license
           configMap:
-            name: {{ .Values.microservicesruntime.licenseConfigMap }}
+            name: {{ include "microservicesruntime.licenseConfigMapName" . }}
             defaultMode: 0666
             items:
-            - key:  licenseKey.xml
+            - key:  licensekey
               path: licenseKey.xml
         - name: application-properties
           configMap:

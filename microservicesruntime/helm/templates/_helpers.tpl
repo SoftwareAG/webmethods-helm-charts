@@ -78,3 +78,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the license config map
+*/}}
+{{- define "microservicesruntime.licenseConfigMapName" -}}
+{{- default ( printf "%s-%s" (include "common.names.fullname" .) "-license") .Values.licenseConfigMap }}
+{{- end }}

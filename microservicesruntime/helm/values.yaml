@@ -137,7 +137,7 @@ microservicesruntime:
   readinessProbe:
     # -- Scheme of administration port port, uppercase
     scheme:                 "HTTP"
-  # -- Name of config map which contains the license key
+  # -- Name of config map which contains the license key. If you ommit this, it defaults to the release name + microservicesruntime-license. 
   licenseConfigMap:         "microservicesruntime-license-key"
   memoryHeap:
     ## -- Minimum of allocated heap memory
