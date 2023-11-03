@@ -13,7 +13,7 @@ image:
   # specific version to not accidently change production versions with newer images.
   tag: "10.15"
 
-# -- Image pull secret reference. By default looks for regcred.
+# -- Image pull secret reference. By default looks for `regcred`.
 imagePullSecrets: 
   - name: regcred
 

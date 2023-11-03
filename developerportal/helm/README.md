@@ -83,7 +83,7 @@ helm install webmethods/developerportal devportal
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"sagcr.azurecr.io/devportal"` | The repository for the image. By default,  this points to the Software AG container repository.  Change this for air-gapped installations or custom images. For the Software AG container repository you need to have a  valid access token stored as registry credentials |
 | image.tag | string | `"10.15"` | The image tag of the apigateway image default this will be the latest version.  For realworld scenarios SAG recommends to use a  specific version to not accidently change production versions with newer images. |
-| imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for regcred. |
+| imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
 | ingress.annotations | object | `{"nginx.ingress.kubernetes.io/affinity":"cookie","nginx.ingress.kubernetes.io/app-root":"/portal","traefik.ingress.kubernetes.io/affinity":"true","traefik.ingress.kubernetes.io/app-root":"/portal"}` | Ingress annotations |
 | ingress.className | string | `""` |  |
 | ingress.defaultHostname | string | `"devportal.mydomain.com"` |  |
