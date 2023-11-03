@@ -100,7 +100,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | image.pullPolicy | string | `"IfNotPresent"` | Pull with policy |
 | image.repository | string | `"sagcr.azurecr.io/webmethods-microservicesruntime"` | Pull this image. Default is MSR from [Software AG Container Registry](https://containers.softwareag.com) |
 | image.tag | string | `"10.15"` | The default value pulls latest. In PROD it is recommended to use a specific fix level. |
-| imagePullSecrets | list | `["regcred"]` | Secret list to pull image from repository |
+| imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |
 | ingress.defaultHostname | string | `"msr.mydomain.com"` |  |

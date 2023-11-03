@@ -54,11 +54,11 @@ helm install wm-mws microservicesruntime
 | extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container - name: do-something   image: busybox   command: ['do', 'something'] |
 | extraVolumeClaimTemplates | list | `[]` | Exta volumes that should be mounted. Example:    - metadata:        name: shared-volume      spec:        accessModes: ["ReadWriteMany"]        storageClassName: nfs        resources:          requests:            storage: 10 |
 | extraVolumeMounts | list | `[]` | Extra volume mounts - name: extras   mountPath: /usr/share/extras   readOnly: true |
-| fullnameOverride | string | `""` |  |
+| fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"mywebmethodsserver"` | The image name / location of the custom MyWebmethodsRepository |
 | image.tag | string | `""` |  |
-| imagePullSecrets | list | `[]` |  |
+| imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
 | ingress | object | `{"annotations":{},"className":"","defaultHostname":"msr.mydomain.com","enabled":true,"hosts":[{"host":"","paths":[{"path":"/","pathType":"Prefix","port":8585}]}],"tls":[]}` | Ingress Settings |
 | ingress.enabled | bool | `true` | Enables deployment of an ingress |
 | ingress.hosts[0] | object | `{"host":"","paths":[{"path":"/","pathType":"Prefix","port":8585}]}` | Hostname of Ingress. By default the defaultHostname is used. For more complex rules or addtional hosts, you will need to overwrite this section. |
@@ -74,7 +74,7 @@ helm install wm-mws microservicesruntime
 | mws.jdbc.type | string | `"postgresql"` | The type of database used by the server instance. Valid values are: *ms - Microsoft SQL Server *oracle - Oracle *db2 - DB2 *mysqlee - MySQL Enterprise Edition *mysqlce - MySQL Community Edition *postgresql - PostgreSQL |
 | mws.jdbc.user | string | `nil` | The user name to use when connecting to the My webMethods Server database. If user and password are provided a secret will automatically generated initially.  E.g. helm install webmethods/mywebmethodsserver mws --set mws.jdbc.user=mwsuser --set mws.jdbc.password=mydbpassword Do not save this information in a plain value file, use --set and reference it from an environment variable, or setup manually |
 | mws.secretName | string | `nil` | The secret name containing user and password for the JDBC connection By default the secret name contains of the full name + "-mws-secret".  Provide a value if you setup a secret manually. Example: kubectl create secret mws-secret --from-literal=user=mwsuser --from-literal=password=mypassword and use "secretName: mws-secret" in your values file |
-| nameOverride | string | `""` |  |
+| nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |

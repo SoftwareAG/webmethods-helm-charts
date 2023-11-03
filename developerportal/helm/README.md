@@ -79,7 +79,7 @@ helm install webmethods/developerportal devportal
 | extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container |
 | extraVolumeMounts | list | `[]` | Extra volume mounts |
 | extraVolumes | list | `[]` | Exta volumes that should be mounted. |
-| fullnameOverride | string | `""` |  |
+| fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"sagcr.azurecr.io/devportal"` | The repository for the image. By default,  this points to the Software AG container repository.  Change this for air-gapped installations or custom images. For the Software AG container repository you need to have a  valid access token stored as registry credentials |
 | image.tag | string | `"10.15"` | The image tag of the apigateway image default this will be the latest version.  For realworld scenarios SAG recommends to use a  specific version to not accidently change production versions with newer images. |
@@ -95,7 +95,7 @@ helm install webmethods/developerportal devportal
 | ingress.hosts[0].paths[0].port | int | `80` | Port of service |
 | ingress.tls | list | `[]` | TLS of Ingress |
 | lifecycle | object | `{}` | lifecycle hooks to execute on preStop / postStart,... |
-| nameOverride | string | `""` |  |
+| nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |

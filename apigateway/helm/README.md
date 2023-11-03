@@ -166,7 +166,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container - name: do-something   image: busybox   command: ['do', 'something'] |
 | extraVolumeMounts | list | `[]` | Extra volume mounts - name: extras   mountPath: /usr/share/extras   readOnly: true |
 | extraVolumes | list | `[]` | Exta volumes that should be mounted. - name: extras   emptyDir: {} |
-| fullnameOverride | string | `""` |  |
+| fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
 | global.apigwHealthPort | int | `5555` | Port for health check for kibana startup, must same value as apigwAdminPort   |
 | global.apigwHealthProtocol | string | `"http"` | Protocol for health check for kibana startup, must be http / https |
 | global.apigwHealthService | string | `"apigw-admin-svc"` | Service name for health check for kibana startup, must same value as apigwAdminService |
@@ -227,7 +227,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | metering.serverUrl | string | `"https://metering.softwareag.cloud/api/measurements"` | The URL of the metering aggregator server REST API. |
 | metering.trustStoreFile | string | `nil` | The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases: *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP). *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud.  |
 | metering.trustStorePassword | string | `nil` | The password for the metering client truststore. Configure this property only if you use a truststore. |
-| nameOverride | string | `""` |  |
+| nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
