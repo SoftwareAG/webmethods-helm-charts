@@ -17,6 +17,11 @@ image:
 imagePullSecrets: 
   - name: regcred
 
+# -- Controls if secrets should be generated automatically.
+secrets:
+  generateAdminSecret: true
+  generateElasticSecrets: true
+
 # -- Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`.
 nameOverride: ""
 # -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
@@ -162,7 +167,19 @@ global:
   # -- Service name for health check for kibana startup, must same value as apigwAdminService
   apigwHealthService:              "apigw-admin-svc"  
   # -- Port for health check for kibana startup, must same value as apigwAdminPort  
-  apigwHealthPort:                 5555               
+  apigwHealthPort:                 5555          
+
+  # -- Elasticsearch global settings
+  # Required for Prometheus Exporter Sub Chart
+  elasticsearch: 
+    # -- The elasticsearch http service name that API Gateway uses.
+    # The default is compiled of the fullname (releasename + chart name) + "-http" 
+    # You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart.
+    serviceName: ""
+    port: 9200
+
+# -- Extra Labels for API Gateway
+extraLabels: {}
 
 # -- Exta environment properties to be passed on to the container
 extraEnvs: {}
@@ -240,12 +257,48 @@ apigw:
   rtExternalService:      "apigw-rt-ext-svc"
   apigwAdminService:      "apigw-admin-svc"
 
+  # -- The secret that holds the admin password 
+  # Depends on secrets.genereateAdminSecret; if true the setting will be ignored.
+  adminSecretName: ""
+
+  # -- Application Properties to overwrite default API Gateway settings. Please check 
+  # Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables. 
+  # By default only the default Administrator password is set through this mechanism if nothing is set here. 
+  # Other examples are extended settings which can be set through this mechanism.
+  # Examples:
+  #
+  # Set the default Administrator password from environment variable
+  # user.Administrator.password=$env{ADMINISTRATOR_PASSWORD}
+  #
+  # Avoid archiving audit log files ...
+  # settings.watt.server.audit.logFilesToKeep=1
+  #
+  # Avoid archiving server log files ...
+  # settings.watt.server.serverlogFilesToKeep=1
+  #
+  # Avoid archiving statistic files ...
+  # settings.watt.server.stats.logFilesToKeep=1
+  #
+  # Value for 1 to 9 to set debug level of server log ...
+  # settings.watt.debug.level=
+  #
+  # Set the maximum number of permitted service threads in the global pool ...
+  # settings.watt.server.threadPool=750
+  #
+  # Set the default request/response content-type ...
+  # settings.watt.net.default.content-type=json
+  #
+  # Avoid IS internal statistic data collector ...
+  # statisticsdatacollector.monitorConfig.enabled=false  
+  applicationProperties: |
+
   # -- configuration source files for API Gateway
   configSources:
 
     elasticsearch:      
       tenantId: default
-      hosts: "{{ .Release.Name }}-{{ .Chart.Name }}-es-http:{{ .Values.elasticsearch.port }}"
+      hosts: "{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
+  
       
 
 
@@ -317,12 +370,6 @@ elasticsearch:
   # Make sure that the image corresponds to the version field.
   image: 
 
-  # -- The elasticsearch http service name that API Gateway uses.
-  # The default is compiled of the fullname (releasename + chart name) + "-http" 
-  # You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart.
-  serviceName: ""
-  # -- The default elasticsearch instance http communication port
-  port: 9200
   # -- The secret name that holds the sag es user for API Gateway.
   secretName: ""
 
@@ -364,12 +411,24 @@ elasticsearch:
     # -- Extra init containers to be started before Elasticsearch nodes are started.
     # See https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-init-containers-plugin-downloads.html
     extraInitContainers: {}  
+
+    # -- Annotations for Elasticsearch
+    annotations: {}
   
 
-
 kibana:
+  # -- The ECK version to be used
+  version: 8.2.3
+
+  # -- The default Kibana Port
   port: 5601
 
+  # -- Annotations for Kibana
+  annotations: {}
+
+# -- Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details.
 prometheus-elasticsearch-exporter:
   es:
-    uri: "{{ .Release.Name }}-apigateway-es-http:9200"
+    # -- The uri of the elasticsearch service. By default this is the elasticsearch.serviceName + elasticsearch.port
+    # Overwrite this if you are using an external Elasticsearch instance
+    uri: "{{ .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"

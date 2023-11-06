@@ -25,8 +25,11 @@ metadata:
   name: {{ include "common.names.fullname" . }}-license
   labels:  
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}    
   annotations:
-    helm.sh/resource-policy: keep
+    helm.sh/resource-policy: keep    
 data:
   licensekey:
     {{ .Values.license | toYaml }}

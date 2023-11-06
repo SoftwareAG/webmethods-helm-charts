@@ -23,6 +23,9 @@ metadata:
   name: {{ include "common.names.fullname" . }}-config
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 data:
   config-sources.yml: |
     sources:
@@ -64,12 +67,11 @@ data:
           {{  $key }}: {{ (tpl $value $) }}
         {{- end }}
       {{- end }}
-
-
+    
   {{ if .Values.apigw.applicationProperties -}}
-    application.properties: |
-      {{- nindent 6 .Values.applicationProperties }}
+  application.properties: |
+    {{- printf "%s" (tpl .Values.apigw.applicationProperties .) | nindent 4 }}
   {{ else -}}
-    application.properties: |
-      user.Administrator.password=$env{ADMINISTRATOR_PASSWORD}
+  application.properties: |
+    user.Administrator.password=$env{ADMINISTRATOR_PASSWORD}
   {{- end}}

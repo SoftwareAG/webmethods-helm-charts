@@ -43,6 +43,15 @@ spec:
   elasticsearchRef:
     name: {{ include "common.names.fullname" . }}
   podTemplate:
+    metadata:
+      labels: 
+        {{- with .Values.extraLabels -}}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.kibana.annotations -}}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: kibana

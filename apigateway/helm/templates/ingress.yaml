@@ -41,6 +41,9 @@ metadata:
   name: {{ include "common.names.fullname" $ }}- {{- $name }}
   labels:
     {{- $labels | nindent 4 }}
+    {{- with $.Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}    
   {{- with .annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

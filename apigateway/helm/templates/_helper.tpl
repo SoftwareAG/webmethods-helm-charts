@@ -50,3 +50,10 @@ Build the tls secret name, which holds the jks trust and keystore for API Gatewa
 {{- define "apigateway.elastictls" -}}
 {{- default (printf "%s%s" (include "common.names.fullname" .) "-es-tls-secret") .Values.elasticsearch.tlsSecretName }}
 {{- end }}
+
+{{/* 
+Build the admin secret name, which holds the Administrator password
+*/}}
+{{- define "apigateway.adminsecret" -}}
+{{- default (printf "%s%s" (include "common.names.fullname" .) "-admin-password") .Values.apigw.adminSecretName }}
+{{- end }}

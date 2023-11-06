@@ -24,6 +24,9 @@ kind: Deployment
 metadata:
   labels:    
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}    
   name: {{ include "common.names.fullname" . }}-nginx
 spec:
   replicas: 1
@@ -41,6 +44,9 @@ spec:
       labels:
         app: nginx
         {{- include "common.labels.standard" . | nindent 8 }}
+        {{- with .Values.extraLabels -}}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}        
     spec:
       containers:
       - name: nginx

@@ -17,6 +17,8 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
 {{- end }}
+{{- if .Values.secrets.generateAdminSecret }}
 2. Get the admin password:
 {{-  $name := (printf "%s%s" (include "common.names.fullname" .) "-admin-password") }}
 echo "Admin Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ $name }} -o jsonpath="{.data.password}" | base64 --decode)"
+{{- end }}

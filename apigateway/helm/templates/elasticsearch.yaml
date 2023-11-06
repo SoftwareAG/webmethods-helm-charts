@@ -22,6 +22,10 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: {{ include "common.names.fullname" . }}
+  labels:
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}      
 spec:
   version: {{ .Values.elasticsearch.version }}
   {{- if .Values.elasticsearch.image }}
@@ -50,7 +54,16 @@ spec:
         {{- if not .Values.elasticsearch.defaultNodeSet.memoryMapping  }}
         node.store.allow_mmap: false
         {{- end }}
-      podTemplate:
+      podTemplate:    
+        metadata:
+          labels: 
+            {{- with .Values.extraLabels -}}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
+          annotations:
+            {{- with .Values.elasticsearch.defaultNodeSet.annotations -}}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
         spec:
           initContainers:
           {{- if and .Values.elasticsearch.defaultNodeSet.setMaxMapCount .Values.elasticsearch.defaultNodeSet.memoryMapping }}

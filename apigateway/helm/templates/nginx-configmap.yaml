@@ -25,7 +25,9 @@ metadata:
   name: {{ include "common.names.fullname" . }}-nginx-conf
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
-
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 data:
   nginx.conf: |
     user  nginx;
