@@ -88,6 +88,34 @@ rely on or prefer nginx. In order to use a different load balancer the chart nee
 in the [template folder](apigateway/templates) as desired, and keep in mind to configure the load balancer with sticky sessions for the
 API Gateway UI port.
 
+### Sticky UI sessions
+
+The API Gateway web interface requires sticky sessions in order to function correctly. This is achieved by configuring the API Gateway service
+for the UI port as well as the Ingress with sticky behaviour. The relevant parts of the service and the Ingress look like this:
+
+```
+---
+# apigateway-ui-svc.yaml
+apiVersion: v1
+kind: Service
+spec:
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 1000
+      
+---
+# apigateway-ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:                                    
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+```
+
+Note, if you are using the default configuration and nginx as your ingress controller, sticky sessions will be enabled by default for the UI port and ingress. Change the ingress annotations accordingly for other ingress controllers like Traefik. 
+
+
 ## Using an external load balancer
 
 The Ingress provides two entrypoints for accessing the API Gateway cluster, one for the UI port to
