@@ -24,6 +24,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   serviceName: {{ include "common.names.fullname" . }}
@@ -39,6 +42,9 @@ spec:
         {{- include "common.prometheus.annotations" (dict "port" .Values.service.metricPort) | nindent 8 }}
       labels:
         {{- include "common.labels.matchLabels" . | nindent 8 }}
+        {{- with .Values.extraLabels -}}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

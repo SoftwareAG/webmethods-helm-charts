@@ -29,6 +29,9 @@ fullnameOverride: ""
 # -- The name of the main container, by default this will be msr-<release_name>
 containerName: 
 
+# -- Extra Labels
+extraLabels: {}
+
 # -- Exta volumes that should be mounted.
 extraVolumes: []
 # - name: extras

@@ -21,6 +21,9 @@ licenseConfigMap: "universalmessaging-licence-key"
 imagePullSecrets: 
   - name: regcred
 
+# -- Extra Labels
+extraLabels: {}
+
 # -- Exta environment properties to be passed on to the container
 extraEnvs: {}
 

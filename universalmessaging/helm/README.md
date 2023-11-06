@@ -49,6 +49,7 @@ helm install um webmethods/universalmessaging
 | extraContainers | list | `[]` | Extra containers which should run in addition to the main container as a sidecar |
 | extraEnvs | object | `{}` | Exta environment properties to be passed on to the container |
 | extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container |
+| extraLabels | object | `{}` | Extra Labels |
 | extraVolumeMounts | list | `[]` | Extra volume mounts |
 | extraVolumes | list | `[]` | Exta volumes that should be mounted. |
 | fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |

@@ -102,6 +102,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | extraContainers | list | `[]` | Extra containers which should run in addtion to the main container as a sidecar |
 | extraEnvs | list | `[]` | Exta environment properties to be passed on to the microservice runtime |
 | extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container |
+| extraLabels | object | `{}` | Extra Labels |
 | extraPorts | list | `[]` | Extra Ports to be defined, note: these ports need to be created  |
 | extraVolumeMounts | list | `[]` | Extra volume mounts |
 | extraVolumes | list | `[]` | Exta volumes that should be mounted. |
@@ -141,7 +142,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | microservicesruntime.httpsPortScheme | string | `"HTTPS"` | Defines scheme of runtime port  |
 | microservicesruntime.installDir | string | `"/opt/softwareag/IntegrationServer"` | Defines installation folder which was using on image creation |
 | microservicesruntime.javaCustomOpts | string | `nil` | list of custom java opts e.g. "-Dmy.prop1=value1" "-Dmy.prop2=value2" |
-| microservicesruntime.licenseConfigMap | string | `"microservicesruntime-license-key"` | Name of config map which contains the license key |
+| microservicesruntime.licenseConfigMap | string | `"microservicesruntime-license-key"` | Name of config map which contains the license key. If you ommit this, it defaults to the release name + microservicesruntime-license.  |
 | microservicesruntime.memoryHeap.max | string | `"512M"` | Maximum of heap memory |
 | microservicesruntime.memoryHeap.min | string | `"512M"` |  |
 | microservicesruntime.properties | object | `{}` | List of application properties which are added into config map in YAML format. See [Integration Server Configuration Variables](https://documentation.softwareag.com/webmethods/integration_server/pie10-15/webhelp/pie-webhelp/index.html#page/pie-webhelp%2Fre-configuration_variables_assets.html) |

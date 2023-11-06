@@ -24,6 +24,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   endpoints:
   - targetPort: {{ .Values.microservicesruntime.adminPort }} 

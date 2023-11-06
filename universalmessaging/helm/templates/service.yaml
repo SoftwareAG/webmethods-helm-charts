@@ -17,6 +17,7 @@
 #  *
 #  */
 
+{{- $extraLabels        := .Values.extraLabels      -}}
 {{- range $replicaIndex := until (int .Values.replicaCount) }}
 ---
 apiVersion: v1
@@ -25,6 +26,9 @@ metadata:
   name: {{ include "common.names.fullname" $ }}-{{ $replicaIndex }}
   labels:
     {{- include "common.labels.standard" $ | nindent 4 }}
+    {{- with $extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     statefulset.kubernetes.io/pod-name: {{ include "common.names.fullname" $ }}-{{ $replicaIndex }}

@@ -21,7 +21,10 @@ kind: StatefulSet
 metadata:
   name: {{ include "common.names.fullname" . }}
   labels:
-    {{ include "common.labels.standard" . | nindent 6 }}
+    {{ include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   podManagementPolicy: Parallel
   serviceName: {{ include "common.names.fullname" . }}-svc
@@ -34,6 +37,9 @@ spec:
     metadata:
       labels:
         {{- include "common.labels.standard" . | nindent 8 }}
+        {{- with .Values.extraLabels -}}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
       name: {{ include "common.names.fullname" . }}      
       annotations:
         {{- include "common.prometheus.annotations" (dict "port" .Values.prometheus.port "path" .Values.prometheus.path "scheme" .Values.prometheus.scheme "scrape" .Values.prometheus.scrape ) | nindent 8 }}

@@ -21,6 +21,7 @@
 {{- $labels   := include "common.labels.standard" . -}}
 {{- $imagePullSecrets := .Values.imagePullSecrets -}}
 {{- $replicaCount := .Values.replicaCount }}
+{{- $extraLabels      := .Values.extraLabels      -}}
 {{- $context := . }}
 
 {{- range $job := .Values.jobs }}
@@ -33,6 +34,9 @@ metadata:
   name: {{ $fullName }}-{{ $job.name }}
   labels:
     {{- $labels | nindent 4 }}
+    {{- with $extraLabels }}
+      {{- toYaml $extraLabels | nindent 4 }}
+    {{- end }}
   {{- with $job.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -46,6 +50,9 @@ spec:
           name: {{ $fullName }}-{{ $job.name }}
           labels:
             {{- $labels | nindent 12 }}
+            {{- with $extraLabels }}
+              {{- toYaml $extraLabels | nindent 12 }}
+            {{- end }}
         spec:
           {{- if hasKey $job "serviceAccount" }}
           {{- if hasKey $job.serviceAccount "name" }}
@@ -127,6 +134,9 @@ spec:
       name: {{ $fullName }}-{{ $job.name }}
       labels:
         {{- $labels | nindent 8 }}
+        {{- with $extraLabels }}
+          {{- toYaml $extraLabels | nindent 8 }}
+         {{- end }}
     spec:
       {{- if hasKey $job "serviceAccount" }}
       {{- if hasKey $job.serviceAccount "name" }}
