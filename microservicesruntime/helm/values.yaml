@@ -6,9 +6,6 @@ replicaCount: 1
 # -- StatefulSet or Deployment. You should only change this if you require Client Side queuing (CSQ) or functionality in IS which requires stable hostnames and filesystems. Default is false => Deployment. Keep in mind, you must disable CSQ on each webMethods messaging and JMS connection if you don't use stateful-sets. See examples in Process Engine deployment for disableing QSC.
 statefulSet: false
 
-# -- deploy service monitor for Prometheus, by default disabled as we use pod annotations for Prometheus
-serviceMonitor: false
-
 image:
   # -- Pull this image. Default is MSR from [Software AG Container Registry](https://containers.softwareag.com)
   repository: "sagcr.azurecr.io/webmethods-microservicesruntime"
