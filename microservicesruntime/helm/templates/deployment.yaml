@@ -127,7 +127,7 @@ spec:
             {{- toYaml .Values.resources.msrContainer | nindent 12 }}
           volumeMounts:
             - name: microservicesruntime-license
-              mountPath: {{ .Values.microservicesruntime.installDir }}/config/licenseKey.xml
+              mountPath: {{ .Values.microservicesruntime.installDir }}/licenseKey.xml
               subPath:   licenseKey.xml
               readOnly:  true
             - name: application-properties
