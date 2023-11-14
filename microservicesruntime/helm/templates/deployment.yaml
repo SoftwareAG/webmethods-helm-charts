@@ -149,7 +149,7 @@ spec:
             {{- else }}
               {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
-            {{- end }}
+            {{- end }}            
             {{- range .Values.secretMounts }}
             - name: {{ .name }}
               mountPath: {{ .path }}
@@ -161,6 +161,7 @@ spec:
             lifecycle:
             {{ toYaml .Values.lifecycle | indent 10 }}
             {{- end }}
+        {{- include "common.containers.extraContainers" . | nindent 8 }}
       volumes:
         {{- range .Values.secretVolumes }}
         - name: {{ .name }}
