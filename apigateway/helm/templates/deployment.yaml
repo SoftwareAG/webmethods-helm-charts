@@ -50,25 +50,27 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "common.names.serviceAccountName" . }}
+      {{- end }}      
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-      {{ if .Values.elasticsearch.deploy }} 
-      - name: waitforelasticsearch
-        image: {{ .Values.global.curlImage }}
-        imagePullPolicy: IfNotPresent
-        resources:
-          {{- toYaml .Values.resources.apigwInitContainer | nindent 10 }}
-        envFrom:
-          - secretRef:
-              name: {{ include "apigateway.elasticsecret" . }}-es
-        command:
-          - sh
-          - -ec
-          - |
-            {{- $esSvc := ( include "apigateway.elasticservice" . ) }}
-            {{- $esHost := printf "%s://%s:%s" (ternary "https" "http" .Values.elasticsearch.tlsEnabled ) $esSvc ( .Values.global.elasticsearch.port | toString) }}
+        {{ if .Values.elasticsearch.deploy }} 
+        - name: waitforelasticsearch
+          image: {{ .Values.global.curlImage }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .Values.resources.apigwInitContainer | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "apigateway.elasticsecret" . }} 
+          command:
+            - sh
+            - -ec
+            - |
+              {{- $esSvc := ( include "apigateway.elasticservice" . ) }}
+              {{- $esHost := printf "%s://%s:%s" (ternary "https" "http" .Values.elasticsearch.tlsEnabled ) $esSvc ( .Values.global.elasticsearch.port | toString) }}
 
             host="{{ $esHost }}"
             until $(curl --output /dev/null --silent --head --fail -k -u "$username:$password" "$host"  )  ; do
@@ -85,7 +87,7 @@ spec:
                 >&2 echo "Elasticsearch is up but unavailable - No Reponse - sleeping"
                 sleep 10
 
-            done
+              done
 
 
             # next wait for ES status to turn to green or yellow
@@ -99,111 +101,112 @@ spec:
                 sleep 10
             done
 
-            echo "Elasticsearch is up and running. Status was: $health"
+              echo "Elasticsearch is up and running. Status was: $health"
 
-      {{ end }}
-      {{-  if .Values.extraInitContainers }}
-      {{- toYaml .Values.extraInitContainers | nindent 6 }}
-      {{- end }}
-      containers:
-      - name: {{ .Chart.Name }}
-        securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-        - name: SAG_IS_CONFIG_PROPERTIES
-          value: {{ .Values.apigw.sagIsConfigProperties }}
-        {{- include "common.metering.envs" . | nindent 8 }}
-        - name: apigw_wrapper_java_initmemory
-          value: {{ .Values.apigw.initMemory }}
-        - name: apigw_wrapper_java_maxmemory
-          value: {{ .Values.apigw.maxMemory }}
-        - name: ADMINISTRATOR_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "common.names.fullname" . }}-admin-password
-              key: password
-        - name: apigw_elasticsearch_http_password
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "apigateway.elasticsecret" . }}-es
-              key: password 
-        - name: apigw_elasticsearch_http_username
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "apigateway.elasticsecret" . }}-es
-              key: username
-        - name: apigw_elasticsearch_https_keystorePassword
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "apigateway.elastickeystoresecret" . }}
-              key: password     
-        - name: apigw_elasticsearch_https_truststorePassword
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "apigateway.elastickeystoresecret" . }}
-              key: password     
-        {{- if .Values.extraEnvs }}
-        {{- toYaml .Values.extraEnvs | nindent 10 }}
+        {{ end }}
+        {{-  if .Values.extraInitContainers }}
+        {{- toYaml .Values.extraInitContainers | nindent 8 }}
         {{- end }}
-        ports:
-        - containerPort: {{ int .Values.apigw.runtimePort }}
-          name: rt-port
-          protocol: TCP
-        - containerPort: {{ int .Values.apigw.diagPort }}
-          name: diag-port
-          protocol: TCP
-        - containerPort: {{ int .Values.apigw.uiPort }}
-          name: ui-http
-          protocol: TCP
-        - containerPort: {{ int .Values.apigw.adminPort }}
-          name: admin-http
-          protocol: TCP
-        - containerPort: {{ int .Values.apigw.runtimeExternalPort }} 
-          name: external-http
-          protocol: TCP
-        {{- if .Values.extraPorts }}
-        {{- toYaml .Values.extraPorts | nindent 10 }}
-        {{- end }}                  
-        livenessProbe:
-          tcpSocket:
-            port: {{ int .Values.apigw.adminPort }}
-          failureThreshold: 3
-          initialDelaySeconds: 120
-          periodSeconds: 30
-          successThreshold: 1
-          timeoutSeconds: 1
-          
-        readinessProbe:
-          httpGet:
-            path: /rest/apigateway/health
-            port: {{ int .Values.apigw.adminPort }}
-            scheme: {{ .Values.apigw.readinessProbe.scheme }} 
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 30
-          successThreshold: 1
-          timeoutSeconds: 1
-        resources:
-          {{- toYaml .Values.resources.apigwContainer | nindent 10 }}
-        volumeMounts:
-          - name: apigw-config
-            mountPath: /opt/softwareag/IntegrationServer/instances/default/packages/WmAPIGateway/resources/configuration
-          - name: apigw-license
-            mountPath: /opt/softwareag/IntegrationServer/instances/default/config/licenseKey.xml
-            subPath:   licenseKey.xml
-            readOnly:  false
-          - name: apigw-config
-            mountPath: /config/application.properties
-            subPath:    application.properties
-          {{- if .Values.extraVolumeMounts }}
-          {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
-            {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              
-          {{- else }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: SAG_IS_CONFIG_PROPERTIES
+            value: {{ .Values.apigw.sagIsConfigProperties }}
+          {{- include "common.metering.envs" . | nindent 10 }}
+          - name: apigw_wrapper_java_initmemory
+            value: {{ .Values.apigw.initMemory }}
+          - name: apigw_wrapper_java_maxmemory
+            value: {{ .Values.apigw.maxMemory }}
+          - name: ADMINISTRATOR_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "apigateway.adminsecretName" . }}
+                key: {{ include "apigateway.adminsecretKey" . }}
+          - name: apigw_elasticsearch_http_password
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "apigateway.elasticsecretName" . }}
+                key: {{ include "apigateway.elasticsecretPasswordKey" . }}
+          - name: apigw_elasticsearch_http_username
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "apigateway.elasticsecretName" . }}
+                key: {{ include "apigateway.elasticsecretUserKey" . }}
+          - name: apigw_elasticsearch_https_keystorePassword
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "apigateway.elastickeystoresecret" . }}
+                key: password     
+          - name: apigw_elasticsearch_https_truststorePassword
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "apigateway.elastickeystoresecret" . }}
+                key: password
+          {{- if .Values.extraEnvs }}
+          {{- toYaml .Values.extraEnvs | nindent 10 }}
           {{- end }}
-          {{- end }}                      
+          ports:
+          - containerPort: {{ int .Values.apigw.runtimePort }}
+            name: rt-port
+            protocol: TCP
+          - containerPort: {{ int .Values.apigw.diagPort }}
+            name: diag-port
+            protocol: TCP
+          - containerPort: {{ int .Values.apigw.uiPort }}
+            name: ui-http
+            protocol: TCP
+          - containerPort: {{ int .Values.apigw.adminPort }}
+            name: admin-http
+            protocol: TCP
+          - containerPort: {{ int .Values.apigw.runtimeExternalPort }} 
+            name: external-http
+            protocol: TCP
+          {{- if .Values.extraPorts }}
+          {{- toYaml .Values.extraPorts | nindent 10 }}
+          {{- end }}                  
+          livenessProbe:
+            tcpSocket:
+              port: {{ int .Values.apigw.adminPort }}
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+            
+          readinessProbe:
+            httpGet:
+              path: /rest/apigateway/health
+              port: {{ int .Values.apigw.adminPort }}
+              scheme: {{ .Values.apigw.readinessProbe.scheme }} 
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            {{- toYaml .Values.resources.apigwContainer | nindent 12 }}
+          volumeMounts:
+            - name: apigw-config
+              mountPath: /opt/softwareag/IntegrationServer/instances/default/packages/WmAPIGateway/resources/configuration
+            - name: apigw-license
+              mountPath: /opt/softwareag/IntegrationServer/instances/default/config/licenseKey.xml
+              subPath:   licenseKey.xml
+              readOnly:  false
+            - name: apigw-config
+              mountPath: /config/application.properties
+              subPath:    application.properties
+            {{- if .Values.extraVolumeMounts }}
+            {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
+              {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              
+            {{- else }}
+              {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+            {{- end }}                      
+        {{- include "common.containers.extraContainers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -229,7 +232,7 @@ spec:
             path: application.properties  
       - name: apigw-license
         configMap:
-          name: {{ include "common.names.fullname" . }}-license
+          name: {{ include "apigateway.licenseconfigname" . }}
           defaultMode: 0666
           items:
           - key:  licensekey
@@ -245,13 +248,10 @@ spec:
               path: keystore.jks
       {{- end }}
       {{- if .Values.extraVolumes }}
-      # Currently some extra blocks accept strings
-      # to continue with backwards compatibility this is being kept
-      # whilst also allowing for yaml to be specified too.
       {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
-        {{ tpl .Values.extraVolumes . | nindent 8 }}
+        {{ tpl .Values.extraVolumes . | nindent 6 }}
       {{- else }}
-        {{ toYaml .Values.extraVolumes | nindent 8 }}
+        {{ toYaml .Values.extraVolumes | nindent 6 }}
       {{- end }}
       {{- end }}
 

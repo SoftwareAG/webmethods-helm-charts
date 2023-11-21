@@ -41,11 +41,16 @@ spec:
         disabled: true
   auth:
     fileRealm:
-    - secretName: {{ include "apigateway.elasticsecret" . }}-es
-    - secretName: {{ include "apigateway.elasticsecret" . }}-kb
+    - secretName: {{ include "apigateway.elasticsecret" . }}
+    - secretName: {{ include "apigateway.kibanasecret" . }}
+    {{- if .Values.elasticsearch.extraSecrets }}
+    {{- range .Values.elasticsearch.extraSecrets }}
+    - secretName: {{ tpl .name $ }}
+    {{- end }}
+    {{- end }}
   nodeSets:
   {{- if .Values.nodeSets }}
-    {{- toYaml .Values.elasticsearch.nodeSets | nindent 6 }}
+    {{- toYaml .Values.elasticsearch.nodeSets | nindent 4 }}
   {{ else }}
     # use default node set
     - name: default
@@ -65,6 +70,8 @@ spec:
             {{ toYaml . | nindent 12 }}
             {{- end }}
         spec:
+          imagePullSecrets:
+            {{- toYaml .Values.imagePullSecrets | nindent 12 }}
           initContainers:
           {{- if and .Values.elasticsearch.defaultNodeSet.setMaxMapCount .Values.elasticsearch.defaultNodeSet.memoryMapping }}
           - name: sysctl
