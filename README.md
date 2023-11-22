@@ -49,5 +49,22 @@ To adopt Microservices Runtime for your deployment and environment or to build i
 
 If you want to contribute to this repository, please read the [contributing guidelines](./CONTRIBUTING.md) first.
 
+## Useful links   
+
+📘 Explore the Knowledge Base    
+Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://tech.forums.softwareag.com/tags/c/knowledge-base/6/webmethods).  
+
+💡 Get Expert Answers    
+Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://tech.forums.softwareag.com/tags/c/forum/1/webMethods).  
+
+🚀 Try webMethods    
+See webMethods in action with a [Free Trial](https://techcommunity.softwareag.com/en_en/downloads.html).   
+
+✍️ Share Your Feedback    
+Your input drives our innovation. If you find a bug, please create an issue in the repository. If you’d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).   
+
+More to discover
+* [Helm Charts: Deploying webMethods Components in Kubernetes](https://tech.forums.softwareag.com/t/helm-charts-deploying-webmethods-components-in-kubernetes/285781)  
+* [What is Develop Anywhere, Deploy Anywhere?](https://tech.forums.softwareag.com/t/what-is-develop-anywhere-deploy-anywhere/284756)  
 ------------
 These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
