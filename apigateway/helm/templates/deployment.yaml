@@ -112,9 +112,9 @@ spec:
             value: {{ .Values.apigw.sagIsConfigProperties }}
           {{- include "common.metering.envs" . | nindent 10 }}
           - name: apigw_wrapper_java_initmemory
-            value: "{{ .Values.apigw.initMemory }}"
+            value: {{ .Values.apigw.initMemory | quote }}
           - name: apigw_wrapper_java_maxmemory
-            value: "{{ .Values.apigw.maxMemory }}"
+            value: {{ .Values.apigw.maxMemory | quote }}
           - name: ADMINISTRATOR_PASSWORD
             valueFrom:
               secretKeyRef:
