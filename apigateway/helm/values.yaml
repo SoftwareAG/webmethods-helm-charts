@@ -358,7 +358,7 @@ apigw:
   #   allowEdit: false
   #   properties:
   #     location: apigw-config.yml
-  extraConfigSource: []
+  extraConfigSources: []
   extraLabels: {}
 
 prometheus:
