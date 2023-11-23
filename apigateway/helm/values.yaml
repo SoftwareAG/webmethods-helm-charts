@@ -75,6 +75,9 @@ serviceAccount:
 # -- The name of the secret or configmap that contains the license key.
 # Defaults to the release name + chart name + "-license".
 licenseConfigName: ""
+# To set the key inside the configmap.
+# Defaults to licensekey
+licenseConfigKey: ""
 
 podAnnotations: {}
 
@@ -355,8 +358,9 @@ apigw:
   #   allowEdit: false
   #   properties:
   #     location: apigw-config.yml
-  extraConfigSource: {}
-  
+  extraConfigSource: []
+  extraLabels: {}
+
 prometheus:
   path: "/metrics"
   port: "5555"
@@ -452,7 +456,7 @@ elasticsearch:
   # -- Node sets. See official ElasticSearch documentation at:
   # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-orchestration.html
   # if you specify node sets here the defaultNodeSet will not be used.
-  nodeSets: {}
+  nodeSets: []
   
   # -- Default Node Set
   defaultNodeSet:
