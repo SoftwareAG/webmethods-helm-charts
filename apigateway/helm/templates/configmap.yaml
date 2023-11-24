@@ -33,8 +33,8 @@ data:
       allowEdit: false
       properties:
         location: apigw-config.yml
-    {{- if .Values.apigw.extraConfigSource }}
-    {{- toYaml .Values.apigw.extraConfigSource | nindent 4 -}}
+    {{- if .Values.apigw.extraConfigSources }}
+    {{- toYaml .Values.apigw.extraConfigSources | nindent 4 -}}
     {{- end }}
 
   apigw-config.yml: |

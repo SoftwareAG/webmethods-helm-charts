@@ -35,21 +35,27 @@ spec:
     tls:
     {{- if .Values.elasticsearch.tlsEnabled }}
       certificate: 
-        secretName: {{ tpl .Values.elasticsearch.certificateSecretName . }} 
-    {{- end }}
+        secretName: {{ tpl .Values.elasticsearch.certificateSecretName . }}
+      selfSignedCertificate:
+        {{- if .Values.elasticsearch.subjectAltNames }}
+        subjectAltNames:
+          - dns: {{ tpl .Values.elasticsearch.subjectAltNames . }}
+        {{- end }}
+    {{- else }}
       selfSignedCertificate:
         disabled: true
+    {{- end }}
   auth:
     fileRealm:
-    - secretName: {{ include "apigateway.elasticsecret" . }}
-    - secretName: {{ include "apigateway.kibanasecret" . }}
+      - secretName: {{ include "apigateway.elasticsecret" . }}
+      - secretName: {{ include "apigateway.kibanasecret" . }}
     {{- if .Values.elasticsearch.extraSecrets }}
     {{- range .Values.elasticsearch.extraSecrets }}
     - secretName: {{ tpl .name $ }}
     {{- end }}
     {{- end }}
   nodeSets:
-  {{- if .Values.nodeSets }}
+  {{- if .Values.elasticsearch.nodeSets }}
     {{- toYaml .Values.elasticsearch.nodeSets | nindent 4 }}
   {{ else }}
     # use default node set
