@@ -29,6 +29,40 @@ fullnameOverride: ""
 
 serviceAccount:
   # -- Specifies whether a service account should be created
+  # if you set this to false, you need to specify an existing service account in 'name'. 
+  # A service account is required for the apigateway to access the kubernetes API (i.e, Apache Ignite clustering).
+  # The default service account should be as follows:
+  #  apiVersion: v1
+  # kind: ServiceAccount
+  # metadata:
+  #   name: {{ include "common.names.serviceAccountName" . }}
+  # ---
+  # kind: RoleBinding
+  # apiVersion: rbac.authorization.k8s.io/v1
+  # metadata:
+  #   name: cluster-discovery-rolebinding
+  # roleRef:
+  #   kind: Role
+  #   name: {{ include "common.names.roleName" . }}
+  #   apiGroup: rbac.authorization.k8s.io
+  # subjects:
+  # - kind: ServiceAccount
+  #   name: {{ include "common.names.serviceAccountName" . }}
+  # ---
+  # apiVersion: rbac.authorization.k8s.io/v1
+  # kind: Role
+  # metadata:
+  #   name: {{ include "common.names.roleName" . }}
+  # rules:
+  # - apiGroups:
+  #   - ""
+  #   resources:
+  #   - pods
+  #   - endpoints
+  #   verbs:
+  #   - get
+  #   - list
+  #   - watch
   create: true
   # -- Annotations to add to the service account
   annotations: {}
@@ -37,6 +71,13 @@ serviceAccount:
   name: ""
   # If not set and create is true, a name is generated using the fullname template
   roleName: ""
+
+# -- The name of the secret or configmap that contains the license key.
+# Defaults to the release name + chart name + "-license".
+licenseConfigName: ""
+# To set the key inside the configmap.
+# Defaults to licensekey
+licenseConfigKey: ""
 
 podAnnotations: {}
 
@@ -261,6 +302,18 @@ apigw:
   # Depends on secrets.genereateAdminSecret; if true the setting will be ignored.
   adminSecretName: ""
 
+  # -- The key that holds the admin secret key; defauls to "password"
+  adminSecretKey: ""
+
+  # -- Elasticsearch secret name that holds the elastic password and username
+  elasticSecretName: ""
+
+  # -- The key that holds the Elasticsearch user; defauls to "username"
+  elasticSecretUserKey: ""
+
+  # -- The key that holds the Elasticsearch password; defauls to "password"
+  elasticSecretPasswordKey: ""
+
   # -- Application Properties to overwrite default API Gateway settings. Please check 
   # Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables. 
   # By default only the default Administrator password is set through this mechanism if nothing is set here. 
@@ -299,8 +352,14 @@ apigw:
       tenantId: default
       hosts: "{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
   
-      
-
+  # -- Extra configuration sources for API Gateway
+  # Example: 
+  # - type: YAML
+  #   allowEdit: false
+  #   properties:
+  #     location: apigw-config.yml
+  extraConfigSources: []
+  extraLabels: {}
 
 prometheus:
   path: "/metrics"
@@ -373,6 +432,16 @@ elasticsearch:
   # -- The secret name that holds the sag es user for API Gateway.
   secretName: ""
 
+  # -- Extra Secrets adding or changing built-in users of Elasticsearch.
+  # You can use this to limit the roles of the default elastic user.
+  # Note if you specify user and roles, the secret will be generated with a random password.
+  # If you just specify a name, the secret will be used as is.
+  # Example for setting the default user elastic to role view only:
+  #  - name: "elasticusersecret"
+  #    username: "elastic"
+  #    roles: "viewer"
+  extraSecrets: []
+  
   # -- Whether the communication from APIGW and Kibana should be HTTPS
   # Note: you will need to create certificate and a separate truststore for the communication.
   tlsEnabled: false
@@ -387,7 +456,7 @@ elasticsearch:
   # -- Node sets. See official ElasticSearch documentation at:
   # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-orchestration.html
   # if you specify node sets here the defaultNodeSet will not be used.
-  nodeSets: {}
+  nodeSets: []
   
   # -- Default Node Set
   defaultNodeSet:
@@ -420,15 +489,50 @@ kibana:
   # -- The ECK version to be used
   version: 8.2.3
 
+  # -- The image that should be used.
+  # By default ECK will use the official Elasticsearch images. 
+  # Overwrite this to use an image from an internal registry or any custom images.
+  # Make sure that the image corresponds to the version field.
+  image: 
+
   # -- The default Kibana Port
   port: 5601
 
   # -- Annotations for Kibana
   annotations: {}
+  
+  # -- The secret name that holds the kibana user for API Gateway.
+  secretName: ""  
+
+  # -- Resource Settings for Kibana
+  # Example: 
+  # 
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi  
+  resources: {}
 
 # -- Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details.
 prometheus-elasticsearch-exporter:
+
+  # -- secret for elasticsearch user. Will need to adjust the secret's name. By default the secret name is <releasename>-apigateway-sag-user-es.
+  # Adjust accordingly if your release name is different. 
+  extraEnvSecrets:
+    ES_PASSWORD:
+      secret: apigw-apigateway-sag-user-es
+      key: password
+    ES_USER:
+      secret: apigw-apigateway-sag-user-es
+      key: username
+
   es:
-    # -- The uri of the elasticsearch service. By default this is the elasticsearch.serviceName + elasticsearch.port
+    # -- The uri of the elasticsearch service. By default this is null and the environment variable ES_URI is used instead.
     # Overwrite this if you are using an external Elasticsearch instance
-    uri: "{{ .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
+    uri: "http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"
+  
+  serviceMonitor:
+    enabled: true
+    

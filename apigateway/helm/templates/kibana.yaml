@@ -21,7 +21,10 @@ kind: Kibana
 metadata:
   name: {{ include "common.names.fullname" . }}
 spec:
-  version: 8.5.3
+  {{- if .Values.kibana.image }}
+  image: {{ .Values.kibana.image }}
+  {{- end }}
+  version: {{ .Values.kibana.version }}
   count: 1
   config:
     xpack.security.authc.providers:
@@ -53,18 +56,22 @@ spec:
         {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       containers:
         - name: kibana
+          resources:
+            {{- toYaml .Values.kibana.resources | nindent 12 }}
           env:
             - name: KIBANA_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "apigateway.elasticsecret" . }}-kb
+                  name: {{ include "apigateway.kibanasecret" . }}
                   key: username
             - name: KIBANA_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "apigateway.elasticsecret" . }}-kb
+                  name: {{ include "apigateway.kibanasecret" . }}
                   key: password
           readinessProbe:
             httpGet:

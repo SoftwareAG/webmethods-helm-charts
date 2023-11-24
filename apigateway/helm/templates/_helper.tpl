@@ -34,7 +34,14 @@ Build the elasticsearch service name
 Build the secret name for Elastic Search user
 */}}
 {{- define "apigateway.elasticsecret" -}}
-{{- default ( printf "%s%s" ( include "common.names.fullname" .) "-sag-user" )  .Values.elasticsearch.secretName }}
+{{- default ( printf "%s%s" ( include "common.names.fullname" .) "-sag-user-es" )  .Values.elasticsearch.secretName }}
+{{- end }}
+
+{{/*
+Build the secret name for kibana user
+*/}}
+{{- define "apigateway.kibanasecret" -}}
+{{- default ( printf "%s%s" ( include "common.names.fullname" .) "-sag-user-kb" )  .Values.kibana.secretName }}
 {{- end }}
 
 {{/*
@@ -56,4 +63,46 @@ Build the admin secret name, which holds the Administrator password
 */}}
 {{- define "apigateway.adminsecret" -}}
 {{- default (printf "%s%s" (include "common.names.fullname" .) "-admin-password") .Values.apigw.adminSecretName }}
+{{- end }}
+
+{{/*
+Renders the admin secret name for API Gateway from the apigw.adminSecretName value. If not specified, it will be the default name.
+*/}}
+{{- define "apigateway.adminsecretName" -}}
+  {{- default ( printf "%s%s" ( include "common.names.fullname" .) "-admin-password" )  .Values.apigw.adminSecretName }}
+{{- end }}
+
+{{/*
+Renders the admin secret key name for API Gateway from the apigw.adminsecretKey value. If not specified, it will be the default name.
+*/}}
+{{- define "apigateway.adminsecretKey" -}}
+  {{- default ( printf "%s" "password" )  .Values.apigw.adminSecretKey }}
+{{- end }}
+
+{{/*
+Renders the Elasticsearch secret name for API Gateway from the apigw.elasticSecretName value. If not specified, it will be the default name.
+*/}}
+{{- define "apigateway.elasticsecretName" -}}
+  {{- default ( printf "%s%s" ( include "common.names.fullname" .) "-es" ) .Values.apigw.elasticSecretName }}
+{{- end }}
+
+{{/*
+Renders the Elasticsearch secret key name for API Gateway from the apigw.elasticsecretKey value. If not specified, it will be the default name.
+*/}}
+{{- define "apigateway.elasticsecretPasswordKey" -}}
+  {{- default ( printf "%s" "password" )  .Values.apigw.elasticSecretPasswordKey }}
+{{- end }}
+
+{{/*
+Renders the Elasticsearch secret user name for API Gateway from the apigw.elasticsecretKey value. If not specified, it will be the default name.
+*/}}
+{{- define "apigateway.elasticsecretUserKey" -}}
+  {{- default ( printf "%s" "username" )  .Values.apigw.elasticSecretUserKey }}
+{{- end }}
+
+{{/*
+Renders the license config name or secret. If not specified, it will be the default name.
+*/}}
+{{- define "apigateway.licenseconfigname" -}}
+  {{- default ( printf "%s-%s" (include "common.names.fullname" . ) "license") .Values.licenseConfigName  }}
 {{- end }}
