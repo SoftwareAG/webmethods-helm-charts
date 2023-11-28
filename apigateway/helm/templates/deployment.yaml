@@ -67,7 +67,7 @@ spec:
             {{- toYaml .Values.resources.apigwInitContainer | nindent 12 }}
           envFrom:
             - secretRef:
-              name: {{ include "apigateway.elasticsecret" . }}
+                name: {{ include "apigateway.elasticsecret" . }}
           command:
             - sh
             - -ec
