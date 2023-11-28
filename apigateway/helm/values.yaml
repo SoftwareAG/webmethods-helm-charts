@@ -518,6 +518,9 @@ kibana:
 # -- Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details.
 prometheus-elasticsearch-exporter:
 
+  # -- Deploy the prometheus exporter for elasticsearch
+  enabled: true
+
   # -- secret for elasticsearch user. Will need to adjust the secret's name. By default the secret name is <releasename>-apigateway-sag-user-es.
   # Adjust accordingly if your release name is different. 
   extraEnvSecrets:
