@@ -65,6 +65,8 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             {{- toYaml .Values.resources.apigwInitContainer | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.apigw.initContainer.securityContext | nindent 12 }}
           envFrom:
             - secretRef:
                 name: {{ include "apigateway.elasticsecret" . }}

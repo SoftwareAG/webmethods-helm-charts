@@ -49,11 +49,11 @@ spec:
     fileRealm:
       - secretName: {{ include "apigateway.elasticsecret" . }}
       - secretName: {{ include "apigateway.kibanasecret" . }}
-    {{- if .Values.elasticsearch.extraSecrets }}
-    {{- range .Values.elasticsearch.extraSecrets }}
-    - secretName: {{ tpl .name $ }}
-    {{- end }}
-    {{- end }}
+      {{- if .Values.elasticsearch.extraSecrets }}
+      {{- range .Values.elasticsearch.extraSecrets }}
+      - secretName: {{ tpl .name $ }}
+      {{- end }}
+      {{- end }}
   nodeSets:
   {{- if .Values.elasticsearch.nodeSets }}
     {{- toYaml .Values.elasticsearch.nodeSets | nindent 4 }}

@@ -58,6 +58,8 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      securityContext:
+        {{- toYaml .Values.kibana.podSecurityContext | nindent 8 }}
       containers:
         - name: kibana
           resources:
