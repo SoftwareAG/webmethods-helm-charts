@@ -84,6 +84,8 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
+apigwInitContainerSecurityContext: {}
+
 securityContext: {}
   # capabilities:
   #   drop:
