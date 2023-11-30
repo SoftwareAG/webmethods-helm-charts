@@ -43,6 +43,17 @@ helm install elastic-operator elastic/eck-operator -n elastic-system --create-na
 
 For more information please see: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-install-helm.html
 
+### Prometheus Operator
+
+This deployment uses the Prometheus Operator to deploy Elasticsearch Exporter. You can use Helm to deploy the operator with the following commands:
+
+```
+LATEST=$(curl -s https://api.github.com/repos/prometheus-operator/prometheus-operator/releases/latest | jq -cr .tag_name)
+curl -sL https://github.com/prometheus-operator/prometheus-operator/releases/download/${LATEST}/bundle.yaml | kubectl create -f -
+```
+
+For more information please see: https://prometheus-operator.dev/docs/user-guides/getting-started/
+
 ## Licenses
 
 API Gateway requires a license file. These license is supposed to be
