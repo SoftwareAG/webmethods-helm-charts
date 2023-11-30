@@ -166,6 +166,14 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+  # nginxContainer:
+  #   requests:
+  #     cpu: 500m
+  #     memory: 2Gi
+  #   limits:
+  #     # use a high cpu limit to avaoid the container being throttled
+  #     cpu: 8
+  #     memory: 4Gi
 
 nodeSelector: {}
 
@@ -186,3 +194,6 @@ readinessProbe:
   timeoutSeconds: 60
   successThreshold: 1
   failureThreshold: 5
+
+# -- Instanciate Nginx as external LB
+externalLoadBalancer: false
