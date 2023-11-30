@@ -58,12 +58,25 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{-  if .Values.kibana.serviceAccount }}
+      serviceAccountName: {{ .Values.kibana.serviceAccount }}
+      {{- end }}
+      {{-  if .Values.kibana.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.kibana.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{-  if .Values.kibana.extraInitContainers }}
+      initContainers:
+        {{- toYaml .Values.kibana.extraInitContainers | nindent 8 }}
+      {{- end }}
       containers:
         - name: kibana
           resources:
             {{- toYaml .Values.kibana.resources | nindent 12 }}
+          {{-  if .Values.kibana.securityContext }}
+          securityContext:
+            {{- toYaml .Values.kibana.securityContext | nindent 12 }}
+          {{- end }}
           env:
             - name: KIBANA_USER
               valueFrom:
