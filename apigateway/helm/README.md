@@ -82,6 +82,10 @@ ElasticSearch, and Kibana are to be pulled from.
 kubectl create secret docker-registry regcred --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pwd> --docker-email=<your-email>
 ```
 
+## Administrator password
+
+The initial password for the Administrator user can be found in the _{release_name}-apigateway-admin-password_ secret.
+
 ## Access to the API Gateway cluster
 
 By default, this chart establishes an Ingress to provide access to the API Gateway UI and runtime ports from outside the Kubernetes cluster.
