@@ -442,6 +442,15 @@ elasticsearch:
   #    roles: "viewer"
   extraSecrets: []
   
+  # -- Customization of ElasticSearchs PodDisruptionBudget Policy.
+  # ECK creates a default PodDisruptionBudget Policy.
+  podDisruptionBudget:
+    # -- Whether the default PodDisruptionBudget Policy should be disabled.
+    disabled: false
+    # -- Overwrite the default PodDisruptionBudget Policy.
+    # Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+    data: {}
+
   # -- Whether the communication from APIGW and Kibana should be HTTPS
   # Note: you will need to create certificate and a separate truststore for the communication.
   tlsEnabled: false
@@ -502,7 +511,19 @@ kibana:
   annotations: {}
   
   # -- The secret name that holds the kibana user for API Gateway.
-  secretName: ""  
+  secretName: ""
+
+  # -- The name of kibanas serviceAccount.  
+  serviceAccount: ""
+
+  # -- The pod securityContext for kibana pod.
+  podSecurityContext: {}
+
+  # -- The securityContext for kibana container.
+  securityContext: {}
+
+  # -- The definition of extra initContainers for kibana.
+  extraInitContainers: []
 
   # -- Resource Settings for Kibana
   # Example: 
