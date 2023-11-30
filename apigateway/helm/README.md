@@ -51,7 +51,7 @@ provided as configmap.
 Hence before running `helm install` create the configmap:
 
 ```
-kubectl create configmap apigw-license-config --from-file=licenseKey.xml=<your path to API Gateway license file>
+kubectl create configmap apigw-license-config --from-file=licensekey=<your path to API Gateway license file>
 ```
 
 Optionally you can directly provide the license file at the time of running `helm install`:
