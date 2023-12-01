@@ -17,9 +17,11 @@ The minimum prerequisite that has to be fulfilled is, that the **ECK operator** 
 You can install the default configuration of the API Gateway cluster with the following command:
 
 ```
-helm install <your-release-name> webmethods/apigateway -n <your-namespace> -f my-values.yaml \
-  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_USER.secret=<your-release-name>-apigateway-sag-user-es \
-  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_PASSWORD.secret=<your-release-name>-apigateway-sag-user-es \
+RELEASE_NAME=<your-release-name>
+helm install $RELEASE_NAME webmethods/apigateway -f my-values.yaml \
+  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_USER.secret=$RELEASE_NAME-apigateway-sag-user-es \
+  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_PASSWORD.secret=$RELEASE_NAME-apigateway-sag-user-es \
+  --set prometheus-elasticsearch-exporter.es.uri="http://\$(ES_USER):\$(ES_PASSWORD)@$RELEASE_NAME-apigateway-es-http:9200" \
   --set-file license=licenseKey.xml
 ```
 
