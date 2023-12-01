@@ -527,10 +527,10 @@ prometheus-elasticsearch-exporter:
   # Adjust accordingly if your release name is different. 
   extraEnvSecrets:
     ES_PASSWORD:
-      secret: apigw-build-apigateway-sag-user-es
+      secret: apigw-apigateway-sag-user-es
       key: password
     ES_USER:
-      secret: apigw-build-apigateway-sag-user-es
+      secret: apigw-apigateway-sag-user-es
       key: username
 
   es:
