@@ -203,6 +203,9 @@ tolerations: []
 
 affinity: {}
 
+# -- Instanciate Nginx as external LB
+externalLoadBalancer: false
+
 global: 
   curlImage: "curlimages/curl"
   # -- Protocol for health check for kibana startup, must be http / https
