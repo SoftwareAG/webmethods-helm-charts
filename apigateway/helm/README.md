@@ -4,7 +4,7 @@
 
 This chart sets up an API Gateway cluster which by default consists of
 * 1 API Gateway cluster nodes,
-* 1 ElasticSearch cluster with 1 node,
+* 1 Elasticsearch cluster with 1 node,
 * 1 Kibana node,
 * 1 Ingress providing public access to the API Gateay UI and runtime ports.
 
@@ -17,7 +17,10 @@ The minimum prerequisite that has to be fulfilled is, that the **ECK operator** 
 You can install the default configuration of the API Gateway cluster with the following command:
 
 ```
-helm install <your-release-name> webmethods/apigateway -f my-values.yaml --set-file license=licenseKey.xml
+helm install <your-release-name> webmethods/apigateway -n <your-namespace> -f my-values.yaml \
+  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_USER.secret=<your-release-name>-apigateway-sag-user-es \
+  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_PASSWORD.secret=<your-release-name>-apigateway-sag-user-es \
+  --set-file license=licenseKey.xml
 ```
 
 This will install the API Gateway cluster with the following default configuration as depicted above. Make sure that the licenseKey.xml points to a valid license file.
