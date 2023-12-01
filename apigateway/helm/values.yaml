@@ -282,7 +282,21 @@ apigw:
     # -- The readinessprobe scheme (https or http).
     scheme:                "HTTP"
   serviceName:             "apigw"
-
+  
+  # -- SecurityContext for apigw initContainer
+  # Deactivated by default.
+  # Usage example:
+  # securityContext:
+  #   runAsGroup: 1000
+  #   runAsUser: 1000
+  #   runAsNonRoot: true
+  #   allowPrivilegeEscalation: false
+  #   capabilities:
+  #     drop:
+  #       - ALL
+  initContainer:
+    securityContext: {}
+  
   # -- Specifies the location and name of the configuration variables template
   # or the directory containing templates for use with Microservices Runtime or
   # an Integration Server with licensed Microservices functionality. Use a

@@ -61,6 +61,7 @@ spec:
   {{- if .Values.elasticsearch.podDisruptionBudget.disabled }}
   podDisruptionBudget: {}
   {{- end }}
+  {{- end }}
   nodeSets:
   {{- if .Values.elasticsearch.nodeSets }}
     {{- toYaml .Values.elasticsearch.nodeSets | nindent 4 }}
