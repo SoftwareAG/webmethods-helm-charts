@@ -539,5 +539,5 @@ prometheus-elasticsearch-exporter:
     uri: "http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"
   
   serviceMonitor:
-    enabled: true
+    enabled: false
     
