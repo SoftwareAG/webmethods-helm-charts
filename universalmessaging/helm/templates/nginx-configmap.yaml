@@ -30,6 +30,7 @@ metadata:
 
 data:
   nginx.conf: |
+    # Source is from https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/#page/num-webhelp%2Fre-configure_nginx_to_serve_http_requests.html%23
     user                  nginx;
     worker_processes      auto;
     pid                   /var/run/nginx.pid;
