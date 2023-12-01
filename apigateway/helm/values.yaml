@@ -468,6 +468,16 @@ elasticsearch:
     # Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
     data: {}
 
+  # -- Enable and configure service account creation.
+  serviceAccount:
+    # -- Whether to create a ServiceAccount for Elasticsearch
+    create: false
+    # -- Name of the ServiceAccount for Elasticsearch
+    name: ""
+    # -- Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount.
+    # Requires create=true to work.
+    roleName: ""
+  
   # -- Whether the communication from APIGW and Kibana should be HTTPS
   # Note: you will need to create certificate and a separate truststore for the communication.
   tlsEnabled: false
@@ -553,6 +563,16 @@ kibana:
   #   memory: 128Mi  
   resources: {}
 
+  # -- Enable and configure service account creation.
+  serviceAccount:
+    # -- Whether to create a ServiceAccount for Kibana
+    create: false
+    # -- Name of the ServiceAccount for Kibana
+    name: ""
+    # -- Name of the ServiceAccount Role used by the Kibana ServiceAccount.
+    # Requires create=true to work.
+    roleName: ""
+  
 # -- Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details.
 prometheus-elasticsearch-exporter:
 
