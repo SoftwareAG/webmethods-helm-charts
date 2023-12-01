@@ -3,7 +3,7 @@ name: Test all Charts with 'dry-run' option
 on:
   push:
     branches:
-      - !main              # Run on all not 'main' branches
+      - '!main'              # Run on all not 'main' branches
 
 jobs:
   release:
