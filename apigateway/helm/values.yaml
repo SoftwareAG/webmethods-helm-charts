@@ -460,7 +460,7 @@ elasticsearch:
   # ECK creates a default PodDisruptionBudget Policy.
   podDisruptionBudget:
     # -- Whether the default PodDisruptionBudget Policy should be disabled.
-    disabled: false
+    enabled: true
     # -- Overwrite the default PodDisruptionBudget Policy.
     # Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
     data: {}

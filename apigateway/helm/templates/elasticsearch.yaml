@@ -58,7 +58,7 @@ spec:
   podDisruptionBudget:
     {{- toYaml .Values.elasticsearch.podDisruptionBudget.data | nindent 4 }}
   {{ else }}
-  {{- if .Values.elasticsearch.podDisruptionBudget.disabled }}
+  {{- if not .Values.elasticsearch.podDisruptionBudget.enabled }}
   podDisruptionBudget: {}
   {{- end }}
   {{- end }}
