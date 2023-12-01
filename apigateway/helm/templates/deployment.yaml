@@ -63,10 +63,14 @@ spec:
         - name: waitforelasticsearch
           image: {{ .Values.global.curlImage }}
           imagePullPolicy: IfNotPresent
+          {{- if .Values.resources.apigwInitContainer }} 
           resources:
             {{- toYaml .Values.resources.apigwInitContainer | nindent 12 }}
+          {{- end }}
+          {{- if .Values.apigw.initContainer.securityContext }} 
           securityContext:
             {{- toYaml .Values.apigw.initContainer.securityContext | nindent 12 }}
+          {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "apigateway.elasticsecret" . }}
