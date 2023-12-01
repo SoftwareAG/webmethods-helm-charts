@@ -457,11 +457,14 @@ elasticsearch:
   extraSecrets: []
   
   # -- Customization of ElasticSearchs PodDisruptionBudget Policy.
-  # ECK creates a default PodDisruptionBudget Policy.
+  # Elastic Cloud on Kubernetes operator (ECK) creates a default PodDisruptionBudget Policy.
   podDisruptionBudget:
-    # -- Whether the default PodDisruptionBudget Policy should be disabled.
+    # -- Whether a PodDisruptionBudget Policy should be created.
+    # Enabled=true results in ECK deploying the default (or custom, see data) PodDisruptionBudget Policy.
+    # Enabled=false results in no PodDisruptionBudget Policy deployment.
     enabled: true
     # -- Overwrite the default PodDisruptionBudget Policy.
+    # Overwriting with custom PodDisruptionBudget Policy requires enabled=true.
     # Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
     data: {}
 
