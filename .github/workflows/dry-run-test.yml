@@ -1,0 +1,55 @@
+name: Test all Charts with 'dry-run' option
+
+on:
+  push:
+    branches-ignore:
+      - main              # Run on all not 'main' branches
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: self-hosted
+    steps:
+      - name: Clean workspace
+        run: |
+          rm -Rf *
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate Helm README Documentation with jnorwood
+        run: |
+          sudo docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
+
+      - name: Remove README.md template files
+        run: |
+          find . -name "README.md.gotmpl" | xargs rm
+
+      - name: Install Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          sh ./get_helm.sh
+          rm ./get_helm.sh
+
+      - name: Dry-run of apigateway
+        run: |
+          helm install apigw apigateway/helm --dry-run
+
+      - name: Dry-run of developerportal
+        run: |
+          helm install devportal developerportal/helm --dry-run
+
+      - name: Dry-run of microservicesruntime
+        run: |
+          helm install msr microservicesruntime/helm --dry-run
+
+      - name: Dry-run of mywebmethodsserver
+        run: |
+          helm install mws mywebmethodsserver/helm --dry-run
+
+      - name: Dry-run of universalmessaging
+        run: |
+          helm install um universalmessaging/helm --dry-run
