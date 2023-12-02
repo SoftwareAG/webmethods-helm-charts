@@ -84,6 +84,8 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
+apigwInitContainerSecurityContext: {}
+
 securityContext: {}
   # capabilities:
   #   drop:
@@ -103,12 +105,12 @@ ingresses:
     enabled: true
     svcName: ""
     svcPort: ""
-    className: ""
+    className: "nginx"
     annotations: 
       nginx.ingress.kubernetes.io/affinity: "cookie"
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
-      - host: 
+      - host:
         paths:
           - path: /
             pathType: Prefix
@@ -116,11 +118,11 @@ ingresses:
       - secretName: 
         hosts: 
   rt:
-    defaultHost: 
+    defaultHost: ""
     enabled: true
     svcName: ""
     svcPort: ""
-    className: ""
+    className: "nginx"
     annotations: {}
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
@@ -136,11 +138,11 @@ ingresses:
     enabled: true
     svcName: ""
     svcPort: ""
-    className: ""
+    className: "nginx"
     annotations: 
       nginx.ingress.kubernetes.io/affinity: "cookie"
     hosts:
-      - host: default
+      - host:
         paths:
           - path: /
             pathType: Prefix
@@ -200,6 +202,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# -- Instanciate Nginx as external LB
+externalLoadBalancer: false
 
 global: 
   curlImage: "curlimages/curl"
@@ -536,6 +541,8 @@ prometheus-elasticsearch-exporter:
     # Overwrite this if you are using an external Elasticsearch instance
     uri: "http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"
   
-  serviceMonitor:
-    enabled: true
-    
+  podAnnotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "9108"
+    prometheus.io/scheme: http
+    prometheus.io/scrape: "true"

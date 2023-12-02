@@ -32,7 +32,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "common.labels.matchLabels " . | nindent 6 }}
+      {{- include "common.labels.matchLabels" . | nindent 6 }}
   strategy: 
     rollingUpdate:
       maxSurge: 1

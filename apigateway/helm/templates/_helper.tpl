@@ -83,7 +83,7 @@ Renders the admin secret key name for API Gateway from the apigw.adminsecretKey 
 Renders the Elasticsearch secret name for API Gateway from the apigw.elasticSecretName value. If not specified, it will be the default name.
 */}}
 {{- define "apigateway.elasticsecretName" -}}
-  {{- default ( printf "%s%s" ( include "common.names.fullname" .) "-es" ) .Values.apigw.elasticSecretName }}
+  {{- default ( printf "%s%s" ( include "common.names.fullname" .) "-sag-user-es" ) .Values.apigw.elasticSecretName }}
 {{- end }}
 
 {{/*

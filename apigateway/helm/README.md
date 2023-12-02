@@ -4,7 +4,7 @@
 
 This chart sets up an API Gateway cluster which by default consists of
 * 1 API Gateway cluster nodes,
-* 1 ElasticSearch cluster with 1 node,
+* 1 Elasticsearch cluster with 1 node,
 * 1 Kibana node,
 * 1 Ingress providing public access to the API Gateay UI and runtime ports.
 
@@ -17,7 +17,12 @@ The minimum prerequisite that has to be fulfilled is, that the **ECK operator** 
 You can install the default configuration of the API Gateway cluster with the following command:
 
 ```
-helm install <your-release-name> webmethods/apigateway -f my-values.yaml --set-file license=licenseKey.xml
+RELEASE_NAME=<your-release-name>
+helm install $RELEASE_NAME webmethods/apigateway -f my-values.yaml \
+  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_USER.secret=$RELEASE_NAME-apigateway-sag-user-es \
+  --set prometheus-elasticsearch-exporter.extraEnvSecrets.ES_PASSWORD.secret=$RELEASE_NAME-apigateway-sag-user-es \
+  --set prometheus-elasticsearch-exporter.es.uri="http://\$(ES_USER):\$(ES_PASSWORD)@$RELEASE_NAME-apigateway-es-http:9200" \
+  --set-file license=licenseKey.xml
 ```
 
 This will install the API Gateway cluster with the following default configuration as depicted above. Make sure that the licenseKey.xml points to a valid license file.
@@ -51,7 +56,7 @@ provided as configmap.
 Hence before running `helm install` create the configmap:
 
 ```
-kubectl create configmap apigw-license-config --from-file=licenseKey.xml=<your path to API Gateway license file>
+kubectl create configmap apigw-license-config --from-file=licensekey=<your path to API Gateway license file>
 ```
 
 Optionally you can directly provide the license file at the time of running `helm install`:
@@ -70,6 +75,10 @@ ElasticSearch, and Kibana are to be pulled from.
 ```
 kubectl create secret docker-registry regcred --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pwd> --docker-email=<your-email>
 ```
+
+## Administrator password
+
+The initial password for the Administrator user can be found in the _{release_name}-apigateway-admin-password_ secret.
 
 ## Access to the API Gateway cluster
 

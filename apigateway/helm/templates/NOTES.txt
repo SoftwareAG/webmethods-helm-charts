@@ -20,5 +20,5 @@
 {{- if .Values.secrets.generateAdminSecret }}
 2. Get the admin password:
 {{-  $name := (printf "%s%s" (include "common.names.fullname" .) "-admin-password") }}
-echo "Admin Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ $name }} -o jsonpath="{.data.password}" | base64 --decode)"
+  echo "Admin Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ $name }} -o jsonpath="{.data.password}" | base64 --decode)"
 {{- end }}
