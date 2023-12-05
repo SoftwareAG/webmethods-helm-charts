@@ -61,7 +61,10 @@ data:
          keepalive_disable   none;
 
          upstream um-host {
-               server {{ include "common.names.fullname" . }}-0:9000;
+               {{- $fullName := include "common.names.fullname" . -}}
+               {{- range $replicaIndex := until (int .Values.replicaCount) }}
+               server {{ $fullName }}-{{ $replicaIndex }}:9000;
+               {{ end }}
          }
 
          server {
