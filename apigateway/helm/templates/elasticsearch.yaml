@@ -54,6 +54,14 @@ spec:
       - secretName: {{ tpl .name $ }}
       {{- end }}
       {{- end }}
+  {{- if .Values.elasticsearch.podDisruptionBudget.enabled }}
+  {{- if .Values.elasticsearch.podDisruptionBudget.data }}
+  podDisruptionBudget:
+    {{- toYaml .Values.elasticsearch.podDisruptionBudget.data | nindent 4 }}
+  {{- end }}
+  {{- else }}
+  podDisruptionBudget: {}
+  {{- end }}
   nodeSets:
   {{- if .Values.elasticsearch.nodeSets }}
     {{- toYaml .Values.elasticsearch.nodeSets | nindent 4 }}

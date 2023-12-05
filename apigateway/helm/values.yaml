@@ -282,7 +282,21 @@ apigw:
     # -- The readinessprobe scheme (https or http).
     scheme:                "HTTP"
   serviceName:             "apigw"
-
+  
+  # -- SecurityContext for apigw initContainer
+  # Deactivated by default.
+  # Usage example:
+  # securityContext:
+  #   runAsGroup: 1000
+  #   runAsUser: 1000
+  #   runAsNonRoot: true
+  #   allowPrivilegeEscalation: false
+  #   capabilities:
+  #     drop:
+  #       - ALL
+  initContainer:
+    securityContext: {}
+  
   # -- Specifies the location and name of the configuration variables template
   # or the directory containing templates for use with Microservices Runtime or
   # an Integration Server with licensed Microservices functionality. Use a
@@ -442,6 +456,28 @@ elasticsearch:
   #    roles: "viewer"
   extraSecrets: []
   
+  # -- Customization of ElasticSearchs PodDisruptionBudget Policy.
+  # Elastic Cloud on Kubernetes operator (ECK) creates a default PodDisruptionBudget Policy.
+  podDisruptionBudget:
+    # -- Whether a PodDisruptionBudget Policy should be created.
+    # Enabled=true results in ECK deploying the default (or custom, see data) PodDisruptionBudget Policy.
+    # Enabled=false results in no PodDisruptionBudget Policy deployment.
+    enabled: true
+    # -- Overwrite the default PodDisruptionBudget Policy.
+    # Overwriting with custom PodDisruptionBudget Policy requires enabled=true.
+    # Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+    data: {}
+
+  # -- Enable and configure service account creation.
+  serviceAccount:
+    # -- Whether to create a ServiceAccount for Elasticsearch
+    create: false
+    # -- Name of the ServiceAccount for Elasticsearch
+    name: ""
+    # -- Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount.
+    # Requires create=true to work.
+    roleName: ""
+  
   # -- Whether the communication from APIGW and Kibana should be HTTPS
   # Note: you will need to create certificate and a separate truststore for the communication.
   tlsEnabled: false
@@ -502,7 +538,19 @@ kibana:
   annotations: {}
   
   # -- The secret name that holds the kibana user for API Gateway.
-  secretName: ""  
+  secretName: ""
+
+  # -- The name of kibanas serviceAccount.  
+  serviceAccount: ""
+
+  # -- The pod securityContext for kibana pod.
+  podSecurityContext: {}
+
+  # -- The securityContext for kibana container.
+  securityContext: {}
+
+  # -- The definition of extra initContainers for kibana.
+  extraInitContainers: []
 
   # -- Resource Settings for Kibana
   # Example: 
@@ -515,6 +563,16 @@ kibana:
   #   memory: 128Mi  
   resources: {}
 
+  # -- Enable and configure service account creation.
+  serviceAccount:
+    # -- Whether to create a ServiceAccount for Kibana
+    create: false
+    # -- Name of the ServiceAccount for Kibana
+    name: ""
+    # -- Name of the ServiceAccount Role used by the Kibana ServiceAccount.
+    # Requires create=true to work.
+    roleName: ""
+  
 # -- Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details.
 prometheus-elasticsearch-exporter:
 
