@@ -57,7 +57,21 @@ spec:
         - name: licence-xml
           configMap:
             name: {{ .Values.licenseConfigMap }}            
-            defaultMode: 420    
+            defaultMode: 420
+        - name: jmx-exporter-config
+          configMap:
+            name: {{ include "common.names.fullname" . }}
+            defaultMode: 420
+            items:
+            - key:  jmx_exporter.yaml
+              path: jmx_sag_um_exporter.yaml
+        - name: custom-server-common
+          configMap:
+            name: {{ include "common.names.fullname" . }}
+            defaultMode: 420
+            items:
+            - key:  Custom_Server_Common.conf
+              path: Custom_Server_Common.conf
         {{- if .Values.extraVolumes }}
         {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
           {{ tpl .Values.extraVolumes . | nindent 8 }}
@@ -92,6 +106,14 @@ spec:
             mountPath: /opt/softwareag/common/conf
           - name: licence-xml
             mountPath: /opt/softwareag/UniversalMessaging/server/umserver/licence/
+          - name: jmx-exporter-config
+            mountPath: /opt/softwareag/UniversalMessaging/server/umserver/bin/jmx_sag_um_exporter.yaml
+            subPath:   jmx_sag_um_exporter.yaml
+            readOnly:  true
+          - name: custom-server-common
+            mountPath: /opt/softwareag/UniversalMessaging/server/umserver/bin/Custom_Server_Common.conf
+            subPath:   Custom_Server_Common.conf
+            readOnly:  true
           {{- if .Values.extraVolumeMounts }}
           {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
             {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              

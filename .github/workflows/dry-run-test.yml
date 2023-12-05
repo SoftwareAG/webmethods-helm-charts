@@ -36,20 +36,20 @@ jobs:
 
       - name: Dry-run of apigateway
         run: |
-          helm install apigw apigateway/helm --dry-run
+          helm template apigw apigateway/helm
 
       - name: Dry-run of developerportal
         run: |
-          helm install devportal developerportal/helm --dry-run
+          helm template devportal developerportal/helm
 
       - name: Dry-run of microservicesruntime
         run: |
-          helm install msr microservicesruntime/helm --dry-run
+          helm template msr microservicesruntime/helm
 
       - name: Dry-run of mywebmethodsserver
         run: |
-          helm install mws mywebmethodsserver/helm --dry-run
+          helm template mws mywebmethodsserver/helm
 
       - name: Dry-run of universalmessaging
         run: |
-          helm install um universalmessaging/helm --dry-run
+          helm template um universalmessaging/helm

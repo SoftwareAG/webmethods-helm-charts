@@ -1,4 +1,5 @@
 {{- if .Values.externalLoadBalancer }}
+---
 # /*
 #  * Copyright (c) 2023 Software AG, Darmstadt, Germany and/or its licensors
 #  *
@@ -55,11 +56,8 @@ spec:
         resources:
           {{- toYaml .Values.resources.nginxContainer | nindent 10 }}
         ports:
-        - containerPort: {{ int .Values.microservicesruntime.runtimePort }}
-          name: rt-port
-          protocol: TCP
-        - containerPort: {{ int .Values.microservicesruntime.adminPort }}
-          name: admin-http
+        - containerPort: 9000
+          name: nsp
           protocol: TCP
         volumeMounts:
           - name: nginx-config
