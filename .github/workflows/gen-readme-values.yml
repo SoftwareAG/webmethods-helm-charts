@@ -1,0 +1,36 @@
+name: Regenerate Helm README Documentation
+
+on:
+  push:
+    branches-ignore:
+      - main                     # Run on all not 'main' branches
+    paths:
+      - '**/helm/values.yaml'    # Only if values.yaml is pushed
+      
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: self-hosted
+    steps:
+      - name: Clean workspace
+        run: |
+          rm -Rf *
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate Helm README Documentation with jnorwood
+        run: |
+          sudo docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
+
+      - name: Push new generated README  
+        run: |
+          git config --global user.name  "${{ github.event.head_commit.committer.name  }}"
+          git config --global user.email "${{ github.event.head_commit.committer.email }}"
+          git add .
+          git commit -am "${{ github.event.head_commit.message }} // update README from values.yaml"
+          git branch -M      ${{ github.ref_name }}
+          git push -f origin ${{ github.ref_name }}
