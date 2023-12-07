@@ -250,7 +250,7 @@ tolerations: []
 
 affinity: {}
 
-# -- Instanciate Nginx as external LB
+# -- Deploy Nginx as external LB
 externalLoadBalancer: false
 
 # Use persistent volume for IS packages, configuration settings and logs ...

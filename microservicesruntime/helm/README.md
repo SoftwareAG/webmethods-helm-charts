@@ -20,11 +20,11 @@ A Service Monitor CRD can be created optional. Anywhere, the custom kind `Servic
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml
 ```
 
-### Build Image for Microservices Runtime
+### Create Image for Microservices Runtime
 
 The default is to pull the image from Software AG Containers Registry `sagcr.azurecr.io/webmethods-microservicesruntime`.
 
-If you need to build an own image with additional webMethods product components, you can use the utility [image-builder-using-Azure-DevOps](../../utils/image-builder-using-azure-devops/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
+If you need to create an own image with additional webMethods product components, you can use the utility [image-creator-using-Azure-DevOps](../../utils/image-creator-using-azure-devops/README.md). On starting the pipeline, you can define a list of product components. You should set in field `List of product components ...` the value `MSC,PIEContainerExternalRDBMS` (as minimum) to create an image with product Microservices Runtime and Database Drivers to connect external databases.
 
 ### Licenses
 
@@ -37,7 +37,6 @@ kubectl create configmap microservicesruntime-license-key --from-file=licensekey
 ```
 
 Optionally you can also provide the license directly when installing your release (see also below).
-
 
 ## Examples for Use-cases
 
@@ -96,12 +95,12 @@ helm install wm-msr webmethods/microservicesruntime   \
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | containerName | string | `nil` | The name of the main container, by default this will be msr-<release_name> |
-| externalLoadBalancer | bool | `false` | Instanciate Nginx as external LB |
+| externalLoadBalancer | bool | `false` | Deploy Nginx as external LB |
 | extraCommand | string | `""` | Extra command, which is executed before the startContainer entrypoint script of the Microservice Runtime |
 | extraConfigMaps | list | `[]` | Extra config maps for addtional configurations such as extra ports, etc. |
-| extraContainers | list | `[]` | Extra containers which should run in addtion to the main container as a sidecar |
+| extraContainers | list | `[]` | Extra containers which should run in addtion to the main container as a sidecar - name: do-something   image: busybox   command: ['do', 'something'] |
 | extraEnvs | list | `[]` | Exta environment properties to be passed on to the microservice runtime |
-| extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container |
+| extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container - name: do-something   image: busybox   command: ['do', 'something'] |
 | extraLabels | object | `{}` | Extra Labels |
 | extraPorts | list | `[]` | Extra Ports to be defined, note: these ports need to be created  |
 | extraVolumeMounts | list | `[]` | Extra volume mounts |
@@ -171,7 +170,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | service.port | int | `5555` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
-| serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
+| serviceAccount.create | bool | `false` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | startupProbe | object | `{"failureThreshold":60,"periodSeconds":30,"tcpSocket":{"port":"http"}}` | startup probe for container |
 | statefulSet | bool | `false` | StatefulSet or Deployment. You should only change this if you require Client Side queuing (CSQ) or functionality in IS which requires stable hostnames and filesystems. Default is false => Deployment. Keep in mind, you must disable CSQ on each webMethods messaging and JMS connection if you don't use stateful-sets. See examples in Process Engine deployment for disableing QSC. |

@@ -24,7 +24,7 @@ kubectl create configmap universalmessaging-licence-key --from-file=licence.xml=
 
 ## Examples for Use-cases
 
-Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values. 
+Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values.
 
 | Use-case | Description |
 |-----|------|
