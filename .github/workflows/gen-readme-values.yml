@@ -22,15 +22,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Git clone
+        run: |
+          git config --global user.name  "${{ github.event.head_commit.committer.name  }}"
+          git config --global user.email "${{ github.event.head_commit.committer.email }}"
+          git clone git@github.com:SoftwareAG/webmethods-helm-charts.git -b ${{ github.ref_name }}
+      
+
       - name: Generate Helm README Documentation with jnorwood
         run: |
+          cd webmethods-helm-charts/
           sudo docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
 
       - name: Push new generated README  
         run: |
-          git config --global user.name  "${{ github.event.head_commit.committer.name  }}"
-          git config --global user.email "${{ github.event.head_commit.committer.email }}"
+          cd webmethods-helm-charts/
           git add .
-          git commit -am "${{ github.event.head_commit.message }} // update README from values.yaml"
+          git commit -am "${{ github.event.head_commit.message }} and updating helm/README.me from values.yaml"
           git branch -M      ${{ github.ref_name }}
           git push -f origin ${{ github.ref_name }}
