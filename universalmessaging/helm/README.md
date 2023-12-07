@@ -44,7 +44,8 @@ helm install um webmethods/universalmessaging
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
 | customMetricExporterConfig | object | `{"content":""}` | Custom metric JMX exporter configuration. Overwriting the default content of file [jmx_exporter.yaml](./files/jmx_exporter.yaml). See [Prometheus JMX exporter configuration](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config) for more configuration samples. |
-| customServerConfig | object | `{"content":""}` | Custom server configuration file  |
+| customServerConfig | object | `{"content":""}` | Custom server configuration file. Overwriting the content of file `Custom_Server_Common.conf` in container.  |
+| externalLoadBalancer | bool | `false` | Deploy Nginx as external LB. The LB will be configured to dispatch incoming requests to all `replicaCount` replicas. Nginx is configured by example from [Universal Messaging documentation](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/#page/num-webhelp%2Fre-configure_nginx_to_serve_http_requests.html%23) |
 | extraConfigMaps | list | `[]` | Extra config maps for additional configurations such as extra ports, etc. |
 | extraContainers | list | `[]` | Extra containers which should run in addition to the main container as a sidecar |
 | extraEnvs | object | `{}` | Exta environment properties to be passed on to the container |
@@ -77,7 +78,7 @@ helm install um webmethods/universalmessaging
 | podSecurityContext.fsGroup | int | `1724` |  |
 | readinessProbe | object | `{"failureThreshold":5,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":60}` | Configure readiness probe |
 | replicaCount | int | `1` | Number of replicas |
-| resources | object | `{}` |  |
+| resources | object | `{}` | Define CPU und memory resources UM and Nginx containers. |
 | securityContext | object | `{}` |  |
 | service.metricPort | int | `9200` | Metrics port |
 | service.port | int | `9000` | Universal Messaging default port |
