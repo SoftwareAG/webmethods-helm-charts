@@ -217,6 +217,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | global.curlImage | string | `"curlimages/curl"` |  |
 | global.elasticsearch | object | `{"port":9200,"serviceName":""}` | Elasticsearch global settings Required for Prometheus Exporter Sub Chart |
 | global.elasticsearch.serviceName | string | `""` | The elasticsearch http service name that API Gateway uses. The default is compiled of the fullname (releasename + chart name) + "-http"  You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart. |
+| hostAliases | list | `[]` | Value to add extra host aliases to APIGW container. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"sagcr.azurecr.io/apigateway-minimal"` | The repository for the image. By default,  this points to the Software AG container repository.  Change this for air-gapped installations or custom images. For the Software AG container repository you need to have a  valid access token stored as registry credentials |
 | image.tag | string | `"10.15"` | The image tag of the apigateway image default this will be the latest version.  For realworld scenarios SAG recommends to use a  specific version to not accidently change production versions with newer images. |
@@ -267,8 +268,8 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | kibana.resources | object | `{}` | Resource Settings for Kibana Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
 | kibana.secretName | string | `""` | The secret name that holds the kibana user for API Gateway. |
 | kibana.securityContext | object | `{}` | The securityContext for kibana container. |
-| kibana.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
 | kibana.serviceAccount | string | `""` | The name of kibanas serviceAccount.   |
+| kibana.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
 | kibana.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Kibana |
 | kibana.serviceAccount.name | string | `""` | Name of the ServiceAccount for Kibana |
 | kibana.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Kibana ServiceAccount. Requires create=true to work. |
