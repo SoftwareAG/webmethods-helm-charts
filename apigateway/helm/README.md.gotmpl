@@ -1,0 +1,150 @@
+# API Gateway Cluster Helm Chart
+
+## Overview
+
+This chart sets up an API Gateway cluster which by default consists of
+* 1 API Gateway cluster nodes,
+* 1 ElasticSearch cluster with 1 node,
+* 1 Kibana node,
+* 1 Ingress providing public access to the API Gateay UI and runtime ports.
+
+![API Gateway Cluster](../docs/diagrams/api_gateway.png)
+
+### TLDR;
+
+The minimum prerequisite that has to be fulfilled is, that the **ECK operator** is installed. See section [Prerequisites](#ECK / Elasticsearch) for details.
+
+You can install the default configuration of the API Gateway cluster with the following command:
+
+```
+helm install <your-release-name> webmethods/apigateway -f my-values.yaml --set-file license=licenseKey.xml
+```
+
+This will install the API Gateway cluster with the following default configuration as depicted above. Make sure that the licenseKey.xml points to a valid license file.
+
+## Prerequisites
+
+### ECK / Elasticsearch
+
+This deployment uses the ECK Operator to deploy Elasticsearch. You can use Helm to deploy the operator with the following commands:
+
+#### Register the Elasticsearch Helm Repository
+
+```
+helm repo add elastic https://helm.elastic.co
+helm repo update
+```
+
+#### Install ECK (Cluster-wide)
+
+```
+helm install elastic-operator elastic/eck-operator -n elastic-system --create-namespace
+```
+
+For more information please see: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-install-helm.html
+
+## Licenses
+
+API Gateway requires a license file. These license is supposed to be
+provided as configmap.
+
+Hence before running `helm install` create the configmap:
+
+```
+kubectl create configmap apigw-license-config --from-file=licenseKey.xml=<your path to API Gateway license file>
+```
+
+Optionally you can directly provide the license file at the time of running `helm install`:
+
+```
+helm install <your-release-name> webmethods/apigateway -f my-values.yaml --set-file license=licenseKey.xml
+```
+
+Note: the license key config map will not be removed when the helm release is deleted.
+
+## Image Pull Secret
+
+Provide an image pull secret for the registry where the desired images for API Gateway,
+ElasticSearch, and Kibana are to be pulled from.
+
+```
+kubectl create secret docker-registry regcred --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pwd> --docker-email=<your-email>
+```
+
+## Access to the API Gateway cluster
+
+By default, this chart establishes an Ingress to provide access to the API Gateway UI and runtime ports from outside the Kubernetes cluster.
+The Ingress refers to services which in turn refer to the API Gateway pods. Due to the API Gateway UI requiring sticky sessions ([see also below](#sticky-ui-sessions)) the Ingress
+is configured accordingly. However this default setup works only if the Kubernetes cluster runs with the wide-spread nginx-ingress controller which
+can handle sticky sessions.
+
+If the nginx-ingress controller is not present, or another ingress controller is preferred, an accordingly configured external load balancer can be used to
+achieve sticky sessions. The chart can easily be switched to use a load balancer, for details see the [chart readme](apigateway/README.md).
+When doing so, the chart will still establish an Ingress which then refers to the load balancer service, and the load balancer in turn is
+configured as a proxy for the API Gateway services.
+
+For the latter purpose the chart comes with an nginx deployment and appropriate configuration. Please note that API Gateway does not
+rely on or prefer nginx. In order to use a different load balancer the chart needs to be adapted manually: replace the `nginx-*.yaml` files
+in the [template folder](apigateway/templates) as desired, and keep in mind to configure the load balancer with sticky sessions for the
+API Gateway UI port.
+
+### Sticky UI sessions
+
+The API Gateway web interface requires sticky sessions in order to function correctly. This is achieved by configuring the API Gateway service
+for the UI port as well as the Ingress with sticky behaviour. The relevant parts of the service and the Ingress look like this:
+
+```
+---
+# apigateway-ui-svc.yaml
+apiVersion: v1
+kind: Service
+spec:
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 1000
+      
+---
+# apigateway-ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:                                    
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+```
+
+Note, if you are using the default configuration and nginx as your ingress controller, sticky sessions will be enabled by default for the UI port and ingress. Change the ingress annotations accordingly for other ingress controllers like Traefik. 
+
+
+## Using an external load balancer
+
+The Ingress provides two entrypoints for accessing the API Gateway cluster, one for the UI port to
+allow access to the administration UI, and another one for the runtime port to allow for example REST access
+to the services.
+
+The API Gateway UI requires session stickiness and therefore both the Ingress and the Kubernetes
+service in front of the API Gateway pods are correspondingly configured.
+
+In some cases, typically if the nginx-ingress controller is not available in the Kubernetes system, the stickiness
+settings are not correctly respected, and the API Gateway UI will not work. In particular the login to the UI
+will fail.
+
+This can be handled by using an external load balancer which is configured to use the API Gateway as
+backend. And the Ingress is then defined against the load balancer service.
+
+In order to enable the external load balancer provide the following configuration value:
+
+```
+--set loadBalancer.enabled=true
+```
+
+## TLS for API Gateway
+
+If desired you may deploy API Gateway with your own TLS key and cert. The Template contains a TLS manifest which will look for the keys: ingress.tls.key and ingress.tls.cert. In your deployment environment you can redirect the output of a certificate and key file (e.g. using secure files from Azure) and directly deploy the TLS configuration for the API Gateway.
+
+```bash
+helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingress.tls.cert="$(<cert.pem)"
+
+```
+
+{{ template "chart.valuesSection" . }}
