@@ -52,7 +52,7 @@ helm install wm-mws microservicesruntime
 | extraContainers | string | `nil` | Extra containers which should run in addtion to the main container as a sidecar - name: do-something   image: busybox   command: ['do', 'something'] |
 | extraEnvs | object | `{}` | Exta environment properties to be passed on to the MyWebMethods Server |
 | extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container - name: do-something   image: busybox   command: ['do', 'something'] |
-| extraLabels | object | `{}` | Extra Labels for API Gateway |
+| extraLabels | object | `{}` | Extra Labels |
 | extraVolumeClaimTemplates | list | `[]` | Exta volumes that should be mounted. Example:    - metadata:        name: shared-volume      spec:        accessModes: ["ReadWriteMany"]        storageClassName: nfs        resources:          requests:            storage: 10 |
 | extraVolumeMounts | list | `[]` | Extra volume mounts - name: extras   mountPath: /usr/share/extras   readOnly: true |
 | fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
