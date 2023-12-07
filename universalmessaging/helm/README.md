@@ -38,6 +38,13 @@ Install release
 helm install um webmethods/universalmessaging
 ```
 
+## Version History
+
+| Version | Changes and Description |
+|-----|------|
+| `1.0.0' | Initial release |
+| `1.0.1' | Update JMX Exporter configuration file with . Bigfix: Mount configuration files into container. Nginx added. |
+
 ## Values
 
 | Key | Type | Default | Description |
