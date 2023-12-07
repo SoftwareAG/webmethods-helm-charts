@@ -176,7 +176,6 @@ spec:
             periodSeconds: 30
             successThreshold: 1
             timeoutSeconds: 1
-            
           readinessProbe:
             httpGet:
               path: /rest/apigateway/health
@@ -218,6 +217,10 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.hostAliases }}
+      hostAliases:  
+        {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       volumes:
       - name: apigw-config
