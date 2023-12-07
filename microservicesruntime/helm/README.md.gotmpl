@@ -33,8 +33,10 @@ Microservices Runtime requires a license file. These license is supposed to be p
 Hence before running `helm install`, create the configmap:
 
 ```
-kubectl create configmap microservicesruntime-license-key --from-file=licenseKey.xml=<your path and filename to Microservices Runtime license file>
+kubectl create configmap microservicesruntime-license-key --from-file=licensekey=<your path and filename to Microservices Runtime license file>
 ```
+
+Optionally you can also provide the license directly when installing your release (see also below).
 
 ## Examples for Use-cases
 
@@ -59,6 +61,12 @@ Install release with pulling image and setting secret (to pull image) ...
 
 ```shell
 helm install wm-msr webmethods/microservicesruntime   \
+```
+
+... (optionally) provide the license key at installation time (can be ommitted for upgrade later)
+
+```shell
+--set-file=licensekey=<your path and filename to Microservices Runtime license file>
 ```
 
 ... Ingress is enabled per default. Define Ingress service host ...
