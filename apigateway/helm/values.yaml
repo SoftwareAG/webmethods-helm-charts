@@ -201,6 +201,9 @@ tolerations: []
 
 affinity: {}
 
+# -- Value to add extra host aliases to APIGW container.
+hostAliases: []
+
 global: 
   curlImage: "curlimages/curl"
   # -- Protocol for health check for kibana startup, must be http / https
@@ -373,6 +376,8 @@ apigw:
   #   properties:
   #     location: apigw-config.yml
   extraConfigSources: []
+
+  # -- Additional labels to be added to apigw pod labels.
   extraLabels: {}
 
 prometheus:
@@ -562,6 +567,9 @@ kibana:
   #   cpu: 100m
   #   memory: 128Mi  
   resources: {}
+
+  # -- Additional labels to be added to kibana pod labels.
+  extraLabels: {}
 
   # -- Enable and configure service account creation.
   serviceAccount:

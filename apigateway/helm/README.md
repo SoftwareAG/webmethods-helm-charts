@@ -103,18 +103,17 @@ spec:
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 1000
-      
+     
 ---
 # apigateway-ingress.yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  annotations:                                    
+  annotations:                                   
     nginx.ingress.kubernetes.io/affinity: "cookie"
 ```
 
-Note, if you are using the default configuration and nginx as your ingress controller, sticky sessions will be enabled by default for the UI port and ingress. Change the ingress annotations accordingly for other ingress controllers like Traefik. 
-
+Note, if you are using the default configuration and nginx as your ingress controller, sticky sessions will be enabled by default for the UI port and ingress. Change the ingress annotations accordingly for other ingress controllers like Traefik.
 
 ## Using an external load balancer
 
@@ -153,10 +152,19 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
 | apigw.adminPort | int | `5555` | The default administration port. Note in a default installation this port will also be used for runtime traffic. |
+| apigw.adminSecretKey | string | `""` | The key that holds the admin secret key; defauls to "password" |
+| apigw.adminSecretName | string | `""` | The secret that holds the admin password  Depends on secrets.genereateAdminSecret; if true the setting will be ignored. |
 | apigw.apigwAdminService | string | `"apigw-admin-svc"` |  |
-| apigw.configSources | object | `{"elasticsearch":{"hosts":"{{ .Release.Name }}-{{ .Chart.Name }}-es-http:{{ .Values.elasticsearch.port }}","tenantId":"default"}}` | configuration source files for API Gateway |
+| apigw.applicationProperties | string | `""` | Application Properties to overwrite default API Gateway settings. Please check  Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables.  By default only the default Administrator password is set through this mechanism if nothing is set here.  Other examples are extended settings which can be set through this mechanism. Examples:  Set the default Administrator password from environment variable user.Administrator.password=$env{ADMINISTRATOR_PASSWORD}  Avoid archiving audit log files ... settings.watt.server.audit.logFilesToKeep=1  Avoid archiving server log files ... settings.watt.server.serverlogFilesToKeep=1  Avoid archiving statistic files ... settings.watt.server.stats.logFilesToKeep=1  Value for 1 to 9 to set debug level of server log ... settings.watt.debug.level=  Set the maximum number of permitted service threads in the global pool ... settings.watt.server.threadPool=750  Set the default request/response content-type ... settings.watt.net.default.content-type=json  Avoid IS internal statistic data collector ... statisticsdatacollector.monitorConfig.enabled=false   |
+| apigw.configSources | object | `{"elasticsearch":{"hosts":"{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}","tenantId":"default"}}` | configuration source files for API Gateway |
 | apigw.diagPort | int | `9999` | The API Diagnostics port.  |
 | apigw.elasticSearchDeployment | bool | `true` | Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch   |
+| apigw.elasticSecretName | string | `""` | Elasticsearch secret name that holds the elastic password and username |
+| apigw.elasticSecretPasswordKey | string | `""` | The key that holds the Elasticsearch password; defauls to "password" |
+| apigw.elasticSecretUserKey | string | `""` | The key that holds the Elasticsearch user; defauls to "username" |
+| apigw.extraConfigSources | list | `[]` | Extra configuration sources for API Gateway Example:  - type: YAML   allowEdit: false   properties:     location: apigw-config.yml |
+| apigw.extraLabels | object | `{}` | Additional labels to be added to apigw pod labels. |
+| apigw.initContainer | object | `{"securityContext":{}}` | SecurityContext for apigw initContainer Deactivated by default. Usage example: securityContext:   runAsGroup: 1000   runAsUser: 1000   runAsNonRoot: true   allowPrivilegeEscalation: false   capabilities:     drop:       - ALL |
 | apigw.initMemory | string | `"1024Mi"` |  |
 | apigw.maxMemory | string | `"1024Mi"` |  |
 | apigw.readinessProbe.scheme | string | `"HTTP"` | The readinessprobe scheme (https or http). |
@@ -173,25 +181,33 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | elasticsearch.certificateSecretName | string | `"{{ include \"common.names.fullname\" .}}-es-tls-secret"` | The name of the secret holding the tls secret By default the name will be fullname of release + "es-tls-secret" |
-| elasticsearch.defaultNodeSet | object | `{"count":1,"extraConfig":{},"extraInitContainers":{},"installMapperSizePlugin":true,"memoryMapping":false,"setMaxMapCount":true}` | Default Node Set |
+| elasticsearch.defaultNodeSet | object | `{"annotations":{},"count":1,"extraConfig":{},"extraInitContainers":{},"installMapperSizePlugin":true,"memoryMapping":false,"setMaxMapCount":true}` | Default Node Set |
+| elasticsearch.defaultNodeSet.annotations | object | `{}` | Annotations for Elasticsearch |
 | elasticsearch.defaultNodeSet.count | int | `1` | the number of replicas for Elastic Search |
 | elasticsearch.defaultNodeSet.extraConfig | object | `{}` | Extra configuration parameters for Elasticsearch nodes to be appended to the default (none). See https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-node-configuration.html |
 | elasticsearch.defaultNodeSet.extraInitContainers | object | `{}` | Extra init containers to be started before Elasticsearch nodes are started. See https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-init-containers-plugin-downloads.html |
 | elasticsearch.defaultNodeSet.memoryMapping | bool | `false` | Set this to true for production workloads, this will also  use an init container to increase the vm.max_map_count to 262144 on the nodes. |
 | elasticsearch.defaultNodeSet.setMaxMapCount | bool | `true` | Controls whether to start an init container that increases the vm.max_map_count to 262144 on the node. Set memoryMapping to true and this setting also to true to run the init container. Note that this requires the ability to run privileged containers, which is likely not the case on many secure clusters. |
 | elasticsearch.deploy | bool | `true` | Deploy elastic search instance  |
+| elasticsearch.extraSecrets | list | `[]` | Extra Secrets adding or changing built-in users of Elasticsearch. You can use this to limit the roles of the default elastic user. Note if you specify user and roles, the secret will be generated with a random password. If you just specify a name, the secret will be used as is. Example for setting the default user elastic to role view only:  - name: "elasticusersecret"    username: "elastic"    roles: "viewer" |
 | elasticsearch.image | string | `nil` | The image that should be used. By default ECK will use the official Elasticsearch images.  Overwrite this to use an image from an internal registry or any custom images. Make sure that the image corresponds to the version field. |
 | elasticsearch.keystoreSecretName | string | `""` | The secret name that holds the keystore password   |
-| elasticsearch.nodeSets | object | `{}` | Node sets. See official ElasticSearch documentation at: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-orchestration.html if you specify node sets here the defaultNodeSet will not be used. |
-| elasticsearch.port | int | `9200` | The default elasticsearch instance http communication port |
+| elasticsearch.nodeSets | list | `[]` | Node sets. See official ElasticSearch documentation at: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-orchestration.html if you specify node sets here the defaultNodeSet will not be used. |
+| elasticsearch.podDisruptionBudget | object | `{"data":{},"enabled":true}` | Customization of ElasticSearchs PodDisruptionBudget Policy. Elastic Cloud on Kubernetes operator (ECK) creates a default PodDisruptionBudget Policy. |
+| elasticsearch.podDisruptionBudget.data | object | `{}` | Overwrite the default PodDisruptionBudget Policy. Overwriting with custom PodDisruptionBudget Policy requires enabled=true. Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/ |
+| elasticsearch.podDisruptionBudget.enabled | bool | `true` | Whether a PodDisruptionBudget Policy should be created. Enabled=true results in ECK deploying the default (or custom, see data) PodDisruptionBudget Policy. Enabled=false results in no PodDisruptionBudget Policy deployment. |
 | elasticsearch.secretName | string | `""` | The secret name that holds the sag es user for API Gateway. |
-| elasticsearch.serviceName | string | `""` | The elasticsearch http service name that API Gateway uses. The default is compiled of the fullname (releasename + chart name) + "-http"  You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart. |
+| elasticsearch.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
+| elasticsearch.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Elasticsearch |
+| elasticsearch.serviceAccount.name | string | `""` | Name of the ServiceAccount for Elasticsearch |
+| elasticsearch.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount. Requires create=true to work. |
 | elasticsearch.tlsEnabled | bool | `false` | Whether the communication from APIGW and Kibana should be HTTPS Note: you will need to create certificate and a separate truststore for the communication. |
 | elasticsearch.version | string | `"8.2.3"` | The ECK version to be used |
 | extraConfigMaps | list | `[]` | Extra config maps for additional configurations such as extra ports, etc. |
 | extraContainers | list | `[]` | Extra containers which should run in addition to the main container as a sidecar - name: do-something   image: busybox   command: ['do', 'something'] |
 | extraEnvs | object | `{}` | Exta environment properties to be passed on to the container |
 | extraInitContainers | list | `[]` | Extra init containers that are executed before starting the main container - name: do-something   image: busybox   command: ['do', 'something'] |
+| extraLabels | object | `{}` | Extra Labels for API Gateway |
 | extraVolumeMounts | list | `[]` | Extra volume mounts - name: extras   mountPath: /usr/share/extras   readOnly: true |
 | extraVolumes | list | `[]` | Exta volumes that should be mounted. - name: extras   emptyDir: {} |
 | fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
@@ -199,6 +215,9 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | global.apigwHealthProtocol | string | `"http"` | Protocol for health check for kibana startup, must be http / https |
 | global.apigwHealthService | string | `"apigw-admin-svc"` | Service name for health check for kibana startup, must same value as apigwAdminService |
 | global.curlImage | string | `"curlimages/curl"` |  |
+| global.elasticsearch | object | `{"port":9200,"serviceName":""}` | Elasticsearch global settings Required for Prometheus Exporter Sub Chart |
+| global.elasticsearch.serviceName | string | `""` | The elasticsearch http service name that API Gateway uses. The default is compiled of the fullname (releasename + chart name) + "-http"  You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart. |
+| hostAliases | list | `[]` | Value to add extra host aliases to APIGW container. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"sagcr.azurecr.io/apigateway-minimal"` | The repository for the image. By default,  this points to the Software AG container repository.  Change this for air-gapped installations or custom images. For the Software AG container repository you need to have a  valid access token stored as registry credentials |
 | image.tag | string | `"10.15"` | The image tag of the apigateway image default this will be the latest version.  For realworld scenarios SAG recommends to use a  specific version to not accidently change production versions with newer images. |
@@ -240,7 +259,23 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.ui.svcPort | string | `""` |  |
 | ingresses.ui.tls[0].hosts | string | `nil` |  |
 | ingresses.ui.tls[0].secretName | string | `nil` |  |
-| kibana.port | int | `5601` |  |
+| kibana.annotations | object | `{}` | Annotations for Kibana |
+| kibana.extraInitContainers | list | `[]` | The definition of extra initContainers for kibana. |
+| kibana.extraLabels | object | `{}` | Additional labels to be added to kibana pod labels. |
+| kibana.image | string | `nil` | The image that should be used. By default ECK will use the official Elasticsearch images.  Overwrite this to use an image from an internal registry or any custom images. Make sure that the image corresponds to the version field. |
+| kibana.podSecurityContext | object | `{}` | The pod securityContext for kibana pod. |
+| kibana.port | int | `5601` | The default Kibana Port |
+| kibana.resources | object | `{}` | Resource Settings for Kibana Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
+| kibana.secretName | string | `""` | The secret name that holds the kibana user for API Gateway. |
+| kibana.securityContext | object | `{}` | The securityContext for kibana container. |
+| kibana.serviceAccount | string | `""` | The name of kibanas serviceAccount.   |
+| kibana.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
+| kibana.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Kibana |
+| kibana.serviceAccount.name | string | `""` | Name of the ServiceAccount for Kibana |
+| kibana.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Kibana ServiceAccount. Requires create=true to work. |
+| kibana.version | string | `"8.2.3"` | The ECK version to be used |
+| licenseConfigKey | string | `""` |  |
+| licenseConfigName | string | `""` | The name of the secret or configmap that contains the license key. Defaults to the release name + chart name + "-license". |
 | lifecycle | object | `{}` | lifecycle hooks to execute on preStop / postStart,... preStop:   exec:     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"] postStart:   exec:     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"] |
 | metering.accumulationPeriod | string | `"1800"` | The period in seconds for which data is accumulated before a log record is produced. |
 | metering.enabled | bool | `true` | enable metering  |
@@ -259,7 +294,10 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
-| prometheus-elasticsearch-exporter.es.uri | string | `"{{ .Release.Name }}-apigateway-es-http:9200"` |  |
+| prometheus-elasticsearch-exporter | object | `{"enabled":true,"es":{"uri":"http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"},"extraEnvSecrets":{"ES_PASSWORD":{"key":"password","secret":"apigw-apigateway-sag-user-es"},"ES_USER":{"key":"username","secret":"apigw-apigateway-sag-user-es"}},"serviceMonitor":{"enabled":true}}` | Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details. |
+| prometheus-elasticsearch-exporter.enabled | bool | `true` | Deploy the prometheus exporter for elasticsearch |
+| prometheus-elasticsearch-exporter.es.uri | string | `"http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"` | The uri of the elasticsearch service. By default this is null and the environment variable ES_URI is used instead. Overwrite this if you are using an external Elasticsearch instance |
+| prometheus-elasticsearch-exporter.extraEnvSecrets | object | `{"ES_PASSWORD":{"key":"password","secret":"apigw-apigateway-sag-user-es"},"ES_USER":{"key":"username","secret":"apigw-apigateway-sag-user-es"}}` | secret for elasticsearch user. Will need to adjust the secret's name. By default the secret name is <releasename>-apigateway-sag-user-es. Adjust accordingly if your release name is different.  |
 | prometheus.path | string | `"/metrics"` |  |
 | prometheus.port | string | `"5555"` |  |
 | prometheus.scheme | string | `"http"` |  |
@@ -273,11 +311,12 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | resources.apigwInitContainer.limits.memory | string | `"100Mi"` |  |
 | resources.apigwInitContainer.requests.cpu | string | `"100m"` |  |
 | resources.apigwInitContainer.requests.memory | string | `"50Mi"` |  |
+| secrets | object | `{"generateAdminSecret":true,"generateElasticSecrets":true}` | Controls if secrets should be generated automatically. |
 | securityContext | object | `{}` |  |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
-| serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
+| serviceAccount.create | bool | `true` | - apiVersion: rbac.authorization.k8s.io/v1 kind: Role metadata:   name: {{ include "common.names.roleName" . }} rules: - apiGroups:   - ""   resources:   - pods   - endpoints   verbs:   - get   - list   - watch |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | serviceAccount.roleName | string | `""` |  |
 | tolerations | list | `[]` |  |

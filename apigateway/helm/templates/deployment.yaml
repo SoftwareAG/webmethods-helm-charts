@@ -25,9 +25,6 @@ metadata:
     {{- with .Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
     {{- end }}
-    {{- with .Values.apigw.extraLabels -}}
-    {{ toYaml . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -46,6 +43,9 @@ spec:
       labels:
         {{- include "common.labels.matchLabels" . | nindent 8 }}
         {{- with .Values.extraLabels -}}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.apigw.extraLabels -}}
         {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
@@ -176,7 +176,6 @@ spec:
             periodSeconds: 30
             successThreshold: 1
             timeoutSeconds: 1
-            
           readinessProbe:
             httpGet:
               path: /rest/apigateway/health
@@ -218,6 +217,10 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.hostAliases }}
+      hostAliases:  
+        {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       volumes:
       - name: apigw-config
