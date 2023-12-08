@@ -55,17 +55,17 @@ If you want to contribute to this repository, please read the [contributing guid
 
 ## Useful links   
 
-ðŸ“˜ Explore the Knowledge Base    
+📘 Explore the Knowledge Base    
 Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://tech.forums.softwareag.com/tags/c/knowledge-base/6/webmethods).  
 
-ðŸ’¡ Get Expert Answers    
+💡 Get Expert Answers    
 Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://tech.forums.softwareag.com/tags/c/forum/1/webMethods).  
 
-ðŸš€ Try webMethods    
+🚀 Try webMethods    
 See webMethods in action with a [Free Trial](https://techcommunity.softwareag.com/en_en/downloads.html).   
 
-âœ�ï¸� Share Your Feedback    
-Your input drives our innovation. If you find a bug, please create an issue in the repository. If youâ€™d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).   
+✍️ Share Your Feedback    
+Your input drives our innovation. If you find a bug, please create an issue in the repository. If you’d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).   
 
 More to discover
 * [Helm Charts: Deploying webMethods Components in Kubernetes](https://tech.forums.softwareag.com/t/helm-charts-deploying-webmethods-components-in-kubernetes/285781)  
