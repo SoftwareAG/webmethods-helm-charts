@@ -43,7 +43,7 @@ helm install um webmethods/universalmessaging
 | Version | Changes and Description |
 |-----|------|
 | `1.0.0' | Initial release |
-| `1.0.1' | Update JMX Exporter configuration file with . Bigfix: Mount configuration files into container. Nginx added. |
+| `1.0.1' | Update JMX Exporter configuration file from latest [UM Git repository](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config). Bugfix: Mount configuration files into container. Nginx added. |
 
 ## Values
 
