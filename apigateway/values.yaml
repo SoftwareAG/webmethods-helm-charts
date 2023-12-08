@@ -71,9 +71,9 @@ ingresses:
         paths:
           - path: /
             pathType: Prefix
-    tls: 
-      - secretName: 
-        hosts: 
+    # tls: 
+    #   - secretName: 
+    #     hosts: 
   rt:
     defaultHost: 
     enabled: true
@@ -87,9 +87,9 @@ ingresses:
         paths:
           - path: /gateway
             pathType: Prefix
-    tls: 
-      - secretName: 
-        hosts:
+    # tls: 
+    #   - secretName: 
+    #     hosts:
   admin:
     defaultHost: ""
     enabled: true
@@ -103,20 +103,20 @@ ingresses:
         paths:
           - path: /
             pathType: Prefix
-    tls: 
-      - secretName:
-        hosts:
-          - default
+    # tls: 
+    #   - secretName:
+    #     hosts:
+    #       - default
 
 # global ingress settings for tls secret name, cert and key
 ingress:
   defaultDomain: my-domain.com 
-  tls:
+  # tls:
     # -- default secret name for TLS. By default empty,
     # will look for <release-name-apigateway->tls".
-    secretName: ""
-    cert: "" 
-    key: ""
+    # secretName: ""
+    # cert: "" 
+    # key: ""
 
 resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
