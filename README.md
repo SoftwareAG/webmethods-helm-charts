@@ -19,7 +19,7 @@ webmethods/apigateway           1.0.0           10.15           API Gateway Helm
 webmethods/common               1.0.0           1.0.0           A Library Helm Chart for grouping common logic ...
 webmethods/developerportal      1.0.0           10.15           webMethods Developer Portal Helm Chart for Kube...
 webmethods/microservicesruntime 1.0.0           10.15           Microservices Runtime (MSR) Helm Chart for Kube...
-webmethods/universalmessaging   1.0.0           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
+webmethods/universalmessaging   1.0.1           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
 ```
 
 ## Available Charts READMEs
@@ -33,6 +33,10 @@ Each chart has a README for *how to use* and lists some prerequisites.
 | [microservicesruntime](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/microservicesruntime/helm/README.md) | Microservices Runtime (MSR) |
 | [mywebmethodsserver](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/mywebmethodsserver/helm/README.md) | My webMethods Server (MWS) |
 | [universalmessaging](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/universalmessaging/helm/README.md) | Universal Messaging (UM) |
+
+## Chart Versions
+
+Per default, Helm uses the latest version on release installation. If you have successfully installed a webMethods release, you should notice the current used Chart version. Therefore, on further release installation oder upgrades (with `helm upgrade --install`) you should use the `--version X.Y.Z` to guarantee that the same is installed everywhere.
 
 ## Utilities
 
