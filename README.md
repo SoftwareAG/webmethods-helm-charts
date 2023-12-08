@@ -19,7 +19,7 @@ webmethods/apigateway           1.0.0           10.15           API Gateway Helm
 webmethods/common               1.0.0           1.0.0           A Library Helm Chart for grouping common logic ...
 webmethods/developerportal      1.0.0           10.15           webMethods Developer Portal Helm Chart for Kube...
 webmethods/microservicesruntime 1.0.0           10.15           Microservices Runtime (MSR) Helm Chart for Kube...
-webmethods/universalmessaging   1.0.0           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
+webmethods/universalmessaging   1.0.1           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
 ```
 
 ## Available Charts READMEs
@@ -33,6 +33,10 @@ Each chart has a README for *how to use* and lists some prerequisites.
 | [microservicesruntime](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/microservicesruntime/helm/README.md) | Microservices Runtime (MSR) |
 | [mywebmethodsserver](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/mywebmethodsserver/helm/README.md) | My webMethods Server (MWS) |
 | [universalmessaging](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/universalmessaging/helm/README.md) | Universal Messaging (UM) |
+
+## Chart Versions
+
+Per default, Helm uses the latest version on release installation. If you have successfully installed a webMethods release, you should notice the current used Chart version. Therefore, on further release installation oder upgrades (with `helm upgrade --install`) you should use the `--version X.Y.Z` to guarantee that the same is installed everywhere.
 
 ## Utilities
 
@@ -51,17 +55,17 @@ If you want to contribute to this repository, please read the [contributing guid
 
 ## Useful links   
 
-📘 Explore the Knowledge Base    
+ðŸ“˜ Explore the Knowledge Base    
 Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://tech.forums.softwareag.com/tags/c/knowledge-base/6/webmethods).  
 
-💡 Get Expert Answers    
+ðŸ’¡ Get Expert Answers    
 Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://tech.forums.softwareag.com/tags/c/forum/1/webMethods).  
 
-🚀 Try webMethods    
+ðŸš€ Try webMethods    
 See webMethods in action with a [Free Trial](https://techcommunity.softwareag.com/en_en/downloads.html).   
 
-✍️ Share Your Feedback    
-Your input drives our innovation. If you find a bug, please create an issue in the repository. If you’d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).   
+âœ�ï¸� Share Your Feedback    
+Your input drives our innovation. If you find a bug, please create an issue in the repository. If youâ€™d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).   
 
 More to discover
 * [Helm Charts: Deploying webMethods Components in Kubernetes](https://tech.forums.softwareag.com/t/helm-charts-deploying-webmethods-components-in-kubernetes/285781)  
