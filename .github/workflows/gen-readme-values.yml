@@ -5,8 +5,9 @@ on:
     branches-ignore:
       - main                     # Run on all not 'main' branches
     paths:
-      - '**/helm/values.yaml'    # Only if values.yaml is pushed
-      
+      - '**/helm/values.yaml'         # Only if values.yaml or ... 
+      - '**/helm/README.md.gotmpl'    #     ... README.md.gotmpl is pushed
+
 jobs:
   release:
     permissions:
