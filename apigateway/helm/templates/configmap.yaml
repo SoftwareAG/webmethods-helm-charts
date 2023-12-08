@@ -33,38 +33,20 @@ data:
       allowEdit: false
       properties:
         location: apigw-config.yml
+    {{- if .Values.apigw.extraConfigSources }}
+    {{- toYaml .Values.apigw.extraConfigSources | nindent 4 -}}
+    {{- end }}
 
   apigw-config.yml: |
     apigw: 
       {{- range $key, $value := .Values.apigw.configSources }}
-      {{- if kindIs "map" $value }}
-      {{ $key }}:
-
-      {{- range $key1, $value1 := $value }}
-        {{- if kindIs "map" $value1 }}
-        {{ $key1 }}:
-
-        {{- range $key2, $value2 := $value1 }}
-          {{- if kindIs "map" $value2 }}
-          {{ $key2 }}:
-
-          {{- range $key3, $value3 := $value2 }}
-            {{- if kindIs "string" $value3 }}
-            {{ $key3 }}: {{ (tpl $value3 $) }}
-            {{- end }}
-          {{- end }}
-
-          {{- else if kindIs "string" $value2 }}
-          {{ $key2 }}: {{ (tpl $value2 $) }}
-          {{- end }}
-        {{- end }}
-
-        {{- else if kindIs "string" $value1 }}
-        {{ $key1 }}: {{ (tpl $value1 $) }}
-        {{- end }}
-        {{- end }}
-        {{- else if kindIs "string"}}
-          {{  $key }}: {{ (tpl $value $) }}
+        {{- if kindIs "map" $value }}
+          {{- printf "%s:" $key | nindent 6 }}
+          {{- include "common.utils.renderNestedMap" (dict "map" $value "ctx" $ "depth" 8) }}
+        {{- else if kindIs "string" $value }}
+          {{- printf "%s: %s" $key (tpl $value $) }}
+        {{- else if or (kindIs "bool" $value) (or (kindIs "float" $value) (kindIs "int" $value)) }}
+          {{- printf "%s: %v" $key $value }}    
         {{- end }}
       {{- end }}
     

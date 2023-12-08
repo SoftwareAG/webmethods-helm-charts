@@ -80,7 +80,7 @@ helm install wm-mws microservicesruntime
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
+| resources | object | `{}` | Define CPU and memory resources for container |
 | securityContext | object | `{}` | The security context the pods should run in. capabilities:   drop:   - ALL readOnlyRootFilesystem: true runAsNonRoot: true runAsUser: 1000 |
 | service | object | `{"port":8585,"type":"ClusterIP"}` | The service type of the MyWebMethodsServer service |
 | serviceAccount.create | bool | `false` |  |

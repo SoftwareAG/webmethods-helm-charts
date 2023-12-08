@@ -1,6 +1,6 @@
 # webMethods Microservices Runtime Helm Chart
 
-This Helm Chart installs and configures a Microservices Runtime (MSR) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section. 
+This Helm Chart installs and configures a Microservices Runtime (MSR) container. It is starting with a simple example and provides more complex scenarios in the *Examples for Use-cases* section.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ kubectl create secret docker-registry regcred --docker-server=sagcr.azurecr.io -
 
 ### Service Monitor
 
-A Service Monitor CRD can be created optional. Anywhere, the custom kind `ServiceMonitor` must be registered as Kubernetes object. If not, you can apply it with ... 
+A Service Monitor CRD can be created optional. Anywhere, the custom kind `ServiceMonitor` must be registered as Kubernetes object. If not, you can apply it with ...
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml
@@ -33,12 +33,14 @@ Microservices Runtime requires a license file. These license is supposed to be p
 Hence before running `helm install`, create the configmap:
 
 ```
-kubectl create configmap microservicesruntime-license-key --from-file=licenseKey.xml=<your path and filename to Microservices Runtime license file>
+kubectl create configmap microservicesruntime-license-key --from-file=licensekey=<your path and filename to Microservices Runtime license file>
 ```
+
+Optionally you can also provide the license directly when installing your release (see also below).
 
 ## Examples for Use-cases
 
-Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values. 
+Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values.
 
 | Use-case | Description |
 |-----|------|
@@ -61,6 +63,12 @@ Install release with pulling image and setting secret (to pull image) ...
 helm install wm-msr webmethods/microservicesruntime   \
 ```
 
+... (optionally) provide the license key at installation time (can be ommitted for upgrade later)
+
+```shell
+--set-file=licensekey=<your path and filename to Microservices Runtime license file>
+```
+
 ... Ingress is enabled per default. Define Ingress service host ...
 
 ```shell
@@ -71,7 +79,6 @@ helm install wm-msr webmethods/microservicesruntime   \
 ```
 
 ... instead of using default image, use your own ...
-
 
 ```shell
   --set "image.repository=<Your-Docker-registry>/wm-msr-db" \

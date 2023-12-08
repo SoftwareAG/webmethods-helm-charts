@@ -42,7 +42,8 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        {{- include "common.labels.standard" . | nindent 8 }}-nginx
+        app: nginx
+        {{- include "common.labels.standard" . | nindent 8 }}
         {{- with .Values.extraLabels -}}
         {{ toYaml . | nindent 8 }}
         {{- end }}

@@ -1,9 +1,9 @@
 dependencies:
 - name: common
   repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
-  version: 1.0.0
+  version: 1.0.1
 - name: prometheus-elasticsearch-exporter
   repository: https://prometheus-community.github.io/helm-charts
   version: 5.0.0
-digest: sha256:fb04ebbbbb5bc664a8f0386a1196ec0e24c14f9271c1fa033fedafc8a5dd2e3e
-generated: "2023-09-29T08:45:02.373444537+02:00"
+digest: sha256:3e450b2f52c57562e920dce727c8354be6cc2717f0d6fb15f23c393a49313a9b
+generated: "2023-11-21T17:33:57.371102+01:00"

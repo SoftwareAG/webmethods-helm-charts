@@ -19,7 +19,7 @@ fullnameOverride: ""
 serviceAccount:
   create: false
 
-# -- Extra Labels for API Gateway
+# -- Extra Labels
 extraLabels: {}
 
 # -- Exta environment properties to be passed on to the MyWebMethods Server
@@ -110,6 +110,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+# -- Define CPU and memory resources for container
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

@@ -1,0 +1,45 @@
+extraConfigMaps:
+  - name: msr-fluentd-config
+    data: 
+      fluent.conf: |
+        <source>
+          @type tail
+          path "/var/logs/wm/*.log"
+          pos_file "/var/logs/filepos/file.log.pos"
+          tag "wm.log"
+          <parse>
+            @type none
+          </parse>
+        </source>
+
+        <match wm.log>
+          @type stdout
+        </match>
+
+extraVolumeMounts:
+  - name: msr-log
+    mountPath: /opt/softwareag/IntegrationServer/logs
+
+extraVolumes:
+  - name: msr-log
+    emptyDir: {}
+  - name: filepos
+    emptyDir: {}
+  - name: fluentd-config
+    configMap:
+      name: msr-fluentd-config
+
+extraContainers:
+  - name: fluentd
+    image: fluent/fluentd:v1.16.2-debian-1.0
+    env:
+    - name: FLUENT_UID
+      value: "0"
+    volumeMounts:
+    - name: fluentd-config
+      mountPath: /fluentd/etc/fluent.conf
+      subPath: fluent.conf
+    - name: msr-log
+      mountPath: /var/logs/wm/
+    - name: filepos
+      mountPath: /var/logs/filepos/

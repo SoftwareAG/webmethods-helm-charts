@@ -1,7 +1,7 @@
 {{- if .Values.externalLoadBalancer }}
 ---
 # /*
-#  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+#  * Copyright (c) 2023 Software AG, Darmstadt, Germany and/or its licensors
 #  *
 #  * SPDX-License-Identifier: Apache-2.0
 #  *
@@ -22,12 +22,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:    
+  name: {{ include "common.names.fullname" . }}-nginx
+  labels:
     {{- include "common.labels.standard" . | nindent 4 }}
     {{- with .Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
-    {{- end }}    
-  name: {{ include "common.names.fullname" . }}-nginx
+    {{- end }}
+
 spec:
   replicas: 1
   selector:
@@ -46,7 +47,7 @@ spec:
         {{- include "common.labels.standard" . | nindent 8 }}
         {{- with .Values.extraLabels -}}
         {{ toYaml . | nindent 8 }}
-        {{- end }}        
+        {{- end }}
     spec:
       containers:
       - name: nginx
@@ -55,11 +56,8 @@ spec:
         resources:
           {{- toYaml .Values.resources.nginxContainer | nindent 10 }}
         ports:
-        - containerPort: {{ int .Values.apigw.runtimePort }}
-          name: rt-port
-          protocol: TCP
-        - containerPort: {{ int .Values.apigw.uiPort }}
-          name: ui-http
+        - containerPort: 9000
+          name: nsp
           protocol: TCP
         volumeMounts:
           - name: nginx-config
@@ -69,12 +67,12 @@ spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-      {{- end }}            
+      {{- end }}
             
       volumes:
         - name: nginx-config
           configMap:
-            name: {{ include "common.names.fullname" . }}-nginx-config
+            name: {{ include "common.names.fullname" . }}-nginx
             items:
             - key:  nginx.conf
               path: nginx.conf

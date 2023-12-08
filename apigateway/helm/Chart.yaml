@@ -51,3 +51,4 @@ dependencies:
   tags:
     - prometheus-elasticsearch-exporter
   version: 5.0.0
+  condition: prometheus-elasticsearch-exporter.enabled

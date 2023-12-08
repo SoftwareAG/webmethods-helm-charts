@@ -87,7 +87,7 @@ nameOverride: ""
 # -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
 fullnameOverride: ""
 
-# -- Custom server configuration file 
+# -- Custom server configuration file. Overwriting the content of file `Custom_Server_Common.conf` in container. 
 customServerConfig: 
   content: |
 
@@ -155,6 +155,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+# -- Define CPU und memory resources UM and Nginx containers.
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -166,6 +167,14 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+  # nginxContainer:
+  #   requests:
+  #     cpu: 500m
+  #     memory: 2Gi
+  #   limits:
+  #     # use a high cpu limit to avaoid the container being throttled
+  #     cpu: 8
+  #     memory: 4Gi
 
 nodeSelector: {}
 
@@ -186,3 +195,7 @@ readinessProbe:
   timeoutSeconds: 60
   successThreshold: 1
   failureThreshold: 5
+
+# -- Deploy Nginx as external LB. The LB will be configured to dispatch incoming requests to all `replicaCount` replicas.
+# Nginx is configured by example from [Universal Messaging documentation](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/#page/num-webhelp%2Fre-configure_nginx_to_serve_http_requests.html%23)
+externalLoadBalancer: false
