@@ -63,10 +63,16 @@ Install release with pulling image and setting secret (to pull image) ...
 helm install wm-msr webmethods/microservicesruntime   \
 ```
 
-... (optionally) provide the license key at installation time (can be ommitted for upgrade later)
+... (optionally) provide the license key at installation time (can be ommitted for upgrade later) ...
 
 ```shell
 --set-file=licensekey=<your path and filename to Microservices Runtime license file>
+```
+
+... set your own image pull secret if you didn't create the default `regcred` ... 
+
+```shell
+--set "imagePullSecrets[0].name=your-registry-credentials"
 ```
 
 ... Ingress is enabled per default. Define Ingress service host ...
