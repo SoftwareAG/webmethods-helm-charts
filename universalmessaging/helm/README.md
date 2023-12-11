@@ -43,13 +43,13 @@ helm install um webmethods/universalmessaging
 ... (optionally) provide the license key at installation time (can be ommitted for upgrade later) ...
 
 ```shell
---set-file=licensekey=<your path and filename to Universal Messaging license file>
+--set-file=licensekey=<your path and filename to Universal Messaging license file> \
 ```
 
 ... set your own image pull secret if you didn't create the default `regcred` ...
 
 ```shell
---set "imagePullSecrets[0].name=your-registry-credentials"
+--set "imagePullSecrets[0].name=your-registry-credentials" \
 ```
 
 ## Version History
