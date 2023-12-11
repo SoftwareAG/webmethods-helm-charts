@@ -22,6 +22,8 @@ Hence before running `helm install` create the configmap:
 kubectl create configmap universalmessaging-licence-key --from-file=licence.xml=<your path and filename to Universal Messaging license file>
 ```
 
+Optionally you can also provide the license directly when installing your release (see also below).
+
 ## Examples for Use-cases
 
 Sub-folder `examples` contains some *values* examples for more use-cases. To use the use-case, adapt and add the provided `values.yaml` to your values.
@@ -36,6 +38,18 @@ Install release
 
 ```shell
 helm install um webmethods/universalmessaging
+```
+
+... (optionally) provide the license key at installation time (can be ommitted for upgrade later) ...
+
+```shell
+--set-file=licensekey=<your path and filename to Universal Messaging license file>
+```
+
+... set your own image pull secret if you didn't create the default `regcred` ...
+
+```shell
+--set "imagePullSecrets[0].name=your-registry-credentials"
 ```
 
 ## Version History
