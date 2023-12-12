@@ -34,5 +34,5 @@ jobs:
         for dt in ${pusdDTs};
         do
           echo Pushing [${dt}] ...;
-          curl -s -u "Administrator:${ADMIN_PASSWORD}" -H "Content-Type: application/json" "${DEPLOYMENT}:5555/invoke/pub.publish:syncToProvider?documentTypes[0]=${dt}" | jq '.';
+          curl -X POST -s -u "Administrator:${ADMIN_PASSWORD}" -H "Content-Type: application/json" "${DEPLOYMENT}:5555/invoke/pub.publish:syncToProvider" -d "{ \"documentTypes\": [\"${dt}\"] }" | jq '.';
         done;
