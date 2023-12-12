@@ -172,7 +172,7 @@ microservicesruntime:
 
 jobs:
 # -- Create PE topics in UM on Helm post-install hook 
-- name: deploy-PE-assets-to-um
+- name: deploy-pe-assets-to-um
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-weight": "0"
