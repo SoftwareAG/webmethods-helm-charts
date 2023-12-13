@@ -36,7 +36,7 @@ Each chart has a README for *how to use* and lists some prerequisites.
 
 ## Chart Versions
 
-Per default, Helm uses the latest version on release installation. If you have successfully installed a webMethods release, you should notice the current used Chart version. Therefore, on further release installation oder upgrades (with `helm upgrade --install`) you should use the `--version X.Y.Z` to guarantee that the same is installed everywhere.
+Per default, Helm uses the latest version on release installation. If you have successfully installed a webMethods release, you should notice the current used Chart version. Therefore, on further release installation or upgrades (with `helm upgrade --install`) you should use the `--version X.Y.Z` to guarantee that the same is installed everywhere.
 
 ## Utilities
 
