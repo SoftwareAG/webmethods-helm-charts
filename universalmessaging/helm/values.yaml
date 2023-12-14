@@ -183,18 +183,37 @@ tolerations: []
 affinity: {}
 
 # -- Configure liveness probe
-livenessProbe:
-  periodSeconds: 15
-  timeoutSeconds: 60
+startupProbe:
+  httpGet:
+    path: /health/
+    port: 9000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
   successThreshold: 1
-  failureThreshold: 5
+  failureThreshold: 30
+
+# -- Configure liveness probe
+livenessProbe:
+  httpGet:
+    path: /health/
+    port: 9000
+  initialDelaySeconds: 0
+  periodSeconds: 15
+  timeoutSeconds: 30
+  successThreshold: 1
+  failureThreshold: 3
 
 # -- Configure readiness probe
 readinessProbe:
+  httpGet:
+    path: /health/
+    port: 9000
+  initialDelaySeconds: 0
   periodSeconds: 15
-  timeoutSeconds: 60
+  timeoutSeconds: 30
   successThreshold: 1
-  failureThreshold: 5
+  failureThreshold: 3
 
 # -- Deploy Nginx as external LB. The LB will be configured to dispatch incoming requests to all `replicaCount` replicas.
 # Nginx is configured by example from [Universal Messaging documentation](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/#page/num-webhelp%2Fre-configure_nginx_to_serve_http_requests.html%23)
