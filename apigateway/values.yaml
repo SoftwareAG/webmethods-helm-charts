@@ -298,9 +298,10 @@ apigw:
     elasticsearch:      
       tenantId: default
       hosts: "{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
-  
-      
 
+    kibana:
+      autostart: false
+      dashboardInstance: "{{ default (printf \"%s-%s-kb-http\" .Release.Name .Chart.Name) .Values.global.kibana.serviceName }}:{{ .Values.kibana.port }}"
 
 prometheus:
   path: "/metrics"
