@@ -56,8 +56,9 @@ helm install um webmethods/universalmessaging
 
 | Version | Changes and Description |
 |-----|------|
-| `1.0.0' | Initial release |
-| `1.0.1' | Update JMX Exporter configuration file from latest [UM Git repository](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config). Bugfix: Mount configuration files into container. Nginx added. |
+| `1.0.0` | Initial release |
+| `1.0.1` | Update JMX Exporter configuration file from latest [UM Git repository](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config). Bugfix: Mount configuration files into container. Nginx added. |
+| `1.0.2` | Change startup, liveness and readiness probes. All configuration settings are in `values.yaml`. Now, The probes are using `httpGet` instead of `runUMTool.sh` utility. |
 
 ## Values
 
@@ -92,12 +93,12 @@ helm install um webmethods/universalmessaging
 | ingress.tls | list | `[]` | TLS of Ingress |
 | licenseConfigMap | string | `"universalmessaging-licence-key"` | Name of the licence config map |
 | lifecycle | object | `{}` | lifecycle hooks to execute on preStop / postStart,... |
-| livenessProbe | object | `{"failureThreshold":5,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":60}` | Configure liveness probe |
+| livenessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure liveness probe |
 | nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` | pod annotations |
 | podSecurityContext.fsGroup | int | `1724` |  |
-| readinessProbe | object | `{"failureThreshold":5,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":60}` | Configure readiness probe |
+| readinessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure readiness probe |
 | replicaCount | int | `1` | Number of replicas |
 | resources | object | `{}` | Define CPU und memory resources UM and Nginx containers. |
 | securityContext | object | `{}` |  |
@@ -107,6 +108,7 @@ helm install um webmethods/universalmessaging
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| startupProbe | object | `{"failureThreshold":30,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":30,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure liveness probe |
 | storage.configurationSize | string | `"2Mi"` | Storage size of configuration files |
 | storage.dataSize | string | `"2Gi"` | Storage size of data |
 | storage.logsSize | string | `"2Gi"` | Storage size of logs |
