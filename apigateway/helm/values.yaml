@@ -7,14 +7,14 @@ image:
   # For the Software AG container repository you need to have a 
   # valid access token stored as registry credentials
   repository: sagcr.azurecr.io/apigateway-minimal
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # -- The image tag of the apigateway image default this will be the latest version. 
   # For realworld scenarios SAG recommends to use a 
   # specific version to not accidently change production versions with newer images.
   tag: "10.15"
 
 # -- Image pull secret reference. By default looks for `regcred`.
-imagePullSecrets: 
+imagePullSecrets:
   - name: regcred
 
 # -- Controls if secrets should be generated automatically.
@@ -362,7 +362,7 @@ apigw:
 
     kibana:
       autostart: false
-      dashboardInstance: "{{ default (printf \"%s-%s-kb-http\" .Release.Name .Chart.Name) .Values.global.kibana.serviceName }}:{{ .Values.kibana.port }}"
+      dashboardInstance: "http://{{ default (printf \"%s-%s-kb-http\" .Release.Name .Chart.Name) .Values.global.kibana.serviceName }}:{{ .Values.kibana.port }}"
   
   # -- Extra configuration sources for API Gateway
   # Example: 
