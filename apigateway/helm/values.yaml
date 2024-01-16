@@ -322,14 +322,17 @@ apigw:
   # -- The key that holds the admin secret key; defauls to "password"
   adminSecretKey: ""
 
-  # -- Elasticsearch secret name that holds the elastic password and username
-  elasticSecretName: ""
+  # -- The secret that holds the truststore password. If empty the chart will generate the name: fullname + "-es-truststore-secret".
+  elastictrustStoreName: ""
 
-  # -- The key that holds the Elasticsearch user; defauls to "username"
-  elasticSecretUserKey: ""
+  # -- The key that holds the truststore password; defaults to "password"
+  elastictrustStorePassKey: ""
+  
+  # -- The secret that holds the keystore password. If empty the chart will generate the name: fullname + "-es-keystore-secret".
+  elastickeyStoreName: ""
 
-  # -- The key that holds the Elasticsearch password; defauls to "password"
-  elasticSecretPasswordKey: ""
+  # -- The key that holds the keystore password; defaults to "password"
+  elastickeyStorePassKey: ""
 
   # -- Application Properties to overwrite default API Gateway settings. Please check 
   # Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables. 
@@ -368,7 +371,11 @@ apigw:
     elasticsearch:      
       tenantId: default
       hosts: "{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
-  
+    
+    kibana:
+      dashboardInstance: "{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"
+      autostart: false
+
   # -- Extra configuration sources for API Gateway
   # Example: 
   # - type: YAML
@@ -451,6 +458,12 @@ elasticsearch:
   # -- The secret name that holds the sag es user for API Gateway.
   secretName: ""
 
+  # -- The key that holds the Elasticsearch user; defauls to "username"
+  secretUserKey: ""
+
+  # -- The key that holds the Elasticsearch password; defauls to "password"
+  secretPasswordKey: ""
+
   # -- Extra Secrets adding or changing built-in users of Elasticsearch.
   # You can use this to limit the roles of the default elastic user.
   # Note if you specify user and roles, the secret will be generated with a random password.
@@ -486,6 +499,9 @@ elasticsearch:
   # -- Whether the communication from APIGW and Kibana should be HTTPS
   # Note: you will need to create certificate and a separate truststore for the communication.
   tlsEnabled: false
+
+  # -- The name of the elasticsearch secret. By default it will created by the fullname + "-es-tls-secret" if tlsEnabled is set to true.
+  tlsSecretName: ""
 
   # -- The secret name that holds the keystore password  
   keystoreSecretName: ""
@@ -544,9 +560,6 @@ kibana:
   
   # -- The secret name that holds the kibana user for API Gateway.
   secretName: ""
-
-  # -- The name of kibanas serviceAccount.  
-  serviceAccount: ""
 
   # -- The pod securityContext for kibana pod.
   podSecurityContext: {}

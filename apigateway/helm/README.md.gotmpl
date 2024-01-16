@@ -51,7 +51,7 @@ provided as configmap.
 Hence before running `helm install` create the configmap:
 
 ```
-kubectl create configmap apigw-license-config --from-file=licenseKey.xml=<your path to API Gateway license file>
+kubectl create configmap apigw-license-config --from-file=licensekey=<your path to API Gateway license file>
 ```
 
 Optionally you can directly provide the license file at the time of running `helm install`:
@@ -146,5 +146,11 @@ If desired you may deploy API Gateway with your own TLS key and cert. The Templa
 helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingress.tls.cert="$(<cert.pem)"
 
 ```
+## Version History
+
+| Version | Changes and Description |
+|-----|------|
+| `1.0.0' | Initial release |
+| `1.1.0' | Bug fixes in default values and helper functions for elastic secret names. <br> **Attention:** moved elasticsearch secret keys: <br>elasticSecretName --> elasticsearch.secretName<br>elasticSecretUserKey --> elasticsearch.secretUserKey<br>elasticSecretPasswordKey --> elasticsearch.secretPasswordKey |
 
 {{ template "chart.valuesSection" . }}

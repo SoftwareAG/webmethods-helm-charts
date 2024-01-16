@@ -129,23 +129,25 @@ spec:
           - name: apigw_elasticsearch_http_password
             valueFrom:
               secretKeyRef:
-                name: {{ include "apigateway.elasticsecretName" . }}
+                name: {{ include "apigateway.elasticsecret" . }}
                 key: {{ include "apigateway.elasticsecretPasswordKey" . }}
           - name: apigw_elasticsearch_http_username
             valueFrom:
               secretKeyRef:
-                name: {{ include "apigateway.elasticsecretName" . }}
+                name: {{ include "apigateway.elasticsecret" . }}
                 key: {{ include "apigateway.elasticsecretUserKey" . }}
+          {{- if .Values.elasticsearch.tlsEnabled }}
           - name: apigw_elasticsearch_https_keystorePassword
             valueFrom:
               secretKeyRef:
                 name: {{ include "apigateway.elastickeystoresecret" . }}
-                key: password     
+                key: {{ include "apigateway.elastickeystoresecretPasswordKey" . }}     
           - name: apigw_elasticsearch_https_truststorePassword
             valueFrom:
               secretKeyRef:
-                name: {{ include "apigateway.elastickeystoresecret" . }}
-                key: password
+                name: {{ include "apigateway.elastictruststoresecret" . }}
+                key: {{ include "apigateway.elastictruststoresecretPasswordKey" . }}
+          {{- end }}
           {{- if .Values.extraEnvs }}
           {{- toYaml .Values.extraEnvs | nindent 10 }}
           {{- end }}

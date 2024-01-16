@@ -20,14 +20,7 @@
 Build the elasticsearch service name
 */}}
 {{- define "apigateway.elasticservice" -}}
-{{- default ( printf "%s%s" ( include "common.names.fullname" .) "-es-http" )  .Values.elasticsearch.serviceName }}
-{{- end }}
-
-{{/*
-Build the elasticsearch service name
-*/}}
-{{- define "apigateway.kibanaservice" -}}
-{{- default ( printf "%s%s" ( include "common.names.fullname" .) "-kb-http" )  .Values.kibana.serviceName }}
+{{- default ( printf "%s%s" ( include "common.names.fullname" .) "-es-http" )  .Values.global.elasticsearch.serviceName }}
 {{- end }}
 
 {{/*
@@ -45,10 +38,31 @@ Build the secret name for kibana user
 {{- end }}
 
 {{/*
-Build the secret name for trust and keystore for Elasticsearch
+Build the secret name for keystore for Elasticsearch
 */}}
 {{- define "apigateway.elastickeystoresecret" -}}
-{{- default (printf "%s%s" (include "apigateway.elasticsecret" .) "-keystore") .Values.elasticsearch.keystoreSecretName }}
+{{- default (printf "%s%s" (include "common.names.fullname" .) "-es-keystore-secret") .Values.apigw.elastickeyStoreSecretName }}
+{{- end }}
+
+{{/*
+Build the secret name for truststore for Elasticsearch
+*/}}
+{{- define "apigateway.elastictruststoresecret" -}}
+{{- default (printf "%s%s" (include "common.names.fullname" .) "-es-truststore-secret") .Values.apigw.elastictrustStoreSecretName }}
+{{- end }}
+
+{{/*
+Renders API Gateway's password key identifier for API Gateway for the keystore. Defaults to "password" if no Value for .Values.apigw.elastic. 
+*/}}
+{{- define "apigateway.elastickeystoresecretPasswordKey" -}}
+  {{- default ( printf "%s" "password" )  .Values.apigw.elastickeyStorePassKey }}
+{{- end }}
+
+{{/*
+Renders API Gateway's password key identifier for API Gateway for the truststore. Defaults to "password" if no Value for .Values.apigw.elastic. 
+*/}}
+{{- define "apigateway.elastictruststoresecretPasswordKey" -}}
+  {{- default ( printf "%s" "password" )  .Values.apigw.elastictruststoreStorePassKey }}
 {{- end }}
 
 {{/* 
@@ -80,24 +94,17 @@ Renders the admin secret key name for API Gateway from the apigw.adminsecretKey 
 {{- end }}
 
 {{/*
-Renders the Elasticsearch secret name for API Gateway from the apigw.elasticSecretName value. If not specified, it will be the default name.
-*/}}
-{{- define "apigateway.elasticsecretName" -}}
-  {{- default ( printf "%s%s" ( include "common.names.fullname" .) "-es" ) .Values.apigw.elasticSecretName }}
-{{- end }}
-
-{{/*
 Renders the Elasticsearch secret key name for API Gateway from the apigw.elasticsecretKey value. If not specified, it will be the default name.
 */}}
 {{- define "apigateway.elasticsecretPasswordKey" -}}
-  {{- default ( printf "%s" "password" )  .Values.apigw.elasticSecretPasswordKey }}
+  {{- default ( printf "%s" "password" )  .Values.elasticsearch.secretPasswordKey }}
 {{- end }}
 
 {{/*
 Renders the Elasticsearch secret user name for API Gateway from the apigw.elasticsecretKey value. If not specified, it will be the default name.
 */}}
 {{- define "apigateway.elasticsecretUserKey" -}}
-  {{- default ( printf "%s" "username" )  .Values.apigw.elasticSecretUserKey }}
+  {{- default ( printf "%s" "username" )  .Values.elasticsearch.secretUserKey }}
 {{- end }}
 
 {{/*
