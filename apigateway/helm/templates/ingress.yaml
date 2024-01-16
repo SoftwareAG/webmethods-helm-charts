@@ -23,7 +23,7 @@
 {{- range $name, $ing := .Values.ingresses -}}
 {{- if $ing.enabled -}}
 {{- $apigwname := (include "common.names.fullname" $ ) -}}
-{{- $defaultHost := default (printf "%s%s.%s" $apigwname $name $.Values.ingress.defaultDomain ) $ing.defaultHost -}}
+{{- $defaultHost := default (printf "%s-%s.%s" $apigwname $name $.Values.ingress.defaultDomain ) $ing.defaultHost -}}
 {{- if and $ing.className (not (semverCompare ">=1.18-0" $gitVersion)) }}
   {{- if not (hasKey $ing.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set $ing.annotations "kubernetes.io/ingress.class" .className}}

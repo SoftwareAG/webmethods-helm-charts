@@ -108,7 +108,7 @@ ingresses:
       nginx.ingress.kubernetes.io/affinity: "cookie"
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
-      - host: 
+      - host:
         paths:
           - path: /
             pathType: Prefix
@@ -116,7 +116,7 @@ ingresses:
       - secretName: 
         hosts: 
   rt:
-    defaultHost: 
+    defaultHost: ""
     enabled: true
     svcName: ""
     svcPort: ""
@@ -140,7 +140,7 @@ ingresses:
     annotations: 
       nginx.ingress.kubernetes.io/affinity: "cookie"
     hosts:
-      - host: default
+      - host:
         paths:
           - path: /
             pathType: Prefix
