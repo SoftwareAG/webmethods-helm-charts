@@ -3,7 +3,29 @@ entries:
   apigateway:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.943245321+01:00"
+    created: "2024-01-16T10:37:34.412837134+01:00"
+    dependencies:
+    - name: common
+      repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
+      tags:
+      - softwareag-common
+      version: 1.x.x
+    - condition: prometheus-elasticsearch-exporter.enabled
+      name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      tags:
+      - prometheus-elasticsearch-exporter
+      version: 5.0.0
+    description: API Gateway Helm Chart for Kubernetes
+    digest: 46c3c1edeb0461fdd4de5fc5fd3a232c733c539960e16f3c1de78ab19cc6b0b2
+    name: apigateway
+    type: application
+    urls:
+    - https://open-source.softwareag.com/webmethods-helm-charts/charts/apigateway-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
+    appVersion: "10.15"
+    created: "2024-01-16T10:37:34.408417912+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -29,10 +51,10 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-12-15T09:05:00.944305857+01:00"
+    created: "2024-01-16T10:37:34.413570019+01:00"
     description: A Library Helm Chart for grouping common logic between Software AG
       charts. This chart is not deployable by itself.
-    digest: 56fc76f78eaf802cda2fd3c246ac9e12abe96bb49463e9c00ab3a7f8b8ac5777
+    digest: 23ab93c7907319635d3f3d13a8c72f46cb2529217c37778511b4e4cb97f0b452
     home: https://softwareag.com
     icon: https://softwareag.com/downloads/logos/softwareag-mark.png
     keywords:
@@ -56,7 +78,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-12-15T09:05:00.943777703+01:00"
+    created: "2024-01-16T10:37:34.413193346+01:00"
     description: A Library Helm Chart for grouping common logic between Software AG
       charts. This chart is not deployable by itself.
     digest: 4c9eda6a44b05e9aa23e33196a67dd1ac6fd767d6a14cee40a312a320a780c8d
@@ -81,7 +103,7 @@ entries:
   developerportal:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.949119581+01:00"
+    created: "2024-01-16T10:37:34.415512191+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -94,7 +116,7 @@ entries:
       - prometheus-elasticsearch-exporter
       version: 5.0.0
     description: webMethods Developer Portal Helm Chart for Kubernetes
-    digest: f007573357fa9cb656d3f9c00e7ea32fcb760a7caa3d61bfcff55f629e0c7a94
+    digest: e6d5fea052c892f158172e00aa81660287cc87028de2e4e441668cf512abcd9f
     name: developerportal
     type: application
     urls:
@@ -103,7 +125,7 @@ entries:
   microservicesruntime:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.953827437+01:00"
+    created: "2024-01-16T10:37:34.418544173+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -111,7 +133,7 @@ entries:
       - softwareag-common
       version: 1.x.x
     description: Microservices Runtime (MSR) Helm Chart for Kubernetes
-    digest: d276aca3865c9aaf11c502ba5f61e9648edfce5a83f43d89b573fb557bea3754
+    digest: 2806361a417f053574d686093c57c6a29d1ada536d1ec803bca9ec4c98ae2075
     name: microservicesruntime
     type: application
     urls:
@@ -119,7 +141,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.951452037+01:00"
+    created: "2024-01-16T10:37:34.417006843+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -136,7 +158,7 @@ entries:
   mywebmethodsserver:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.955503356+01:00"
+    created: "2024-01-16T10:37:34.41980168+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -144,7 +166,7 @@ entries:
       - softwareag-common
       version: 1.x.x
     description: My webMethods Server (MWS) Helm Chart for Kubernetes
-    digest: 1b670c45d400ba3d1bbab2b1ffbde1b66d3da2285442da48f91787e5671cbf8c
+    digest: 8294a897ab63827fc2176f1d0dfa4587577ba9c0b1e176f09e494a5805ff3a02
     name: mywebmethodsserver
     urls:
     - https://open-source.softwareag.com/webmethods-helm-charts/charts/mywebmethodsserver-1.0.0.tgz
@@ -152,7 +174,7 @@ entries:
   universalmessaging:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.96071325+01:00"
+    created: "2024-01-16T10:37:34.424732625+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -160,7 +182,7 @@ entries:
       - softwareag-common
       version: 1.x.x
     description: Universal Messaging (UM) Helm Chart for Kubernetes
-    digest: 621cd5a664048fa942121648be5f4a97034e1262b5def8ed7293b46b2b3ec9ef
+    digest: 57d0dfe988245a9a79a0688ed005e0da02b932eae1553d7ef24b24033124eaa0
     name: universalmessaging
     type: application
     urls:
@@ -168,7 +190,7 @@ entries:
     version: 1.0.2
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.958776282+01:00"
+    created: "2024-01-16T10:37:34.423385884+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -184,7 +206,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2023-12-15T09:05:00.957108687+01:00"
+    created: "2024-01-16T10:37:34.421563635+01:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -198,4 +220,4 @@ entries:
     urls:
     - https://open-source.softwareag.com/webmethods-helm-charts/charts/universalmessaging-1.0.0.tgz
     version: 1.0.0
-generated: "2023-12-15T09:05:00.938916974+01:00"
+generated: "2024-01-16T10:37:34.405084599+01:00"
