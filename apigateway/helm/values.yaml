@@ -99,6 +99,7 @@ service:
 grpcService:
   enabled: false
   type: LoadBalancer
+  azureInternalLoadBalancer: false
 
 # multiple ingresses for ui, admin, ext and rt 
 ingresses: 
