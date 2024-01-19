@@ -92,9 +92,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "common.names.fullname" . }}-grpc
-  {{- if .Values.grpcService.azureInternalLoadBalancer }}
   annotations:
+  {{- if .Values.grpcService.azureInternalLoadBalancer }}
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  {{- end }}
+  {{- if .Values.grpcService.dnsExternal }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.grpcService.hostname }}
   {{- end }}
   labels:     
     {{- include "common.labels.standard" . | nindent 4 }}

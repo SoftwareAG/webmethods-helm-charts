@@ -100,6 +100,8 @@ grpcService:
   enabled: false
   type: LoadBalancer
   azureInternalLoadBalancer: false
+  dnsExternal: false
+  hostname: ""
 
 # multiple ingresses for ui, admin, ext and rt 
 ingresses: 
