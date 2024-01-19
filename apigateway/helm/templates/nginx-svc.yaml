@@ -29,20 +29,20 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}    
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
   ports:
   - port: {{ int .Values.apigw.runtimePort }}
     protocol: TCP
     targetPort: {{ int .Values.apigw.runtimePort }}
     name: rtport    
-    {{- if (eq .Values.serviceType "ClusterIP") }}
+    {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
   - port: {{ int .Values.apigw.uiPort }}
     protocol: TCP
     targetPort: {{ int .Values.apigw.uiPort }}
     name: uiport
-    {{- if (eq .Values.serviceType "ClusterIP") }}
+    {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
   selector:

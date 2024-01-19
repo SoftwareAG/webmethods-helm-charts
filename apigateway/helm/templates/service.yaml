@@ -27,13 +27,13 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
   ports:
   - port: {{ int .Values.apigw.runtimePort }}
     protocol: TCP
     targetPort: {{ int .Values.apigw.runtimePort }}
     name: rtport
-    {{- if (eq .Values.serviceType "ClusterIP") }}
+    {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
   selector:
@@ -49,13 +49,13 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
   ports:
   - port: {{ int .Values.apigw.adminPort }}
     protocol: TCP
     targetPort: {{ int .Values.apigw.adminPort }}
     name: adminport
-    {{- if (eq .Values.serviceType "ClusterIP") }}
+    {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
   selector:
@@ -71,7 +71,7 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:
@@ -81,8 +81,36 @@ spec:
     protocol: TCP
     targetPort: {{ int .Values.apigw.uiPort }}
     name: uiport
-    {{- if (eq .Values.serviceType "ClusterIP") }}
+    {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
   selector:
     {{- include "common.labels.matchLabels" . | nindent 4}}
+{{- if .Values.grpcService.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "common.names.fullname" . }}-grpc
+  {{- if .Values.grpcService.azureInternalLoadBalancer }}
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  {{- end }}
+  labels:     
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  type: {{ .Values.grpcService.type }}
+  ports:
+  - port: {{ int .Values.apigw.grpcPort }}
+    protocol: TCP
+    targetPort: {{ int .Values.apigw.grpcPort }}
+    name: grpcport
+    {{- if (eq .Values.grpcService.type "ClusterIP") }}
+    nodePort: null
+    {{- end }}
+  selector:
+    {{- include "common.labels.matchLabels" . | nindent 4}}
+{{- end }}
