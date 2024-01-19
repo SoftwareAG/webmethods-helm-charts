@@ -103,7 +103,7 @@ ingresses:
     enabled: true
     svcName: ""
     svcPort: ""
-    className: ""
+    className: "nginx"
     annotations: 
       nginx.ingress.kubernetes.io/affinity: "cookie"
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -120,7 +120,7 @@ ingresses:
     enabled: true
     svcName: ""
     svcPort: ""
-    className: ""
+    className: "nginx"
     annotations: {}
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
@@ -136,7 +136,7 @@ ingresses:
     enabled: true
     svcName: ""
     svcPort: ""
-    className: ""
+    className: "nginx"
     annotations: 
       nginx.ingress.kubernetes.io/affinity: "cookie"
     hosts:
