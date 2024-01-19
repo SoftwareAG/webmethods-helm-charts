@@ -167,11 +167,11 @@ spec:
           - containerPort: {{ int .Values.apigw.runtimeExternalPort }} 
             name: external-http
             protocol: TCP
-{{- if .Values.global.grpcEnabled }}
+          {{- if .Values.grpcService.enabled }}
           - containerPort: {{ int .Values.apigw.grpcPort }}
             name: grpc-http
             protocol: TCP
-{{- end }}
+          {{- end }}
           {{- if .Values.extraPorts }}
           {{- toYaml .Values.extraPorts | nindent 10 }}
           {{- end }}                  
