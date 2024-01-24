@@ -139,6 +139,10 @@ microservicesruntime:
     scheme:                 "HTTP"
   # -- Name of config map which contains the license key. If you ommit this, it defaults to the release name + microservicesruntime-license. 
   licenseConfigMap:         "microservicesruntime-license-key"
+
+  # -- Controls wether a license key is provided or not. Set this to false if you intent to use a trial MSR image or an Image with a baked-in license file.
+  licenseKeyProvided: true
+
   memoryHeap:
     ## -- Minimum of allocated heap memory
     min:                    "512M"
