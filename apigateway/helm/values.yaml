@@ -154,7 +154,6 @@ ingresses:
     tls: 
       - secretName:
         hosts:
-          - default
 
 # global ingress settings for tls secret name, cert and key
 ingress:
