@@ -28,9 +28,14 @@ If you need to create an own image with additional webMethods product components
 
 ### Licenses
 
-Microservices Runtime requires a license file. These license is supposed to be provided as configmap.
+Microservices Runtime requires a license file. These license is supposed to be provided as configmap. If you want to omit the license key
+because you are using a trial image or an image with a baked-in license key, use:
 
-Hence before running `helm install`, create the configmap:
+```
+--set microservicesruntime.licenseKeyProvided=false
+```
+
+If you do not set this flag to false, this helm charts expects a license key provided via configmap. Create the license key configmap as follows:
 
 ```
 kubectl create configmap microservicesruntime-license-key --from-file=licensekey=<your path and filename to Microservices Runtime license file>
@@ -91,6 +96,13 @@ helm install wm-msr webmethods/microservicesruntime   \
   --set "image.tag=10.15"
 ```
 
+## Version History
+
+| Version | Changes and Description |
+|-----|------|
+| `1.0.1` | Initial release |
+| `1.0.2` | Added new option `microservicesruntime.licenseKeyProvided` to allow using images with trial or baked-in license key |
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -148,6 +160,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | microservicesruntime.installDir | string | `"/opt/softwareag/IntegrationServer"` | Defines installation folder which was using on image creation |
 | microservicesruntime.javaCustomOpts | string | `nil` | list of custom java opts e.g. "-Dmy.prop1=value1" "-Dmy.prop2=value2" |
 | microservicesruntime.licenseConfigMap | string | `"microservicesruntime-license-key"` | Name of config map which contains the license key. If you ommit this, it defaults to the release name + microservicesruntime-license.  |
+| microservicesruntime.licenseKeyProvided | bool | `true` | Controls wether a license key is provided or not. Set this to false if you intent to use a trial MSR image or an Image with a baked-in license file. |
 | microservicesruntime.memoryHeap.max | string | `"512M"` | Maximum of heap memory |
 | microservicesruntime.memoryHeap.min | string | `"512M"` |  |
 | microservicesruntime.properties | object | `{}` | List of application properties which are added into config map in YAML format. See [Integration Server Configuration Variables](https://documentation.softwareag.com/webmethods/integration_server/pie10-15/webhelp/pie-webhelp/index.html#page/pie-webhelp%2Fre-configuration_variables_assets.html) |
