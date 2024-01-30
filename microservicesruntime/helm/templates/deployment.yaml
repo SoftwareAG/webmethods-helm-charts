@@ -114,15 +114,7 @@ spec:
           startupProbe:
             {{- toYaml .Values.startupProbe | nindent 12 }}
           livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-              scheme: {{ .Values.microservicesruntime.readinessProbe.scheme }} 
-            failureThreshold: 3
-            initialDelaySeconds: {{ .Values.microservicesruntime.initialDelaySeconds }}
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 1            
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
