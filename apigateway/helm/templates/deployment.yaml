@@ -206,6 +206,7 @@ spec:
             - name: apigw-config
               mountPath: /config/application.properties
               subPath:    application.properties
+            {{- if .Values.ingress.tls.secretProviderEnabled -}}
             {{- range $name, $ing := .Values.ingresses -}}
             {{- if $ing.enabled -}}
             {{- range $tls := $ing.tls }}
@@ -214,6 +215,7 @@ spec:
             - name: secrets-store-inline- {{- $secretName }}
               mountPath: /mnt/secrets-store- {{- $secretName }}
               readOnly: true
+            {{- end }}
             {{- end }}
             {{- end }}
             {{- end }}
