@@ -207,10 +207,13 @@ spec:
               subPath:    application.properties
             {{- range $name, $ing := .Values.ingresses -}}
             {{- if $ing.enabled -}}
-            {{- if $ing.tls.secretProviderEnabled -}}
-            - name: secrets-store-inline- {{- $name }}
-              mountPath: "/mnt/secrets-store"
+            {{- range $tls := $ing.tls }}
+            {{- if $tls.secretProviderEnabled -}}
+            {{- $secretName := default (printf "%s-%s-%s" $apigwname "tls" $name ) $tls.secretName }}
+            - name: secrets-store-inline- {{- $secretName }}
+              mountPath: /mnt/secrets-store- {{- $secretName }}
               readOnly: true
+            {{- end }}
             {{- end }}
             {{- end }}
             {{- end }}
@@ -268,13 +271,16 @@ spec:
       {{- end }}
       {{- range $name, $ing := .Values.ingresses -}}
       {{- if $ing.enabled -}}
-      {{- if $ing.tls.secretProviderEnabled -}}
-      - name: secrets-store-inline- {{- $name }}
+      {{- range $tls := $ing.tls }}
+      {{- if $tls.secretProviderEnabled -}}
+      {{- $secretName := default (printf "%s-%s-%s" $apigwname "tls" $name ) $tls.secretName }}
+      - name: secrets-store-inline- {{- $secretName }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: {{ default (printf "%s%s" ( include "common.names.fullname" .) "-ingress-certs") $ing.tls.secretProviderClassName }}
+            secretProviderClass: {{ default (printf "%s%s" ( include "common.names.fullname" .) "-ingress-certs") $tls.secretProviderClassName }}
+      {{- end }}
       {{- end }}
       {{- end }}
       {{- end }}
