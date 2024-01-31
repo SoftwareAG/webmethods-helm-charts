@@ -72,8 +72,10 @@ spec:
             value: {{ .Values.microservicesruntime.memoryHeap.min }}
           - name: JAVA_MAX_MEM
             value: {{ .Values.microservicesruntime.memoryHeap.max }}
+          {{- if .Values.microservicesruntime.licenseKeyProvided }}
           - name: SAG_IS_LICENSE_FILE
             value: {{ .Values.microservicesruntime.installDir }}/licenseKey.xml
+          {{- end }}
           - name: SAG_IS_CONFIG_PROPERTIES
             value: "{{ .Values.microservicesruntime.installDir }}/applicationFile.properties,{{ .Values.microservicesruntime.installDir }}/application.properties"
           {{- if .Values.persistence.enabled }}
@@ -112,24 +114,18 @@ spec:
           startupProbe:
             {{- toYaml .Values.startupProbe | nindent 12 }}
           livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-              scheme: {{ .Values.microservicesruntime.readinessProbe.scheme }} 
-            failureThreshold: 3
-            initialDelaySeconds: {{ .Values.microservicesruntime.initialDelaySeconds }}
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 1            
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources.msrContainer | nindent 12 }}
           volumeMounts:
+            {{- if .Values.microservicesruntime.licenseKeyProvided }}
             - name: microservicesruntime-license
               mountPath: {{ .Values.microservicesruntime.installDir }}/licenseKey.xml
               subPath:   licenseKey.xml
               readOnly:  true
+            {{- end }}
             - name: application-properties
               mountPath: {{ .Values.microservicesruntime.installDir }}/application.properties
               subPath:   application.properties
@@ -171,6 +167,7 @@ spec:
             defaultMode: {{ .defaultMode }}
             {{- end }}
         {{- end }}
+        {{- if .Values.microservicesruntime.licenseKeyProvided }}
         - name: microservicesruntime-license
           configMap:
             name: {{ include "microservicesruntime.licenseConfigMapName" . }}
@@ -178,6 +175,7 @@ spec:
             items:
             - key:  licensekey
               path: licenseKey.xml
+        {{- end }}
         - name: application-properties
           configMap:
             name: {{ include "common.names.fullname" . }}

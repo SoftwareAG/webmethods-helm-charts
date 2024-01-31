@@ -51,7 +51,7 @@ provided as configmap.
 Hence before running `helm install` create the configmap:
 
 ```
-kubectl create configmap apigw-license-config --from-file=licenseKey.xml=<your path to API Gateway license file>
+kubectl create configmap apigw-license-config --from-file=licensekey=<your path to API Gateway license file>
 ```
 
 Optionally you can directly provide the license file at the time of running `helm install`:
@@ -145,6 +145,12 @@ If desired you may deploy API Gateway with your own TLS key and cert. The Templa
 helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingress.tls.cert="$(<cert.pem)"
 
 ```
+## Version History
+
+| Version | Changes and Description |
+|-----|------|
+| `1.0.0' | Initial release |
+| `1.1.0' | Bug fixes in default values and helper functions for elastic secret names. <br> **Attention:** moved elasticsearch secret keys: <br>elasticSecretName --> elasticsearch.secretName<br>elasticSecretUserKey --> elasticsearch.secretUserKey<br>elasticSecretPasswordKey --> elasticsearch.secretPasswordKey |
 
 ## Values
 
@@ -156,14 +162,16 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | apigw.adminSecretName | string | `""` | The secret that holds the admin password  Depends on secrets.genereateAdminSecret; if true the setting will be ignored. |
 | apigw.apigwAdminService | string | `"apigw-admin-svc"` |  |
 | apigw.applicationProperties | string | `""` | Application Properties to overwrite default API Gateway settings. Please check  Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables.  By default only the default Administrator password is set through this mechanism if nothing is set here.  Other examples are extended settings which can be set through this mechanism. Examples:  Set the default Administrator password from environment variable user.Administrator.password=$env{ADMINISTRATOR_PASSWORD}  Avoid archiving audit log files ... settings.watt.server.audit.logFilesToKeep=1  Avoid archiving server log files ... settings.watt.server.serverlogFilesToKeep=1  Avoid archiving statistic files ... settings.watt.server.stats.logFilesToKeep=1  Value for 1 to 9 to set debug level of server log ... settings.watt.debug.level=  Set the maximum number of permitted service threads in the global pool ... settings.watt.server.threadPool=750  Set the default request/response content-type ... settings.watt.net.default.content-type=json  Avoid IS internal statistic data collector ... statisticsdatacollector.monitorConfig.enabled=false   |
-| apigw.configSources | object | `{"elasticsearch":{"hosts":"{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}","tenantId":"default"}}` | configuration source files for API Gateway |
+| apigw.configSources | object | `{"elasticsearch":{"hosts":"{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}","tenantId":"default"},"kibana":{"autostart":false,"dashboardInstance":"{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"}}` | configuration source files for API Gateway |
 | apigw.diagPort | int | `9999` | The API Diagnostics port.  |
 | apigw.elasticSearchDeployment | bool | `true` | Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch   |
-| apigw.elasticSecretName | string | `""` | Elasticsearch secret name that holds the elastic password and username |
-| apigw.elasticSecretPasswordKey | string | `""` | The key that holds the Elasticsearch password; defauls to "password" |
-| apigw.elasticSecretUserKey | string | `""` | The key that holds the Elasticsearch user; defauls to "username" |
+| apigw.elastickeyStoreName | string | `""` | The secret that holds the keystore password. If empty the chart will generate the name: fullname + "-es-keystore-secret". |
+| apigw.elastickeyStorePassKey | string | `""` | The key that holds the keystore password; defaults to "password" |
+| apigw.elastictrustStoreName | string | `""` | The secret that holds the truststore password. If empty the chart will generate the name: fullname + "-es-truststore-secret". |
+| apigw.elastictrustStorePassKey | string | `""` | The key that holds the truststore password; defaults to "password" |
 | apigw.extraConfigSources | list | `[]` | Extra configuration sources for API Gateway Example:  - type: YAML   allowEdit: false   properties:     location: apigw-config.yml |
 | apigw.extraLabels | object | `{}` | Additional labels to be added to apigw pod labels. |
+| apigw.grpcPort | int | `4440` | gRPC port for High Availability and Fault Tolerance (HAFT) solution. This port must be manually setup after API Gateway was initizalized. |
 | apigw.initContainer | object | `{"securityContext":{}}` | SecurityContext for apigw initContainer Deactivated by default. Usage example: securityContext:   runAsGroup: 1000   runAsUser: 1000   runAsNonRoot: true   allowPrivilegeEscalation: false   capabilities:     drop:       - ALL |
 | apigw.initMemory | string | `"1024Mi"` |  |
 | apigw.maxMemory | string | `"1024Mi"` |  |
@@ -197,11 +205,14 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | elasticsearch.podDisruptionBudget.data | object | `{}` | Overwrite the default PodDisruptionBudget Policy. Overwriting with custom PodDisruptionBudget Policy requires enabled=true. Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/ |
 | elasticsearch.podDisruptionBudget.enabled | bool | `true` | Whether a PodDisruptionBudget Policy should be created. Enabled=true results in ECK deploying the default (or custom, see data) PodDisruptionBudget Policy. Enabled=false results in no PodDisruptionBudget Policy deployment. |
 | elasticsearch.secretName | string | `""` | The secret name that holds the sag es user for API Gateway. |
+| elasticsearch.secretPasswordKey | string | `""` | The key that holds the Elasticsearch password; defauls to "password" |
+| elasticsearch.secretUserKey | string | `""` | The key that holds the Elasticsearch user; defauls to "username" |
 | elasticsearch.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
 | elasticsearch.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Elasticsearch |
 | elasticsearch.serviceAccount.name | string | `""` | Name of the ServiceAccount for Elasticsearch |
 | elasticsearch.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount. Requires create=true to work. |
 | elasticsearch.tlsEnabled | bool | `false` | Whether the communication from APIGW and Kibana should be HTTPS Note: you will need to create certificate and a separate truststore for the communication. |
+| elasticsearch.tlsSecretName | string | `""` | The name of the elasticsearch secret. By default it will created by the fullname + "-es-tls-secret" if tlsEnabled is set to true. |
 | elasticsearch.version | string | `"8.2.3"` | The ECK version to be used |
 | extraConfigMaps | list | `[]` | Extra config maps for additional configurations such as extra ports, etc. |
 | extraContainers | list | `[]` | Extra containers which should run in addition to the main container as a sidecar - name: do-something   image: busybox   command: ['do', 'something'] |
@@ -217,6 +228,11 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | global.curlImage | string | `"curlimages/curl"` |  |
 | global.elasticsearch | object | `{"port":9200,"serviceName":""}` | Elasticsearch global settings Required for Prometheus Exporter Sub Chart |
 | global.elasticsearch.serviceName | string | `""` | The elasticsearch http service name that API Gateway uses. The default is compiled of the fullname (releasename + chart name) + "-http"  You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart. |
+| grpcService.azureInternalLoadBalancer | bool | `false` |  |
+| grpcService.dnsExternal | bool | `false` |  |
+| grpcService.enabled | bool | `false` |  |
+| grpcService.hostname | string | `""` |  |
+| grpcService.type | string | `"LoadBalancer"` |  |
 | hostAliases | list | `[]` | Value to add extra host aliases to APIGW container. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"sagcr.azurecr.io/apigateway-minimal"` | The repository for the image. By default,  this points to the Software AG container repository.  Change this for air-gapped installations or custom images. For the Software AG container repository you need to have a  valid access token stored as registry credentials |
@@ -227,10 +243,10 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingress.tls.key | string | `""` |  |
 | ingress.tls.secretName | string | `""` | default secret name for TLS. By default empty, will look for <release-name-apigateway->tls". |
 | ingresses.admin.annotations."nginx.ingress.kubernetes.io/affinity" | string | `"cookie"` |  |
-| ingresses.admin.className | string | `""` |  |
+| ingresses.admin.className | string | `"nginx"` |  |
 | ingresses.admin.defaultHost | string | `""` |  |
 | ingresses.admin.enabled | bool | `true` |  |
-| ingresses.admin.hosts[0].host | string | `"default"` |  |
+| ingresses.admin.hosts[0].host | string | `nil` |  |
 | ingresses.admin.hosts[0].paths[0].path | string | `"/"` |  |
 | ingresses.admin.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
 | ingresses.admin.svcName | string | `""` |  |
@@ -238,8 +254,8 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.admin.tls[0].hosts[0] | string | `"default"` |  |
 | ingresses.admin.tls[0].secretName | string | `nil` |  |
 | ingresses.rt.annotations | object | `{}` |  |
-| ingresses.rt.className | string | `""` |  |
-| ingresses.rt.defaultHost | string | `nil` |  |
+| ingresses.rt.className | string | `"nginx"` |  |
+| ingresses.rt.defaultHost | string | `""` |  |
 | ingresses.rt.enabled | bool | `true` |  |
 | ingresses.rt.hosts[0].host | string | `nil` |  |
 | ingresses.rt.hosts[0].paths[0].path | string | `"/gateway"` |  |
@@ -249,7 +265,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.rt.tls[0].hosts | string | `nil` |  |
 | ingresses.rt.tls[0].secretName | string | `nil` |  |
 | ingresses.ui.annotations."nginx.ingress.kubernetes.io/affinity" | string | `"cookie"` |  |
-| ingresses.ui.className | string | `""` |  |
+| ingresses.ui.className | string | `"nginx"` |  |
 | ingresses.ui.defaultHost | string | `""` |  |
 | ingresses.ui.enabled | bool | `true` |  |
 | ingresses.ui.hosts[0].host | string | `nil` |  |
@@ -268,7 +284,6 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | kibana.resources | object | `{}` | Resource Settings for Kibana Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
 | kibana.secretName | string | `""` | The secret name that holds the kibana user for API Gateway. |
 | kibana.securityContext | object | `{}` | The securityContext for kibana container. |
-| kibana.serviceAccount | string | `""` | The name of kibanas serviceAccount.   |
 | kibana.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
 | kibana.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Kibana |
 | kibana.serviceAccount.name | string | `""` | Name of the ServiceAccount for Kibana |
@@ -294,7 +309,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
-| prometheus-elasticsearch-exporter | object | `{"enabled":true,"es":{"uri":"http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"},"extraEnvSecrets":{"ES_PASSWORD":{"key":"password","secret":"apigw-apigateway-sag-user-es"},"ES_USER":{"key":"username","secret":"apigw-apigateway-sag-user-es"}},"serviceMonitor":{"enabled":true}}` | Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details. |
+| prometheus-elasticsearch-exporter | object | `{"enabled":true,"es":{"uri":"http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"},"extraEnvSecrets":{"ES_PASSWORD":{"key":"password","secret":"apigw-apigateway-sag-user-es"},"ES_USER":{"key":"username","secret":"apigw-apigateway-sag-user-es"}},"podAnnotations":{"prometheus.io/path":"/metrics","prometheus.io/port":"9108","prometheus.io/scheme":"http","prometheus.io/scrape":"true"},"serviceMonitor":{"enabled":false}}` | Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details. |
 | prometheus-elasticsearch-exporter.enabled | bool | `true` | Deploy the prometheus exporter for elasticsearch |
 | prometheus-elasticsearch-exporter.es.uri | string | `"http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"` | The uri of the elasticsearch service. By default this is null and the environment variable ES_URI is used instead. Overwrite this if you are using an external Elasticsearch instance |
 | prometheus-elasticsearch-exporter.extraEnvSecrets | object | `{"ES_PASSWORD":{"key":"password","secret":"apigw-apigateway-sag-user-es"},"ES_USER":{"key":"username","secret":"apigw-apigateway-sag-user-es"}}` | secret for elasticsearch user. Will need to adjust the secret's name. By default the secret name is <releasename>-apigateway-sag-user-es. Adjust accordingly if your release name is different.  |

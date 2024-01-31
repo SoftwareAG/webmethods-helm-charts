@@ -105,22 +105,34 @@ lifecycle: {}
 #         IS_URL=http://localhost:5555
 #         curl -XGET "$IS_URL/invoke/pub.publish:syncToProvider"
 
-# -- readiness probe for container, by default this will simply check for tcp socket connection. Adjust this in order to avoid routing traffing to non-ready Integration Servers (e.g. use the ping service via http call)
-readinessProbe:
-  tcpSocket:
-    port: http
-  failureThreshold: 3
-  initialDelaySeconds: 10
-  periodSeconds: 30
-  successThreshold: 1
-  timeoutSeconds: 1
-
 # -- startup probe for container
 startupProbe:
   tcpSocket:
     port: http
   failureThreshold: 60
   periodSeconds: 30            # wait 10 * 60 seconds for starting readinessProbe and livenessProbe
+
+# -- Configure liveness probe
+livenessProbe:
+  httpGet:
+    path: /health/liveness
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 15
+  timeoutSeconds: 30
+  successThreshold: 1
+  failureThreshold: 3
+
+# -- Configure readiness probe
+readinessProbe:
+  httpGet:
+    path: /health/readiness
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 15
+  timeoutSeconds: 30
+  successThreshold: 1
+  failureThreshold: 3
 
 microservicesruntime:
   # -- Defines external runtime port
@@ -134,11 +146,12 @@ microservicesruntime:
   # -- Defies diagnostic port
   diagnosticPort:           9999
   
-  readinessProbe:
-    # -- Scheme of administration port port, uppercase
-    scheme:                 "HTTP"
   # -- Name of config map which contains the license key. If you ommit this, it defaults to the release name + microservicesruntime-license. 
   licenseConfigMap:         "microservicesruntime-license-key"
+
+  # -- Controls wether a license key is provided or not. Set this to false if you intent to use a trial MSR image or an Image with a baked-in license file.
+  licenseKeyProvided: true
+
   memoryHeap:
     ## -- Minimum of allocated heap memory
     min:                    "512M"
