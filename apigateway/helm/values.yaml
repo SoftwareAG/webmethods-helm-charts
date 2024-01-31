@@ -122,8 +122,9 @@ ingresses:
     tls: 
       - secretName: 
         hosts: 
+        csiSecretProvider:
         secretProviderEnabled: false
-        secretProviderClassName: ""
+        secretProviderSecretName: 
   rt:
     defaultHost: ""
     enabled: true
@@ -141,7 +142,7 @@ ingresses:
       - secretName: 
         hosts:
         secretProviderEnabled: false
-        secretProviderClassName: ""
+        secretProviderSecretName: 
   admin:
     defaultHost: ""
     enabled: true
@@ -159,7 +160,7 @@ ingresses:
       - secretName:
         hosts:
         secretProviderEnabled: false
-        secretProviderClassName: ""
+        secretProviderSecretName: 
 
 # global ingress settings for tls secret name, cert and key
 ingress:
@@ -170,6 +171,10 @@ ingress:
     secretName: ""
     cert: "" 
     key: ""
+    secretProviderEnabled: false
+    secretProviderName: ""
+    secretProviderClassName: ""
+    secretProviderParameters: {}
 
 resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
