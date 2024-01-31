@@ -62,7 +62,7 @@ spec:
         {{- range $tls.hosts }}
         - {{ . | quote }}
         {{- end }}
-      {{- $secretName := default (printf "%s-%s" $apigwname "tls" ) $tls.secretName }}
+      {{- $secretName := default (printf "%s-%s-%s" $apigwname "tls" $name ) $tls.secretName }}
       secretName: {{ $secretName }}
     {{- end }}
   {{- end }}
