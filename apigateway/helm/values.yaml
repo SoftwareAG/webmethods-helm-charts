@@ -122,6 +122,8 @@ ingresses:
     tls: 
       - secretName: 
         hosts: 
+        secretProviderEnabled: false
+        secretProviderClassName: ""
   rt:
     defaultHost: ""
     enabled: true
@@ -138,6 +140,8 @@ ingresses:
     tls: 
       - secretName: 
         hosts:
+        secretProviderEnabled: false
+        secretProviderClassName: ""
   admin:
     defaultHost: ""
     enabled: true
@@ -154,7 +158,8 @@ ingresses:
     tls: 
       - secretName:
         hosts:
-          - default
+        secretProviderEnabled: false
+        secretProviderClassName: ""
 
 # global ingress settings for tls secret name, cert and key
 ingress:
