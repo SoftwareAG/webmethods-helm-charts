@@ -270,6 +270,8 @@ spec:
             - key: keystore.jks
               path: keystore.jks
       {{- end }}
+      {{- if .Values.ingress.tls.secretProviderEnabled -}}
+      {{- $secretProviderClass := default (printf "%s%s" $apigwname "-ingress-certs") .Values.ingress.tls.secretProviderClassName }}
       {{- range $name, $ing := .Values.ingresses -}}
       {{- if $ing.enabled -}}
       {{- range $tls := $ing.tls }}
@@ -280,7 +282,8 @@ spec:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: {{ default (printf "%s%s" $apigwname "-ingress-certs") .Values.ingress.tls.secretProviderClassName }}
+            secretProviderClass: {{ $secretProviderClass }}
+      {{- end }}
       {{- end }}
       {{- end }}
       {{- end }}
