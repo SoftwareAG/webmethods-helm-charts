@@ -206,19 +206,10 @@ spec:
             - name: apigw-config
               mountPath: /config/application.properties
               subPath:    application.properties
-            {{- if .Values.ingress.tls.secretProviderEnabled -}}
-            {{- range $name, $ing := .Values.ingresses -}}
-            {{- if $ing.enabled -}}
-            {{- range $tls := $ing.tls }}
-            {{- if $tls.secretProviderEnabled -}}
-            {{- $secretName := default (printf "%s-%s-%s" $apigwname "tls" $name ) $tls.secretName }}
-            - name: secrets-store-inline- {{- $secretName }}
-              mountPath: /mnt/secrets-store- {{- $secretName }}
+            {{- if .Values.ingress.tls.secretProviderEnabled }}
+            - name: secrets-store-inline
+              mountPath: /mnt/secrets-store
               readOnly: true
-            {{- end }}
-            {{- end }}
-            {{- end }}
-            {{- end }}
             {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
@@ -274,21 +265,12 @@ spec:
       {{- end }}
       {{- if .Values.ingress.tls.secretProviderEnabled -}}
       {{- $secretProviderClass := default (printf "%s%s" $apigwname "-ingress-certs") .Values.ingress.tls.secretProviderClassName }}
-      {{- range $name, $ing := .Values.ingresses -}}
-      {{- if $ing.enabled -}}
-      {{- range $tls := $ing.tls }}
-      {{- if $tls.secretProviderEnabled -}}
-      {{- $secretName := default (printf "%s-%s-%s" $apigwname "tls" $name ) $tls.secretName }}
-      - name: secrets-store-inline- {{- $secretName }}
+      - name: secrets-store-inline
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
             secretProviderClass: {{ $secretProviderClass }}
-      {{- end }}
-      {{- end }}
-      {{- end }}
-      {{- end }}
       {{- end }}
       {{- if .Values.extraVolumes }}
       {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
