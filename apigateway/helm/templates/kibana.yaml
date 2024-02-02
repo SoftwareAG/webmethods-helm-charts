@@ -25,7 +25,7 @@ spec:
   image: {{ .Values.kibana.image }}
   {{- end }}
   version: {{ .Values.kibana.version }}
-  count: 1
+  count: {{ .Values.kibana.count }}
   config:
     xpack.security.authc.providers:
       anonymous.anonymous1:
