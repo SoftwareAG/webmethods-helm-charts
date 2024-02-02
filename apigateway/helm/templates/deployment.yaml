@@ -16,6 +16,7 @@
 #  *   limitations under the License.
 #  *
 #  */
+{{ $apigwname := (include "common.names.fullname" $ ) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -205,13 +206,27 @@ spec:
             - name: apigw-config
               mountPath: /config/application.properties
               subPath:    application.properties
+            {{- if .Values.ingress.tls.secretProviderEnabled -}}
+            {{- range $name, $ing := .Values.ingresses -}}
+            {{- if $ing.enabled -}}
+            {{- range $tls := $ing.tls }}
+            {{- if $tls.secretProviderEnabled -}}
+            {{- $secretName := default (printf "%s-%s-%s" $apigwname "tls" $name ) $tls.secretName }}
+            - name: secrets-store-inline- {{- $secretName }}
+              mountPath: /mnt/secrets-store- {{- $secretName }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
               {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              
             {{- else }}
               {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
-            {{- end }}                      
+            {{- end }}
         {{- include "common.containers.extraContainers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -256,6 +271,24 @@ spec:
               path: truststore.jks
             - key: keystore.jks
               path: keystore.jks
+      {{- end }}
+      {{- if .Values.ingress.tls.secretProviderEnabled -}}
+      {{- $secretProviderClass := default (printf "%s%s" $apigwname "-ingress-certs") .Values.ingress.tls.secretProviderClassName }}
+      {{- range $name, $ing := .Values.ingresses -}}
+      {{- if $ing.enabled -}}
+      {{- range $tls := $ing.tls }}
+      {{- if $tls.secretProviderEnabled -}}
+      {{- $secretName := default (printf "%s-%s-%s" $apigwname "tls" $name ) $tls.secretName }}
+      - name: secrets-store-inline- {{- $secretName }}
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ $secretProviderClass }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.extraVolumes }}
       {{- if eq "string" (printf "%T" .Values.extraVolumes) }}
