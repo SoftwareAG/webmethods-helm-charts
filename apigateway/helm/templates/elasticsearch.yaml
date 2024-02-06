@@ -67,7 +67,7 @@ spec:
     {{- toYaml .Values.elasticsearch.nodeSets | nindent 4 }}
   {{ else }}
     # use default node set
-    - name: default2
+    - name: default
       count: {{ .Values.elasticsearch.defaultNodeSet.count }}
       volumeClaimTemplates:
       - metadata:
