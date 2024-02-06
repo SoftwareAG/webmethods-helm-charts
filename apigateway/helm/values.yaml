@@ -474,6 +474,19 @@ elasticsearch:
   # Make sure that the image corresponds to the version field.
   image: 
 
+  # -- Resource Settings for Elasticsearch
+  # Example: 
+  # 
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi  
+  resources: {}
+
+  storage: ""
+
   # -- The secret name that holds the sag es user for API Gateway.
   secretName: ""
 
