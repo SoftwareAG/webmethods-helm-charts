@@ -486,6 +486,7 @@ elasticsearch:
   resources: {}
 
   storage: ""
+  storageClassName: ""
 
   # -- The secret name that holds the sag es user for API Gateway.
   secretName: ""

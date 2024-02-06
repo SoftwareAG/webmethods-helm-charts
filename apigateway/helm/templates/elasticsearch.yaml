@@ -67,7 +67,7 @@ spec:
     {{- toYaml .Values.elasticsearch.nodeSets | nindent 4 }}
   {{ else }}
     # use default node set
-    - name: default
+    - name: default2
       count: {{ .Values.elasticsearch.defaultNodeSet.count }}
       {{- if .Values.elasticsearch.storage }}
       volumeClaimTemplates:
@@ -79,7 +79,7 @@ spec:
           resources:
             requests:
               storage: {{ .Values.elasticsearch.storage }}
-          storageClassName: standard
+          storageClassName: {{ default "standard" .Values.elasticsearch.storageClassName }}
       {{- end }}
       config:
         {{- if not .Values.elasticsearch.defaultNodeSet.memoryMapping  }}
