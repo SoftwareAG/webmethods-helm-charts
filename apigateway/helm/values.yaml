@@ -389,10 +389,10 @@ apigw:
 
     elasticsearch:      
       tenantId: default
-#      hosts: "{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
+      hosts: "{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
     
     kibana:
-#      dashboardInstance: "{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"
+      dashboardInstance: "{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"
       autostart: false
 
   # -- Extra configuration sources for API Gateway
