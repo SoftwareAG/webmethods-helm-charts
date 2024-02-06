@@ -78,7 +78,7 @@ spec:
           resources:
             requests:
               storage: {{ default "1Gi" .Values.elasticsearch.storage }}
-          storageClassName: {{ default "standard" .Values.elasticsearch.storageClassName }}
+          storageClassName: {{ default "default" .Values.elasticsearch.storageClassName }}
       config:
         {{- if not .Values.elasticsearch.defaultNodeSet.memoryMapping  }}
         node.store.allow_mmap: false
