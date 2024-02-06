@@ -69,7 +69,6 @@ spec:
     # use default node set
     - name: default2
       count: {{ .Values.elasticsearch.defaultNodeSet.count }}
-      {{- if .Values.elasticsearch.storage }}
       volumeClaimTemplates:
       - metadata:
           name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
@@ -78,9 +77,8 @@ spec:
           - ReadWriteOnce
           resources:
             requests:
-              storage: {{ .Values.elasticsearch.storage }}
+              storage: {{ default "1Gi" .Values.elasticsearch.storage }}
           storageClassName: {{ default "standard" .Values.elasticsearch.storageClassName }}
-      {{- end }}
       config:
         {{- if not .Values.elasticsearch.defaultNodeSet.memoryMapping  }}
         node.store.allow_mmap: false
