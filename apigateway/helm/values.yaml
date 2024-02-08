@@ -395,6 +395,17 @@ apigw:
       dashboardInstance: "{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"
       autostart: false
 
+    cluster:
+      aware: true
+      name:  IgniteCluster
+      sessTimeout: "60"
+      actionOnStartupError:  standalone
+      ignite:
+        k8sServiceName: apigw-testsandbox-apigateway-rt # How to add this dynamically?
+        k8sNamespace:   apigw-testsandbox # How to add this dynamically?
+        discoveryPort:     "10100"
+        communicationPort: "10400"
+
   # -- Extra configuration sources for API Gateway
   # Example: 
   # - type: YAML
