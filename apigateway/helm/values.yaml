@@ -401,8 +401,8 @@ apigw:
       sessTimeout: "60"
       actionOnStartupError:  standalone
       ignite:
-        k8sServiceName: apigw-testsandbox-apigateway-rt # How to add this dynamically?
-        k8sNamespace:   apigw-testsandbox # How to add this dynamically?
+        k8sServiceName: "{{ include \"common.names.fullname\" . }}-rt"
+        k8sNamespace:   "{{ .Release.Namespace }}"
         discoveryPort:     "10100"
         communicationPort: "10400"
 
