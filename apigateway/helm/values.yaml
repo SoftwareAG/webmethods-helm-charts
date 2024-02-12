@@ -396,7 +396,7 @@ apigw:
       autostart: false
 
     cluster:
-      aware: true
+      aware: false
       name:  IgniteCluster
       sessTimeout: "60"
       actionOnStartupError:  standalone
