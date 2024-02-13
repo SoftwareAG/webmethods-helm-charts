@@ -574,6 +574,8 @@ kibana:
   # -- The default Kibana Port
   port: 5601
 
+  count: 1
+
   # -- Annotations for Kibana
   annotations: {}
   
