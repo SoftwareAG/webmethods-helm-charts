@@ -395,6 +395,17 @@ apigw:
       dashboardInstance: "{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"
       autostart: false
 
+    cluster:
+      aware: "{{- $isClusterEnabled := or (gt (int .Values.replicaCount) 1) .Values.apigw.clusterAware -}} {{- if $isClusterEnabled -}} true {{- else -}} false {{- end }}"
+      name:  IgniteCluster
+      sessTimeout: "60"
+      actionOnStartupError:  standalone
+      ignite:
+        k8sServiceName: "{{ include \"common.names.fullname\" . }}-rt"
+        k8sNamespace:   "{{ .Release.Namespace }}"
+        discoveryPort:     "10100"
+        communicationPort: "10400"
+
   # -- Extra configuration sources for API Gateway
   # Example: 
   # - type: YAML
