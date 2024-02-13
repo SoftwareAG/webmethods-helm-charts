@@ -1,0 +1,115 @@
+# /*
+#  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+#  *
+#  * SPDX-License-Identifier: Apache-2.0
+#  *
+#  *   Licensed under the Apache License, Version 2.0 (the "License");
+#  *   you may not use this file except in compliance with the License.
+#  *   You may obtain a copy of the License at
+#  *
+#  *       http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  *   Unless required by applicable law or agreed to in writing, software
+#  *   distributed under the License is distributed on an "AS IS" BASIS,
+#  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  *   See the License for the specific language governing permissions and
+#  *   limitations under the License.
+#  *
+#  */
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: terracotta
+  namespace: {{ template "kube-terracotta.namespace" . }}
+  labels:
+    app: terracotta
+{{ include "kube-terracotta.labels" . | indent 4 }}
+spec:
+  updateStrategy:
+    type: "OnDelete"
+  replicas: {{ mul $.Values.stripeCount $.Values.nodeCountPerStripe }}
+  selector:
+    matchLabels:
+      app: terracotta
+  serviceName: terracotta-service
+  template:
+    metadata:
+      labels:
+        app: terracotta
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      containers:
+        - name: server
+          image: "{{ $.Values.registry }}/{{ $.Values.serverImage }}:{{ $.Values.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ $.Values.pullPolicy | quote }}
+          readinessProbe:
+            tcpSocket:
+              port: 9530
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 5
+            failureThreshold: {{ $.Values.probeFailureThreshold }} 
+          livenessProbe:
+            tcpSocket:
+              port: 9530
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 5
+            failureThreshold: {{ $.Values.probeFailureThreshold }} 
+          startupProbe:
+            tcpSocket:
+              port: 9530
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+            failureThreshold: {{ $.Values.probeFailureThreshold }} 
+          volumeMounts:
+            - name: commonconfig-volume
+              mountPath: /opt/softwareag/config
+            - name: core-store
+              mountPath: /opt/softwareag/run
+          env:
+            - name: JSON_LOGGING
+              value: {{ $.Values.jsonLogging | quote }}
+            {{- if eq $.Values.security true }}
+            {{- if eq $.Values.selfSignedCerts true }}
+            - name: JAVA_OPTS
+              value: {{ $.Values.serverOpts }} -Djavax.net.ssl.trustStore=/opt/softwareag/run/truststore.jks
+            {{- else }} 
+            {{- if ne $.Values.serverOpts "" }}
+            - name: JAVA_OPTS
+              value: {{ $.Values.serverOpts }}
+            {{- end }}
+            {{- end }}
+            {{- else }}
+            {{- if ne $.Values.serverOpts "" }}
+            - name: JAVA_OPTS
+              value: {{ $.Values.serverOpts }}
+            {{- end }}
+            {{- end }}                    
+      volumes:
+        - name: commonconfig-volume
+          projected:
+              sources:
+                 - configMap:
+                       name: server-configmap
+                {{- if eq $.Values.security true }}
+                 - secret:
+                       name: {{ required "A valid server certs is required!" $.Values.secretName }}
+                {{- end}}
+  volumeClaimTemplates:
+    - metadata:
+        name: core-store
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ required "A valid storage request is required!" $.Values.serverStorage }}

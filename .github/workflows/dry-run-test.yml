@@ -53,3 +53,7 @@ jobs:
       - name: Dry-run of universalmessaging
         run: |
           helm template um universalmessaging/helm
+
+      - name: Dry-run of terracottabigmemorymax
+        run: |
+          helm template um terracottabigmemory/helm
