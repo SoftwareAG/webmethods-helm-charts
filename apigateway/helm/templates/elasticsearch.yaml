@@ -69,6 +69,16 @@ spec:
     # use default node set
     - name: default
       count: {{ .Values.elasticsearch.defaultNodeSet.count }}
+      volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: {{ default "1Gi" .Values.elasticsearch.storage }}
+          storageClassName: {{ default "default" .Values.elasticsearch.storageClassName }}
       config:
         {{- if not .Values.elasticsearch.defaultNodeSet.memoryMapping  }}
         node.store.allow_mmap: false
@@ -86,6 +96,10 @@ spec:
         spec:
           imagePullSecrets:
             {{- toYaml .Values.imagePullSecrets | nindent 12 }}
+          containers:
+          - name: elasticsearch
+            resources:
+              {{- toYaml .Values.elasticsearch.resources | nindent 14 }}
           initContainers:
           {{- if and .Values.elasticsearch.defaultNodeSet.setMaxMapCount .Values.elasticsearch.defaultNodeSet.memoryMapping }}
           - name: sysctl
