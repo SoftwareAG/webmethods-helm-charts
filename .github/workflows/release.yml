@@ -42,6 +42,7 @@ jobs:
           helm package -u microservicesruntime/helm
           helm package -u mywebmethodsserver/helm
           helm package -u universalmessaging/helm
+          helm package -u terracottabigmemorymax/helm
 
       - name: Push Helm Charts to this GitHub repo branch 'gh-pages' 
         run: |
