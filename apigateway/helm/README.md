@@ -162,7 +162,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | apigw.adminSecretName | string | `""` | The secret that holds the admin password  Depends on secrets.genereateAdminSecret; if true the setting will be ignored. |
 | apigw.apigwAdminService | string | `"apigw-admin-svc"` |  |
 | apigw.applicationProperties | string | `""` | Application Properties to overwrite default API Gateway settings. Please check  Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables.  By default only the default Administrator password is set through this mechanism if nothing is set here.  Other examples are extended settings which can be set through this mechanism. Examples:  Set the default Administrator password from environment variable user.Administrator.password=$env{ADMINISTRATOR_PASSWORD}  Avoid archiving audit log files ... settings.watt.server.audit.logFilesToKeep=1  Avoid archiving server log files ... settings.watt.server.serverlogFilesToKeep=1  Avoid archiving statistic files ... settings.watt.server.stats.logFilesToKeep=1  Value for 1 to 9 to set debug level of server log ... settings.watt.debug.level=  Set the maximum number of permitted service threads in the global pool ... settings.watt.server.threadPool=750  Set the default request/response content-type ... settings.watt.net.default.content-type=json  Avoid IS internal statistic data collector ... statisticsdatacollector.monitorConfig.enabled=false   |
-| apigw.configSources | object | `{"elasticsearch":{"hosts":"{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}","tenantId":"default"},"kibana":{"autostart":false,"dashboardInstance":"{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"}}` | configuration source files for API Gateway |
+| apigw.configSources | object | `{"cluster":{"actionOnStartupError":"standalone","aware":"{{- $isClusterEnabled := or (gt (int .Values.replicaCount) 1) .Values.apigw.clusterAware -}} {{- if $isClusterEnabled -}} true {{- else -}} false {{- end }}","ignite":{"communicationPort":"10400","discoveryPort":"10100","k8sNamespace":"{{ .Release.Namespace }}","k8sServiceName":"{{ include \"common.names.fullname\" . }}-rt"},"name":"IgniteCluster","sessTimeout":"60"},"elasticsearch":{"hosts":"{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}","tenantId":"default"},"kibana":{"autostart":false,"dashboardInstance":"{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"}}` | configuration source files for API Gateway |
 | apigw.diagPort | int | `9999` | The API Diagnostics port.  |
 | apigw.elasticSearchDeployment | bool | `true` | Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch   |
 | apigw.elastickeyStoreName | string | `""` | The secret that holds the keystore password. If empty the chart will generate the name: fullname + "-es-keystore-secret". |
@@ -204,6 +204,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | elasticsearch.podDisruptionBudget | object | `{"data":{},"enabled":true}` | Customization of ElasticSearchs PodDisruptionBudget Policy. Elastic Cloud on Kubernetes operator (ECK) creates a default PodDisruptionBudget Policy. |
 | elasticsearch.podDisruptionBudget.data | object | `{}` | Overwrite the default PodDisruptionBudget Policy. Overwriting with custom PodDisruptionBudget Policy requires enabled=true. Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/ |
 | elasticsearch.podDisruptionBudget.enabled | bool | `true` | Whether a PodDisruptionBudget Policy should be created. Enabled=true results in ECK deploying the default (or custom, see data) PodDisruptionBudget Policy. Enabled=false results in no PodDisruptionBudget Policy deployment. |
+| elasticsearch.resources | object | `{}` | Resource Settings for Elasticsearch Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
 | elasticsearch.secretName | string | `""` | The secret name that holds the sag es user for API Gateway. |
 | elasticsearch.secretPasswordKey | string | `""` | The key that holds the Elasticsearch password; defauls to "password" |
 | elasticsearch.secretUserKey | string | `""` | The key that holds the Elasticsearch user; defauls to "username" |
@@ -211,6 +212,8 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | elasticsearch.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Elasticsearch |
 | elasticsearch.serviceAccount.name | string | `""` | Name of the ServiceAccount for Elasticsearch |
 | elasticsearch.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount. Requires create=true to work. |
+| elasticsearch.storage | string | `""` |  |
+| elasticsearch.storageClassName | string | `""` |  |
 | elasticsearch.tlsEnabled | bool | `false` | Whether the communication from APIGW and Kibana should be HTTPS Note: you will need to create certificate and a separate truststore for the communication. |
 | elasticsearch.tlsSecretName | string | `""` | The name of the elasticsearch secret. By default it will created by the fullname + "-es-tls-secret" if tlsEnabled is set to true. |
 | elasticsearch.version | string | `"8.2.3"` | The ECK version to be used |
@@ -242,6 +245,10 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingress.tls.cert | string | `""` |  |
 | ingress.tls.key | string | `""` |  |
 | ingress.tls.secretName | string | `""` | default secret name for TLS. By default empty, will look for <release-name-apigateway->tls". |
+| ingress.tls.secretProviderClassName | string | `""` |  |
+| ingress.tls.secretProviderEnabled | bool | `false` |  |
+| ingress.tls.secretProviderName | string | `""` |  |
+| ingress.tls.secretProviderParameters | object | `{}` |  |
 | ingresses.admin.annotations."nginx.ingress.kubernetes.io/affinity" | string | `"cookie"` |  |
 | ingresses.admin.className | string | `"nginx"` |  |
 | ingresses.admin.defaultHost | string | `""` |  |
@@ -251,8 +258,10 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.admin.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
 | ingresses.admin.svcName | string | `""` |  |
 | ingresses.admin.svcPort | string | `""` |  |
-| ingresses.admin.tls[0].hosts[0] | string | `"default"` |  |
+| ingresses.admin.tls[0].hosts | string | `nil` |  |
 | ingresses.admin.tls[0].secretName | string | `nil` |  |
+| ingresses.admin.tls[0].secretProviderEnabled | bool | `false` |  |
+| ingresses.admin.tls[0].secretProviderSecretName | string | `nil` |  |
 | ingresses.rt.annotations | object | `{}` |  |
 | ingresses.rt.className | string | `"nginx"` |  |
 | ingresses.rt.defaultHost | string | `""` |  |
@@ -264,6 +273,8 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.rt.svcPort | string | `""` |  |
 | ingresses.rt.tls[0].hosts | string | `nil` |  |
 | ingresses.rt.tls[0].secretName | string | `nil` |  |
+| ingresses.rt.tls[0].secretProviderEnabled | bool | `false` |  |
+| ingresses.rt.tls[0].secretProviderSecretName | string | `nil` |  |
 | ingresses.ui.annotations."nginx.ingress.kubernetes.io/affinity" | string | `"cookie"` |  |
 | ingresses.ui.className | string | `"nginx"` |  |
 | ingresses.ui.defaultHost | string | `""` |  |
@@ -273,9 +284,13 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.ui.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
 | ingresses.ui.svcName | string | `""` |  |
 | ingresses.ui.svcPort | string | `""` |  |
+| ingresses.ui.tls[0].csiSecretProvider | string | `nil` |  |
 | ingresses.ui.tls[0].hosts | string | `nil` |  |
 | ingresses.ui.tls[0].secretName | string | `nil` |  |
+| ingresses.ui.tls[0].secretProviderEnabled | bool | `false` |  |
+| ingresses.ui.tls[0].secretProviderSecretName | string | `nil` |  |
 | kibana.annotations | object | `{}` | Annotations for Kibana |
+| kibana.count | int | `1` |  |
 | kibana.extraInitContainers | list | `[]` | The definition of extra initContainers for kibana. |
 | kibana.extraLabels | object | `{}` | Additional labels to be added to kibana pod labels. |
 | kibana.image | string | `nil` | The image that should be used. By default ECK will use the official Elasticsearch images.  Overwrite this to use an image from an internal registry or any custom images. Make sure that the image corresponds to the version field. |
@@ -289,6 +304,7 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | kibana.serviceAccount.name | string | `""` | Name of the ServiceAccount for Kibana |
 | kibana.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Kibana ServiceAccount. Requires create=true to work. |
 | kibana.version | string | `"8.2.3"` | The ECK version to be used |
+| license | string | `""` | Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.   |
 | licenseConfigKey | string | `""` |  |
 | licenseConfigName | string | `""` | The name of the secret or configmap that contains the license key. Defaults to the release name + chart name + "-license". |
 | lifecycle | object | `{}` | lifecycle hooks to execute on preStop / postStart,... preStop:   exec:     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"] postStart:   exec:     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"] |
