@@ -139,6 +139,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | ingress.hosts[0].paths[0].pathType | string | `"Prefix"` | Path type to address the backend |
 | ingress.hosts[0].paths[0].port | int | `5555` | Port of service |
 | ingress.tls | list | `[]` | TLS of Ingress |
+| license | string | `""` | Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.   |
 | lifecycle | object | `{}` | lifecycle hooks to execute on preStop / postStart,... |
 | livenessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/liveness","port":"http"},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure liveness probe |
 | metering.accumulationPeriod | string | `"1800"` | The period in seconds for which data is accumulated before a log record is produced. |
