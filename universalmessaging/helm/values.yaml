@@ -218,3 +218,6 @@ readinessProbe:
 # -- Deploy Nginx as external LB. The LB will be configured to dispatch incoming requests to all `replicaCount` replicas.
 # Nginx is configured by example from [Universal Messaging documentation](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/#page/num-webhelp%2Fre-configure_nginx_to_serve_http_requests.html%23)
 externalLoadBalancer: false
+
+# -- Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.  
+license: |
