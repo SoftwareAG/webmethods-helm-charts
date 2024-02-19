@@ -39,8 +39,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- $context := . }}
         {{- with .Values.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
+          {{- tpl (toYaml .) $context | nindent 8 }}
         {{- end }}
         {{- include "common.prometheus.annotations" (dict "port" .Values.service.port) | nindent 8 }}
       labels:
