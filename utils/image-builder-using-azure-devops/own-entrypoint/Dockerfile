@@ -53,7 +53,8 @@ RUN sh installer.bin -readScript installer.script -console
 USER root
 RUN rm installer.bin installer.script
 
-ENTRYPOINT ${ENTRYPOINT}
+ENV EP=${ENTRYPOINT}
+ENTRYPOINT ${EP}
 
 # Work as ...
 USER sagadmin
