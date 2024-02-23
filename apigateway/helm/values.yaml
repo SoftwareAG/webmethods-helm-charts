@@ -113,6 +113,9 @@ ingresses:
     className: "nginx"
     annotations: 
       nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/proxy-body-size: 10m
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy_connect_timeout: "600"
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
       - host:
@@ -131,7 +134,10 @@ ingresses:
     svcName: ""
     svcPort: ""
     className: "nginx"
-    annotations: {}
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10m
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy_connect_timeout: "600"
       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
       - host:
@@ -151,6 +157,10 @@ ingresses:
     className: "nginx"
     annotations: 
       nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/proxy-body-size: 10m
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy_connect_timeout: "600"
+      # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
       - host:
         paths:
