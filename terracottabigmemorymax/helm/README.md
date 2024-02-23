@@ -122,7 +122,6 @@ https://terracotta-0.terracotta-service.default.svc.cluster.local
 
 - When asking for user name enter "user" . It should be able to connect and show cluster information on browser.
 
-
 ### Prometheus support
 Terracotta BigMemory provides a list of key metrics in Prometheus compatible format over HTTP on TMC endpoint:
 ```
@@ -130,7 +129,7 @@ http(s)://<host>:<port>/tmc/api/prometheus
 ```
 Sample config to add BigMemory as a target in the prometheus.yml configuration file
 
-For non secure cluster - 
+For non secure cluster -
 ```
 - job_name: 'big_memory'
     metrics_path: /tmc/api/prometheus
@@ -138,7 +137,7 @@ For non secure cluster -
         - targets: ['localhost:9889']
 ```
 
-For secure cluster - 
+For secure cluster -
 ```
 - job_name: 'big_memory'
     scheme: https
@@ -165,4 +164,35 @@ helm delete <release-name>
 | `1.0.0' | Initial release         |
 | `1.1.0' | Available from GitHub   |
 
-{{ template "chart.valuesSection" . }}
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| datastoreSize | string | `"4G"` | The <datastoreSize> configuration for each Terracotta server. |
+| fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
+| imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
+| jsonLogging | bool | `true` | The JSON_LOGGING environment variable for each Terracotta server. |
+| license | string | `""` | The license content for the Terracotta cluster. Required. |
+| nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
+| namespaceOverride | string | `""` | The namespace where the Terracotta cluster will be deployed. |
+| nodeCountPerStripe | int | `2` | The number of Terracotta servers per stripe. |
+| offHeapSize | string | `"2G"` | The <offheap> configuration for each Terracotta server. |
+| probeFailureThreshold | int | `3` | probeFailureThreshold after which a pod is considered failed. |
+| pullPolicy | string | `"IfNotPresent"` |  |
+| registry | string | `"sagcr.azurecr.io"` | The repository for the image. By default, this points to the Software AG container repository. Change this for air-gaped installations or custom images. For the Software AG container repository you need to have a valid access token stored as registry credentials |
+| restartable | bool | `false` | The <restartable> configuration for each Terracotta server. |
+| secretName | string | `nil` | Create a secret manually in cluster which contains all the necessary certs, files etc. for all the servers as well as tmc as the same secret will be mounted to all the pods deployed via this helm chart. |
+| security | bool | `false` | Add the <security> configuration for each Terracotta server. Requires secretName to be set. |
+| securityContext.fsGroup | int | `0` |  |
+| securityContext.runAsGroup | int | `0` |  |
+| securityContext.runAsNonRoot | bool | `true` |  |
+| securityContext.runAsUser | int | `1724` |  |
+| selfSignedCerts | bool | `true` | Configure JAVA_OPTS appropriately when using self-signed certificates. |
+| serverImage | string | `"terracotta/bigmemorymax-server"` |  |
+| serverOpts | string | `""` | Can be used for passing some jvm related options for terracotta servers. |
+| serverStorage | string | `"10Gi"` | The pvc storage request for the server pods |
+| stripeCount | int | `2` | The number of Terracotta stripes to deploy. |
+| tag | string | `"4.4.0"` | Specific version to not accidentally change production versions with newer images. |
+| tmcImage | string | `"terracotta/bigmemorymax-tmc"` |  |
+| tmcOpts | string | `""` | Can be used for passing some jvm related options for tmc. |
+| tmcStorage | string | `"1Gi"` | The pvc storage request for the tmc pods |
