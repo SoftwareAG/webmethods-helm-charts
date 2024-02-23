@@ -59,6 +59,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | [msr-with-tls](../examples/msr-with-tls/README.md) | Configure Ingress with TLS |
 | [process-engine](../examples/process-engine/README.md) | Deploy MSR as Process Engine |
 | [service-auditing-monitor](../examples/service-auditing-monitor/README.md) | Deploy MSR as Service Auditing Monitor |
+| [Stakater Reloader](../examples/stakater-reloader/README.md) | Utility to restart MSR pod on configuration changes |
 
 ## Install Microservices Runtime Release
 
