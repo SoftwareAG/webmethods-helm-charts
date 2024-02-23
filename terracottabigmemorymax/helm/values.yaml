@@ -1,0 +1,69 @@
+# -- The repository for the image. By default,
+# this points to the Software AG container repository.
+# Change this for air-gaped installations or custom images.
+# For the Software AG container repository you need to have a
+# valid access token stored as registry credentials
+registry: sagcr.azurecr.io
+serverImage: terracotta/bigmemorymax-server
+tmcImage: terracotta/bigmemorymax-tmc
+pullPolicy: IfNotPresent
+# -- Specific version to not accidentally change production versions with newer images.
+tag: "4.4.0"
+
+# -- Image pull secret reference. By default looks for `regcred`.
+imagePullSecrets:
+  - name: regcred
+
+# -- The namespace where the Terracotta cluster will be deployed.
+namespaceOverride: ""
+# -- Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`.
+nameOverride: ""
+# -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
+fullnameOverride: ""
+
+#
+# BELOW ARE THE CONFIGURATIONS FOR THE PODS
+#
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1724
+  runAsGroup: 0
+  fsGroup: 0
+
+# -- probeFailureThreshold after which a pod is considered failed.
+probeFailureThreshold: 3
+
+# -- The pvc storage request for the server pods
+serverStorage: 10Gi
+# -- The pvc storage request for the tmc pods
+tmcStorage: 1Gi
+
+#
+# BELOW ARE THE CONFIGURATIONS FOR THE TERRACOTTA SERVERS
+#
+
+# -- The number of Terracotta stripes to deploy.
+stripeCount: 2
+# -- The number of Terracotta servers per stripe.
+nodeCountPerStripe: 2
+# -- The <datastoreSize> configuration for each Terracotta server.
+datastoreSize: "4G"
+# -- The <offheap> configuration for each Terracotta server.
+offHeapSize: "2G"
+# -- The <restartable> configuration for each Terracotta server.
+restartable: false
+# -- The JSON_LOGGING environment variable for each Terracotta server.
+jsonLogging: true
+# -- Can be used for passing some jvm related options for terracotta servers.
+serverOpts: ""
+# -- Can be used for passing some jvm related options for tmc.
+tmcOpts: ""
+# -- Add the <security> configuration for each Terracotta server. Requires secretName to be set.
+security: false
+# -- Configure JAVA_OPTS appropriately when using self-signed certificates.
+selfSignedCerts: true
+# -- Create a secret manually in cluster which contains all the necessary certs, files etc. for all the servers as well as tmc as the same secret will be mounted to all the pods deployed via this helm chart.
+secretName:
+# -- The license content for the Terracotta cluster. Required.
+license: ""
