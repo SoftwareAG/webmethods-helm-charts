@@ -19,13 +19,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: server-configmap
-  namespace: {{ template "kube-terracotta.namespace" . }}
+  name: {{ include "common.names.fullname" . }}-server-configmap
   labels:
-{{ include "kube-terracotta.labels" . | indent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 data:
-  license.key: |
-    {{- .Values.license | nindent 4 }}
   tc-config.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
     <!--
@@ -34,23 +34,23 @@ data:
     -->
 
     <tc:tc-config xmlns:tc="http://www.terracotta.org/config">
-      <servers secure="{{ $.Values.security }}">
-    {{- range $i := until (int $.Values.stripeCount) }}
+      <servers secure="{{ $.Values.terracotta.security }}">
+    {{- range $i := until (int $.Values.terracotta.stripeCount) }}
         <mirror-group>
-    {{- range $j := until (int $.Values.nodeCountPerStripe) }}
-          <server host="terracotta-{{ add (mul $i $.Values.nodeCountPerStripe) $j }}.terracotta-service.{{ template "kube-terracotta.namespace" $ }}.svc.cluster.local" name="terracotta-{{ add (mul $i $.Values.nodeCountPerStripe) $j }}.terracotta-service.{{ template "kube-terracotta.namespace" $ }}.svc.cluster.local">
-            <tsa-port>9510</tsa-port>
-            <tsa-group-port>9530</tsa-group-port>
-            <management-port>9540</management-port>
+    {{- range $j := until (int $.Values.terracotta.nodeCountPerStripe) }}
+          <server host="{{ include "common.names.fullname" $ }}-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace }}.svc.cluster.local" name="{{ include "common.names.fullname" $ }}-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace }}.svc.cluster.local">
+            <tsa-port>{{ $.Values.terracotta.tsaport }} </tsa-port>
+            <tsa-group-port>{{ $.Values.terracotta.tsagroupport }}</tsa-group-port>
+            <management-port>{{ $.Values.terracotta.tsamanagementport }}</management-port>
             <data>/opt/softwareag/run/data</data>
             <logs>/opt/softwareag/run/logs</logs>
-            <dataStorage size={{ $.Values.datastoreSize | quote }}>
-              <offheap size={{ $.Values.offHeapSize | quote }}/>
+            <dataStorage size={{ $.Values.terracotta.datastoreSize | quote }}>
+              <offheap size={{ $.Values.terracotta.offHeapSize | quote }}/>
             </dataStorage>
-            {{- if eq $.Values.security true }}
+            {{- if eq $.Values.terracotta.security true }}
             <security>
               <ssl>
-                <certificate>jks:terracotta-{{ add (mul $i $.Values.nodeCountPerStripe) $j }}-alias@/opt/softwareag/run/terracotta-{{ add (mul $i $.Values.nodeCountPerStripe) $j }}-keystore.jks</certificate>
+                <certificate>jks:terracotta-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}-alias@/opt/softwareag/run/terracotta-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}-keystore.jks</certificate>
               </ssl>
               <keychain>
                 <class>com.terracotta.management.keychain.FileStoreKeyChain</class>
@@ -61,18 +61,17 @@ data:
                 <url>file:/opt/softwareag/run/terracotta.ini</url>
                 <user>user</user>
               </auth>
-                <management>
-                  <ia> https://tmc-0.tmc-service.{{ $.Values.namespace }}.svc.cluster.local:9443/tmc/api/assertIdentity</ia>
-                  <timeout>10000</timeout>
-                  <hostname>terracotta-{{ add (mul $i $.Values.nodeCountPerStripe) $j }}.terracotta-service.{{ template "kube-terracotta.namespace" $ }}.svc.cluster.local</hostname >
-                </management>
+              <management>
+                <ia>https://{{ include "common.names.fullname" $ }}-tmc-service.{{ $.Release.namespace }}.svc.cluster.local:{{ $.Values.terracotta.tmcsecureport }}/tmc/api/assertIdentity</ia>
+                <timeout>10000</timeout>
+                <hostname>{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace $ }}.svc.cluster.local</hostname >
+              </management>
             </security>
             {{- end }}
           </server>
     {{- end }}
         </mirror-group>
     {{- end }}
-        <restartable enabled={{ $.Values.restartable | quote }}/>
+        <restartable enabled={{ $.Values.terracotta.restartable | quote }}/>
       </servers>
     </tc:tc-config>
-

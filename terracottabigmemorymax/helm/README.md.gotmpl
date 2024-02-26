@@ -96,7 +96,7 @@ kubectl create secret generic certificatesecret \
 ### Step #2: Install the helm chart and use the above created secret.
 
 ````
-helm install "my-release" --set stripeCount=2 --set nodeCountPerStripe=1 --set-file license=/home/mdh@eur.ad.sag/4.xlicense/license.key --set tag=4.3.10-SNAPSHOT --set security=true --set secretName=certificatesecret  .
+helm install "my-release" --set terracotta.stripeCount=2 --set terracotta.nodeCountPerStripe=1 --set-file license=/home/mdh@eur.ad.sag/4.xlicense/license.key --set tag=4.3.10-SNAPSHOT --set security=true --set secretName=certificatesecret  .
 ````
 
 ### Step #3: Verify from the browser to see if connections can be created securely to tmc.
@@ -164,5 +164,6 @@ helm delete <release-name>
 |---------|-------------------------|
 | `1.0.0' | Initial release         |
 | `1.1.0' | Available from GitHub   |
+| `1.2.0' | Adapted to webMethods Helm charts   |
 
 {{ template "chart.valuesSection" . }}

@@ -1,3 +1,5 @@
+{{ if .Values.license }}
+---
 # /*
 #  * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
 #  *
@@ -19,10 +21,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: license-configmap
-  namespace: {{ template "kube-terracotta.namespace" . }}
+  name: {{ include "terracotta.licenseConfigMapName"  . }}
   labels:
-{{ include "kube-terracotta.labels" . | indent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 data:
   license.key: |
     {{- .Values.license | nindent 4 }}
+{{- end }}

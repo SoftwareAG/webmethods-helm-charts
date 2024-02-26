@@ -19,19 +19,20 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: terracotta
-  namespace: {{ template "kube-terracotta.namespace" . }}
+  name: {{ include "common.names.fullname" . }}
   labels:
-    app: terracotta
-{{ include "kube-terracotta.labels" . | indent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   updateStrategy:
     type: "OnDelete"
-  replicas: {{ mul $.Values.stripeCount $.Values.nodeCountPerStripe }}
+  replicas: {{ mul $.Values.terracotta.stripeCount $.Values.terracotta.nodeCountPerStripe }}
   selector:
     matchLabels:
       app: terracotta
-  serviceName: terracotta-service
+  serviceName: {{ include "common.names.fullname" . }}-tsa-service
   template:
     metadata:
       labels:
@@ -47,30 +48,17 @@ spec:
         - name: server
           image: "{{ $.Values.registry }}/{{ $.Values.serverImage }}:{{ $.Values.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ $.Values.pullPolicy | quote }}
-          readinessProbe:
-            tcpSocket:
-              port: 9530
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 5
-            failureThreshold: {{ $.Values.probeFailureThreshold }} 
-          livenessProbe:
-            tcpSocket:
-              port: 9530
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 5
-            failureThreshold: {{ $.Values.probeFailureThreshold }} 
+
           startupProbe:
-            tcpSocket:
-              port: 9530
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            successThreshold: 1
-            timeoutSeconds: 5
-            failureThreshold: {{ $.Values.probeFailureThreshold }} 
+            {{- toYaml .Values.tsaServer.startupProbe | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.tsaServer.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.tsaServer.readinessProbe | nindent 12 }}
+          {{- if and .Values.resources .Values.resourves.tsaContainer }}
+          resources:
+            {{- toYaml .Values.resources.tsaContainer | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: commonconfig-volume
               mountPath: /opt/softwareag/config
@@ -78,33 +66,38 @@ spec:
               mountPath: /opt/softwareag/run
           env:
             - name: JSON_LOGGING
-              value: {{ $.Values.jsonLogging | quote }}
+              value: {{ $.Values.terracotta.jsonLogging | quote }}
             {{- if eq $.Values.security true }}
             {{- if eq $.Values.selfSignedCerts true }}
             - name: JAVA_OPTS
-              value: {{ $.Values.serverOpts }} -Djavax.net.ssl.trustStore=/opt/softwareag/run/truststore.jks
+              value: {{ $.Values.terracotta.serverOpts }} -Djavax.net.ssl.trustStore=/opt/softwareag/run/truststore.jks
             {{- else }} 
-            {{- if ne $.Values.serverOpts "" }}
+            {{- if ne $.Values.terracotta.serverOpts "" }}
             - name: JAVA_OPTS
-              value: {{ $.Values.serverOpts }}
+              value: {{ $.Values.terracotta.serverOpts }}
             {{- end }}
             {{- end }}
             {{- else }}
-            {{- if ne $.Values.serverOpts "" }}
+            {{- if ne $.Values.terracotta.serverOpts "" }}
             - name: JAVA_OPTS
-              value: {{ $.Values.serverOpts }}
+              value: {{ $.Values.terracotta.serverOpts }}
             {{- end }}
-            {{- end }}                    
+            {{- end }} 
+            {{- if .Values.extraEnvs }}
+            {{- toYaml .Values.extraEnvs | nindent 12 }}
+            {{- end }}                   
       volumes:
         - name: commonconfig-volume
           projected:
               sources:
-                 - configMap:
-                       name: server-configmap
-                {{- if eq $.Values.security true }}
+                - configMap:
+                    name: {{ include "common.names.fullname" . }}-server-configmap
+                - configMap:
+                    name: {{ include "terracotta.licenseConfigMapName"  . }}
+                {{- if eq $.Values.terracotta.security true }}
                  - secret:
-                       name: {{ required "A valid server certs is required!" $.Values.secretName }}
-                {{- end}}
+                     name: {{ required "A valid server certs is required!" $.Values.terracotta.secretName }}
+                {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: core-store

@@ -4,8 +4,8 @@
 # For the Software AG container repository you need to have a
 # valid access token stored as registry credentials
 registry: sagcr.azurecr.io
-serverImage: terracotta/bigmemorymax-server
-tmcImage: terracotta/bigmemorymax-tmc
+serverImage: bigmemorymax-server
+tmcImage: bigmemorymax-management-server
 pullPolicy: IfNotPresent
 # -- Specific version to not accidentally change production versions with newer images.
 tag: "4.4.0"
@@ -14,8 +14,6 @@ tag: "4.4.0"
 imagePullSecrets:
   - name: regcred
 
-# -- The namespace where the Terracotta cluster will be deployed.
-namespaceOverride: ""
 # -- Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`.
 nameOverride: ""
 # -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
@@ -31,39 +29,145 @@ securityContext:
   runAsGroup: 0
   fsGroup: 0
 
-# -- probeFailureThreshold after which a pod is considered failed.
-probeFailureThreshold: 3
+# -- Extra Labels
+extraLabels: {}
+
+# -- Exta environment properties to be passed on to the terracotta runtime
+#  - name: extraEnvironmentVariable
+#    value: "myvalue"
+extraEnvs: []
 
 # -- The pvc storage request for the server pods
 serverStorage: 10Gi
 # -- The pvc storage request for the tmc pods
 tmcStorage: 1Gi
 
-#
-# BELOW ARE THE CONFIGURATIONS FOR THE TERRACOTTA SERVERS
-#
+# -- Terracotta BigMemoryMax configurations
+terracotta:
 
-# -- The number of Terracotta stripes to deploy.
-stripeCount: 2
-# -- The number of Terracotta servers per stripe.
-nodeCountPerStripe: 2
-# -- The <datastoreSize> configuration for each Terracotta server.
-datastoreSize: "4G"
-# -- The <offheap> configuration for each Terracotta server.
-offHeapSize: "2G"
-# -- The <restartable> configuration for each Terracotta server.
-restartable: false
-# -- The JSON_LOGGING environment variable for each Terracotta server.
-jsonLogging: true
-# -- Can be used for passing some jvm related options for terracotta servers.
-serverOpts: ""
-# -- Can be used for passing some jvm related options for tmc.
-tmcOpts: ""
-# -- Add the <security> configuration for each Terracotta server. Requires secretName to be set.
-security: false
-# -- Configure JAVA_OPTS appropriately when using self-signed certificates.
-selfSignedCerts: true
-# -- Create a secret manually in cluster which contains all the necessary certs, files etc. for all the servers as well as tmc as the same secret will be mounted to all the pods deployed via this helm chart.
-secretName:
-# -- The license content for the Terracotta cluster. Required.
+  # -- The number of Terracotta stripes to deploy.
+  stripeCount: 2
+  # -- The number of Terracotta servers per stripe.
+  nodeCountPerStripe: 2
+  # -- The <datastoreSize> configuration for each Terracotta server.
+  datastoreSize: "4G"
+  # -- The <offheap> configuration for each Terracotta server.
+  offHeapSize: "2G"
+  # -- The <restartable> configuration for each Terracotta server.
+  restartable: false
+  # -- The JSON_LOGGING environment variable for each Terracotta server.
+  jsonLogging: true
+  # -- Can be used for passing some jvm related options for terracotta servers.
+  serverOpts: ""
+  # -- Can be used for passing some jvm related options for tmc.
+  tmcOpts: ""
+  # -- Add the <security> configuration for each Terracotta server. Requires secretName to be set.
+  security: false
+  # -- Configure JAVA_OPTS appropriately when using self-signed certificates.
+  selfSignedCerts: true
+  # -- Create a secret manually in cluster which contains all the necessary certs, files etc. for all the servers as well as tmc as the same secret will be mounted to all the pods deployed via this helm chart.
+  secretName: ""
+  # -- TSA port
+  tsaport: 9510
+  # -- TSA group port
+  tsagroupport: 9530
+  # -- TSA Management port
+  tsamanagementport: 9540
+
+  # -- TMC Secure Port
+  tmcsecureport: 9443
+
+  # -- TMC Management Port
+  tmcmanagementport: 9889
+
+# -- The license config map name if provided externally.
+licenseConfigMap: ""
+
+# -- The license content for the Terracotta cluster. Optional.
 license: ""
+
+# -- TSA container-specific configurations for probes
+tsaServer:
+  # -- Configure startup probe
+  startupProbe:
+    tcpSocket:
+      port: tsaport
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- Configure readiness probe
+  readinessProbe:
+    tcpSocket:
+      port: tsaport
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3 
+
+  # -- Configure liveness probe
+  livenessProbe:
+    tcpSocket:
+      port: tsaport
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3 
+
+# -- TMC-specific configurations for probes
+tmcServer:
+  # -- Configure startup probe
+  startupProbe:
+    tcpSocket:
+      port: managementport
+    initialDelaySeconds: 10
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- Configure readiness probe
+  readinessProbe:
+    tcpSocket:
+      port: managementport
+    initialDelaySeconds: 20
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- Configure liveness probe
+  livenessProbe:
+    tcpSocket:
+      port: managementport
+    initialDelaySeconds: 20
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+# -- We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+#
+# tsaContainer:
+#   limits:
+#     cpu: 100m
+#     memory: 128Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
+# tmcContainer:
+#   requests:
+#     cpu: 500m
+#     memory: 2Gi
+#   limits:
+#     # use a high cpu limit to avaoid the container being throttled
+#     cpu: 8
+#     memory: 4Gi
+resources: {}

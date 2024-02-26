@@ -20,10 +20,12 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: tmc
-  namespace: {{ template "kube-terracotta.namespace" . }}
   labels:
     app: tmc
-{{ include "kube-terracotta.labels" . | indent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   updateStrategy: 
     type: "OnDelete"
@@ -31,7 +33,7 @@ spec:
   selector:
     matchLabels:
       app: tmc
-  serviceName: tmc-service
+  serviceName: {{ include "common.names.fullname" . }}-tmc-service
   template:
     metadata:
       labels:
@@ -47,30 +49,16 @@ spec:
         - name: tmc-server
           image: "{{ $.Values.registry }}/{{ $.Values.tmcImage }}:{{ $.Values.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ $.Values.pullPolicy | quote }}
-          readinessProbe:
-            tcpSocket:
-              port: 9889
-            initialDelaySeconds: 20
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 5
-            failureThreshold: {{ $.Values.probeFailureThreshold }}
-          livenessProbe:
-            tcpSocket:
-              port: 9889
-            initialDelaySeconds: 20
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 5
-            failureThreshold: {{ $.Values.probeFailureThreshold }}
           startupProbe:
-            tcpSocket:
-              port: 9889
-            initialDelaySeconds: 10
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 5
-            failureThreshold: {{ $.Values.probeFailureThreshold }}
+            {{- toYaml .Values.tmcServer.startupProbe | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.tmcServer.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.tmcServer.readinessProbe | nindent 12 }}
+          {{- if and .Values.resources .Values.resources.tmcContainer }}
+          resources:
+            {{- toYaml .Values.resources.tmcContainer | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: commonconfig-volume
               mountPath: /opt/softwareag/config
@@ -80,29 +68,29 @@ spec:
             {{- if eq $.Values.security true }}
             {{- if eq $.Values.selfSignedCerts true }}
             - name: JAVA_OPTS
-              value: {{ $.Values.tmcOpts }} -Djavax.net.ssl.keyStore=/opt/softwareag/.tc/mgmt/tmc-0-keystore.jks -Djavax.net.ssl.trustStore=/opt/softwareag/.tc/mgmt/truststore.jks
+              value: {{ $.Values.terracotta.tmcOpts }} -Djavax.net.ssl.keyStore=/opt/softwareag/.tc/mgmt/tmc-0-keystore.jks -Djavax.net.ssl.trustStore=/opt/softwareag/.tc/mgmt/truststore.jks
             {{- else }}
             - name: JAVA_OPTS
-              value: {{ $.Values.tmcOpts }} -Djavax.net.ssl.keyStore=/opt/softwareag/.tc/mgmt/tmc-0-keystore.jks
+              value: {{ $.Values.terracotta.tmcOpts }} -Djavax.net.ssl.keyStore=/opt/softwareag/.tc/mgmt/tmc-0-keystore.jks
             {{- end }}
             {{- else }}
-            {{- if ne $.Values.tmcOpts "" }}
+            {{- if ne $.Values.terracotta.tmcOpts "" }}
             - name: JAVA_OPTS
-              value: {{ $.Values.tmcOpts }}
+              value: {{ $.Values.terracotta.tmcOpts }}
             {{- end }}
             {{- end }}
             - name: JSON_LOGGING
-              value: {{ $.Values.jsonLogging | quote }}
+              value: {{ $.Values.terracotta.jsonLogging | quote }}
       volumes:
         - name: commonconfig-volume
           projected:
-              sources:
-                - configMap:
-                       name: license-configmap
-                {{- if eq $.Values.security true }}
-                - secret:
-                       name: {{ required "A valid certs is required!" $.Values.secretName }}
-                {{- end }}
+            sources:
+              - configMap:
+                  name: {{ include "terracotta.licenseConfigMapName"  . }}
+              {{- if eq $.Values.security true }}
+              - secret:
+                  name: {{ required "A valid certs is required!" $.Values.terracotta.secretName }}
+              {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: core-store

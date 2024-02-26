@@ -19,21 +19,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: terracotta-service
-  namespace: {{ template "kube-terracotta.namespace" . }}
+  name: {{ include "common.names.fullname" . }}-tsa-service
   labels:
     app: terracotta
-{{ include "kube-terracotta.labels" . | indent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.extraLabels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - name: tsa-port
-      port: 9510
-    - name: group-port
-      port: 9530
-    - name: management-port
-      port: 9540
+    - name: tsaport
+      port: {{ .Values.terracotta.tsaport }}
+    - name: groupport
+      port: {{ .Values.terracotta.tsagroupport }}
+    - name: managementport
+      port: {{ .Values.terracotta.tsamanagementport }}
   selector:
     app: terracotta
   publishNotReadyAddresses: true
