@@ -96,7 +96,7 @@ kubectl create secret generic certificatesecret \
 ### Step #2: Install the helm chart and use the above created secret.
 
 ````
-helm install "my-release" --set stripeCount=2 --set nodeCountPerStripe=1 --set-file license=/home/mdh@eur.ad.sag/4.xlicense/license.key --set tag=4.3.10-SNAPSHOT --set security=true --set secretName=certificatesecret  .
+helm install "my-release" --set terracotta.stripeCount=2 --set terracotta.nodeCountPerStripe=1 --set-file license=/home/mdh@eur.ad.sag/4.xlicense/license.key --set tag=4.3.10-SNAPSHOT --set security=true --set secretName=certificatesecret  .
 ````
 
 ### Step #3: Verify from the browser to see if connections can be created securely to tmc.
@@ -163,36 +163,53 @@ helm delete <release-name>
 |---------|-------------------------|
 | `1.0.0' | Initial release         |
 | `1.1.0' | Available from GitHub   |
+| `1.2.0' | Adapted to webMethods Helm charts   |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| datastoreSize | string | `"4G"` | The <datastoreSize> configuration for each Terracotta server. |
+| extraEnvs | list | `[]` | Exta environment properties to be passed on to the terracotta runtime  - name: extraEnvironmentVariable    value: "myvalue" |
+| extraLabels | object | `{}` | Extra Labels |
 | fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
 | imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
-| jsonLogging | bool | `true` | The JSON_LOGGING environment variable for each Terracotta server. |
-| license | string | `""` | The license content for the Terracotta cluster. Required. |
+| license | string | `""` | The license content for the Terracotta cluster. Optional. |
+| licenseConfigMap | string | `""` | The license config map name if provided externally. |
 | nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
-| namespaceOverride | string | `""` | The namespace where the Terracotta cluster will be deployed. |
-| nodeCountPerStripe | int | `2` | The number of Terracotta servers per stripe. |
-| offHeapSize | string | `"2G"` | The <offheap> configuration for each Terracotta server. |
-| probeFailureThreshold | int | `3` | probeFailureThreshold after which a pod is considered failed. |
 | pullPolicy | string | `"IfNotPresent"` |  |
 | registry | string | `"sagcr.azurecr.io"` | The repository for the image. By default, this points to the Software AG container repository. Change this for air-gaped installations or custom images. For the Software AG container repository you need to have a valid access token stored as registry credentials |
-| restartable | bool | `false` | The <restartable> configuration for each Terracotta server. |
-| secretName | string | `nil` | Create a secret manually in cluster which contains all the necessary certs, files etc. for all the servers as well as tmc as the same secret will be mounted to all the pods deployed via this helm chart. |
-| security | bool | `false` | Add the <security> configuration for each Terracotta server. Requires secretName to be set. |
+| resources | object | `{}` | We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This also increases chances charts run on environments with little resources, such as Minikube. If you do want to specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after 'resources:'.  tsaContainer:   limits:     cpu: 100m     memory: 128Mi   requests:     cpu: 100m     memory: 128Mi tmcContainer:   requests:     cpu: 500m     memory: 2Gi   limits:     # use a high cpu limit to avaoid the container being throttled     cpu: 8     memory: 4Gi |
 | securityContext.fsGroup | int | `0` |  |
 | securityContext.runAsGroup | int | `0` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `1724` |  |
-| selfSignedCerts | bool | `true` | Configure JAVA_OPTS appropriately when using self-signed certificates. |
-| serverImage | string | `"terracotta/bigmemorymax-server"` |  |
-| serverOpts | string | `""` | Can be used for passing some jvm related options for terracotta servers. |
+| serverImage | string | `"bigmemorymax-server"` |  |
 | serverStorage | string | `"10Gi"` | The pvc storage request for the server pods |
-| stripeCount | int | `2` | The number of Terracotta stripes to deploy. |
 | tag | string | `"4.4.0"` | Specific version to not accidentally change production versions with newer images. |
-| tmcImage | string | `"terracotta/bigmemorymax-tmc"` |  |
-| tmcOpts | string | `""` | Can be used for passing some jvm related options for tmc. |
+| terracotta | object | `{"datastoreSize":"4G","jsonLogging":true,"nodeCountPerStripe":2,"offHeapSize":"2G","restartable":false,"secretName":"","security":false,"selfSignedCerts":true,"serverOpts":"","stripeCount":2,"tmcOpts":"","tmcmanagementport":9889,"tmcsecureport":9443,"tsagroupport":9530,"tsamanagementport":9540,"tsaport":9510}` | Terracotta BigMemoryMax configurations |
+| terracotta.datastoreSize | string | `"4G"` | The <datastoreSize> configuration for each Terracotta server. |
+| terracotta.jsonLogging | bool | `true` | The JSON_LOGGING environment variable for each Terracotta server. |
+| terracotta.nodeCountPerStripe | int | `2` | The number of Terracotta servers per stripe. |
+| terracotta.offHeapSize | string | `"2G"` | The <offheap> configuration for each Terracotta server. |
+| terracotta.restartable | bool | `false` | The <restartable> configuration for each Terracotta server. |
+| terracotta.secretName | string | `""` | Create a secret manually in cluster which contains all the necessary certs, files etc. for all the servers as well as tmc as the same secret will be mounted to all the pods deployed via this helm chart. |
+| terracotta.security | bool | `false` | Add the <security> configuration for each Terracotta server. Requires secretName to be set. |
+| terracotta.selfSignedCerts | bool | `true` | Configure JAVA_OPTS appropriately when using self-signed certificates. |
+| terracotta.serverOpts | string | `""` | Can be used for passing some jvm related options for terracotta servers. |
+| terracotta.stripeCount | int | `2` | The number of Terracotta stripes to deploy. |
+| terracotta.tmcOpts | string | `""` | Can be used for passing some jvm related options for tmc. |
+| terracotta.tmcmanagementport | int | `9889` | TMC Management Port |
+| terracotta.tmcsecureport | int | `9443` | TMC Secure Port |
+| terracotta.tsagroupport | int | `9530` | TSA group port |
+| terracotta.tsamanagementport | int | `9540` | TSA Management port |
+| terracotta.tsaport | int | `9510` | TSA port |
+| tmcImage | string | `"bigmemorymax-management-server"` |  |
+| tmcServer | object | `{"livenessProbe":{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5},"readinessProbe":{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5},"startupProbe":{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}}` | TMC-specific configurations for probes |
+| tmcServer.livenessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}` | Configure liveness probe |
+| tmcServer.readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}` | Configure readiness probe |
+| tmcServer.startupProbe | object | `{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}` | Configure startup probe |
 | tmcStorage | string | `"1Gi"` | The pvc storage request for the tmc pods |
+| tsaServer | object | `{"livenessProbe":{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5},"readinessProbe":{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5},"startupProbe":{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}}` | TSA container-specific configurations for probes |
+| tsaServer.livenessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}` | Configure liveness probe |
+| tsaServer.readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}` | Configure readiness probe |
+| tsaServer.startupProbe | object | `{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}` | Configure startup probe |
