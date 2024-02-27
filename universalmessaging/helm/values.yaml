@@ -15,7 +15,7 @@ image:
   tag: "10.15"
 
 # -- Name of the licence config map
-licenseConfigMap: "universalmessaging-licence-key"
+licenseConfigMap: "universalmessaging-license-key"
 
 # -- Image pull secret reference. By default looks for `regcred`.
 imagePullSecrets: 

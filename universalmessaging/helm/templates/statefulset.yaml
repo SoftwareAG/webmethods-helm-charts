@@ -58,6 +58,9 @@ spec:
           configMap:
             name: {{ .Values.licenseConfigMap }}            
             defaultMode: 420
+            items:
+            - key:  licensekey
+              path: licenseKey.xml
         - name: jmx-exporter-config
           configMap:
             name: {{ include "common.names.fullname" . }}
@@ -105,7 +108,8 @@ spec:
           - name: configuration
             mountPath: /opt/softwareag/common/conf
           - name: licence-xml
-            mountPath: /opt/softwareag/UniversalMessaging/server/umserver/licence/
+            mountPath: /opt/softwareag/UniversalMessaging/server/umserver/licence/licence.xml
+            subPath:   licence.xml
           - name: jmx-exporter-config
             mountPath: /opt/softwareag/UniversalMessaging/server/umserver/bin/jmx_sag_um_exporter.yaml
             subPath:   jmx_sag_um_exporter.yaml
