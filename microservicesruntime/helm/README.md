@@ -170,6 +170,15 @@ helm install wm-msr webmethods/microservicesruntime   \
 | readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"http"},"timeoutSeconds":1}` | readiness probe for container, by default this will simply check for tcp socket connection. Adjust this in order to avoid routing traffing to non-ready Integration Servers (e.g. use the ping service via http call) |
 | replicaCount | int | `1` | Number of replicates in Deployment |
 | resources | object | `{}` |  |
+| route.annotations | object | `{}` |  |
+| route.enabled | bool | `false` | enables OpenShift route |
+| route.host | string | `"msr.mydomain.com"` | Hostname of Route. |
+| route.port | int | `5555` |  |
+| route.tls.caCertificate | string | `""` |  |
+| route.tls.certificate | string | `""` |  |
+| route.tls.destinationCertificate | string | `""` |  |
+| route.tls.key | string | `""` |  |
+| route.tls.termination | string | `""` | TLS Termination. Values can be reencrypt, passthrough or edge |
 | secretMounts | list | `[]` | Secret mounts, A list of secrets and their paths to mount inside the pod |
 | secretVolumes | list | `[]` | Secret volumes, A list of secrets |
 | securityContext | object | `{}` |  |
