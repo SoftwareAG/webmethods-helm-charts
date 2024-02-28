@@ -1,0 +1,12 @@
+
+ingress:
+  enabled: false
+ 
+route:
+  enabled: true
+  host: msr-openshift.apps-crc.testing
+  tls:
+    termination: edge
+ 
+podSecurityContext:
+  fsGroup: null

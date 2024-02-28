@@ -137,6 +137,7 @@ microservicesruntime:
   readinessProbe:
     # -- Scheme of administration port port, uppercase
     scheme:                 "HTTP"
+  
   # -- Name of config map which contains the license key. If you ommit this, it defaults to the release name + microservicesruntime-license. 
   licenseConfigMap:         "microservicesruntime-license-key"
   memoryHeap:
@@ -214,6 +215,21 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+route:
+  # -- enables OpenShift route
+  enabled: false    
+  annotations: {}
+  # -- Hostname of Route.
+  host: msr.mydomain.com
+  port: 5555
+  tls:
+    # -- TLS Termination. Values can be reencrypt, passthrough or edge
+    termination: ""
+    key: ""
+    certificate: ""
+    caCertificate: ""
+    destinationCertificate: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
