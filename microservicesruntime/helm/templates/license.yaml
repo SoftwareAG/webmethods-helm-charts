@@ -31,6 +31,6 @@ metadata:
   annotations:
     helm.sh/resource-policy: keep
 data:
-  licensekey:
-    {{ .Values.license | toYaml }}
+  licensekey: 
+    {{- .Values.license | nindent 4 }}
 {{- end }}
