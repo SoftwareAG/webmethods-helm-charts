@@ -19,7 +19,7 @@ Universal Messaging requires a license file. These license is supposed to be pro
 Hence before running `helm install` create the configmap:
 
 ```
-kubectl create configmap universalmessaging-licence-key --from-file=licence.xml=<your path and filename to Universal Messaging license file>
+kubectl create configmap universalmessaging-license-key --from-file=licensekey=<your path and filename to Universal Messaging license file>
 ```
 
 Optionally you can also provide the license directly when installing your release (see also below).
@@ -43,7 +43,7 @@ helm install um webmethods/universalmessaging
 ... (optionally) provide the license key at installation time (can be ommitted for upgrade later) ...
 
 ```shell
---set-file=licensekey=<your path and filename to Universal Messaging license file> \
+--set-file=license=<your path and filename to Universal Messaging license file> \
 ```
 
 ... set your own image pull secret if you didn't create the default `regcred` ...
@@ -59,6 +59,7 @@ helm install um webmethods/universalmessaging
 | `1.0.0` | Initial release |
 | `1.0.1` | Update JMX Exporter configuration file from latest [UM Git repository](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config). Bugfix: Mount configuration files into container. Nginx added. |
 | `1.0.2` | Change startup, liveness and readiness probes. All configuration settings are in `values.yaml`. Now, The probes are using `httpGet` instead of `runUMTool.sh` utility. |
+| `1.0.3` | Make license file handling same as MSR |
 
 ## Values
 
@@ -92,7 +93,7 @@ helm install um webmethods/universalmessaging
 | ingress.hosts[0].paths[0].port | int | `9000` | Port of service |
 | ingress.tls | list | `[]` | TLS of Ingress |
 | license | string | `""` | Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.   |
-| licenseConfigMap | string | `"universalmessaging-licence-key"` | Name of the licence config map |
+| licenseConfigMap | string | `"universalmessaging-license-key"` | Name of the licence config map |
 | lifecycle | object | `{}` | lifecycle hooks to execute on preStop / postStart,... |
 | livenessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure liveness probe |
 | nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |

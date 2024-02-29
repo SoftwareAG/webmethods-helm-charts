@@ -72,7 +72,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 ... (optionally) provide the license key at installation time (can be ommitted for upgrade later) ...
 
 ```shell
---set-file=licensekey=<your path and filename to Microservices Runtime license file> \
+--set-file=license=<your path and filename to Microservices Runtime license file> \
 ```
 
 ... set your own image pull secret if you didn't create the default `regcred` ... 
