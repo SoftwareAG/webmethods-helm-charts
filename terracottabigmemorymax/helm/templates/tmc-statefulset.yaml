@@ -19,7 +19,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "common.names.fullname" . }}-tmc
+  name: tmc
   labels:
     app: tmc
     {{- include "common.labels.standard" . | nindent 4 }}
@@ -33,7 +33,7 @@ spec:
   selector:
     matchLabels:
       app: tmc
-  serviceName: {{ include "common.names.fullname" . }}-tmc-service
+  serviceName: tmc-service
   template:
     metadata:
       labels:

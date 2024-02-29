@@ -19,7 +19,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "common.names.fullname" . }}-tsa
+  name: terracotta
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
     {{- with .Values.extraLabels -}}
@@ -32,7 +32,7 @@ spec:
   selector:
     matchLabels:
       app: terracotta
-  serviceName: {{ include "common.names.fullname" . }}-tsa-service
+  serviceName: terracotta-service
   template:
     metadata:
       labels:
