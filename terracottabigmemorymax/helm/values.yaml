@@ -80,11 +80,8 @@ terracotta:
   # -- TMC Management Port
   tmcManagementPort: 9889
 
-# -- The license config map name if provided externally.
-licenseConfigMap: ""
-
-# -- The license content for the Terracotta cluster. Optional.
-license: ""
+  # -- The license content for the Terracotta cluster. Optional.
+  license: ""
 
 # -- TSA container-specific configurations for probes
 tsaServer:

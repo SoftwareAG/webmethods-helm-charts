@@ -92,11 +92,9 @@ spec:
               sources:
                 - configMap:
                     name: {{ include "common.names.fullname" . }}-server-configmap
-                - configMap:
-                    name: {{ include "terracotta.licenseConfigMapName"  . }}
                 {{- if eq $.Values.terracotta.security true }}
-                 - secret:
-                     name: {{ required "A valid server certs is required!" $.Values.terracotta.secretName }}
+                - secret:
+                    name: {{ required "A valid server certs is required!" $.Values.terracotta.secretName }}
                 {{- end }}
   volumeClaimTemplates:
     - metadata:

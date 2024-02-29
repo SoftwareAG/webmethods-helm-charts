@@ -56,4 +56,4 @@ jobs:
 
       - name: Dry-run of terracottabigmemorymax
         run: |
-          helm template um terracottabigmemory/helm
+          helm template um terracottabigmemorymax/helm

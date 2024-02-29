@@ -20,7 +20,7 @@ This Helm chart is provided as a minimal requirement to install Terracotta BigMe
 From the helm directory
 
 ```bash
-helm install <release-name> --set-file license=<license-file> --set tag=4.3.10-SNAPSHOT .
+helm install <release-name> --set-file terracotta.license=<license-file> --set tag=4.3.10-SNAPSHOT .
 ```
 
 **IMPORTANT note:** license and tag are mandatory parameter that need to be set during helm chart installation.
@@ -96,7 +96,7 @@ kubectl create secret generic certificatesecret \
 ### Step #2: Install the helm chart and use the above created secret.
 
 ````
-helm install "my-release" --set terracotta.stripeCount=2 --set terracotta.nodeCountPerStripe=1 --set-file license=/home/mdh@eur.ad.sag/4.xlicense/license.key --set tag=4.3.10-SNAPSHOT --set security=true --set secretName=certificatesecret  .
+helm install "my-release" --set terracotta.stripeCount=2 --set terracotta.nodeCountPerStripe=1 --set-file terracotta.license=/home/mdh@eur.ad.sag/4.xlicense/license.key --set tag=4.3.10-SNAPSHOT --set security=true --set secretName=certificatesecret  .
 ````
 
 ### Step #3: Verify from the browser to see if connections can be created securely to tmc.
@@ -174,7 +174,6 @@ helm delete <release-name>
 | fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
 | imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
 | license | string | `""` | The license content for the Terracotta cluster. Optional. |
-| licenseConfigMap | string | `""` | The license config map name if provided externally. |
 | nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | pullPolicy | string | `"IfNotPresent"` |  |
 | registry | string | `"sagcr.azurecr.io"` | The repository for the image. By default, this points to the Software AG container repository. Change this for air-gaped installations or custom images. For the Software AG container repository you need to have a valid access token stored as registry credentials |

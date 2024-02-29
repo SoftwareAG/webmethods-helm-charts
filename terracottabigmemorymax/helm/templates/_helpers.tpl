@@ -17,14 +17,3 @@
 #  *
 #  */
 {{/* vim: set filetype=mustache: */}}
-{{/*
-Expand the name of the chart.
-*/}}
-
-{{/*
-Create the name of the license config map
-*/}}
-{{- define "terracotta.licenseConfigMapName" -}}
-{{- default ( printf "%s-%s" (include "common.names.fullname" .) "license") .Values.licenseConfigMap }}
-{{- end }}
-
