@@ -186,7 +186,7 @@ helm delete <release-name>
 | serverImage | string | `"bigmemorymax-server"` |  |
 | serverStorage | string | `"10Gi"` | The pvc storage request for the server pods |
 | tag | string | `"4.4.0"` | Specific version to not accidentally change production versions with newer images. |
-| terracotta | object | `{"datastoreSize":"4G","jsonLogging":true,"nodeCountPerStripe":2,"offHeapSize":"2G","restartable":false,"secretName":"","security":false,"selfSignedCerts":true,"serverOpts":"","stripeCount":2,"tmcOpts":"","tmcmanagementport":9889,"tmcsecureport":9443,"tsagroupport":9530,"tsamanagementport":9540,"tsaport":9510}` | Terracotta BigMemoryMax configurations |
+| terracotta | object | `{"datastoreSize":"4G","jsonLogging":true,"nodeCountPerStripe":2,"offHeapSize":"2G","restartable":false,"secretName":"","security":false,"selfSignedCerts":true,"serverOpts":"","stripeCount":2,"tmcOpts":"","tmcManagementPort":9889,"tmcSecurePort":9443,"tsaGroupPort":9530,"tsaManagementPort":9540,"tsaPort":9510}` | Terracotta BigMemoryMax configurations |
 | terracotta.datastoreSize | string | `"4G"` | The <datastoreSize> configuration for each Terracotta server. |
 | terracotta.jsonLogging | bool | `true` | The JSON_LOGGING environment variable for each Terracotta server. |
 | terracotta.nodeCountPerStripe | int | `2` | The number of Terracotta servers per stripe. |
@@ -198,18 +198,18 @@ helm delete <release-name>
 | terracotta.serverOpts | string | `""` | Can be used for passing some jvm related options for terracotta servers. |
 | terracotta.stripeCount | int | `2` | The number of Terracotta stripes to deploy. |
 | terracotta.tmcOpts | string | `""` | Can be used for passing some jvm related options for tmc. |
-| terracotta.tmcmanagementport | int | `9889` | TMC Management Port |
-| terracotta.tmcsecureport | int | `9443` | TMC Secure Port |
-| terracotta.tsagroupport | int | `9530` | TSA group port |
-| terracotta.tsamanagementport | int | `9540` | TSA Management port |
-| terracotta.tsaport | int | `9510` | TSA port |
+| terracotta.tmcManagementPort | int | `9889` | TMC Management Port |
+| terracotta.tmcSecurePort | int | `9443` | TMC Secure Port |
+| terracotta.tsaGroupPort | int | `9530` | TSA group port |
+| terracotta.tsaManagementPort | int | `9540` | TSA Management port |
+| terracotta.tsaPort | int | `9510` | TSA port |
 | tmcImage | string | `"bigmemorymax-management-server"` |  |
 | tmcServer | object | `{"livenessProbe":{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5},"readinessProbe":{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5},"startupProbe":{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}}` | TMC-specific configurations for probes |
 | tmcServer.livenessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}` | Configure liveness probe |
 | tmcServer.readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":20,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}` | Configure readiness probe |
 | tmcServer.startupProbe | object | `{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"managementport"},"timeoutSeconds":5}` | Configure startup probe |
 | tmcStorage | string | `"1Gi"` | The pvc storage request for the tmc pods |
-| tsaServer | object | `{"livenessProbe":{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5},"readinessProbe":{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5},"startupProbe":{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}}` | TSA container-specific configurations for probes |
-| tsaServer.livenessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}` | Configure liveness probe |
-| tsaServer.readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}` | Configure readiness probe |
-| tsaServer.startupProbe | object | `{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"tcpSocket":{"port":"tsaport"},"timeoutSeconds":5}` | Configure startup probe |
+| tsaServer | object | `{"livenessProbe":{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaPort"},"timeoutSeconds":5},"readinessProbe":{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaPort"},"timeoutSeconds":5},"startupProbe":{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"tcpSocket":{"port":"tsaPort"},"timeoutSeconds":5}}` | TSA container-specific configurations for probes |
+| tsaServer.livenessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaPort"},"timeoutSeconds":5}` | Configure liveness probe |
+| tsaServer.readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":30,"periodSeconds":30,"successThreshold":1,"tcpSocket":{"port":"tsaPort"},"timeoutSeconds":5}` | Configure readiness probe |
+| tsaServer.startupProbe | object | `{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"successThreshold":1,"tcpSocket":{"port":"tsaPort"},"timeoutSeconds":5}` | Configure startup probe |

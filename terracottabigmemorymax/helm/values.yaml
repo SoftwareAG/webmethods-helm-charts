@@ -68,17 +68,17 @@ terracotta:
   # -- Create a secret manually in cluster which contains all the necessary certs, files etc. for all the servers as well as tmc as the same secret will be mounted to all the pods deployed via this helm chart.
   secretName: ""
   # -- TSA port
-  tsaport: 9510
+  tsaPort: 9510
   # -- TSA group port
-  tsagroupport: 9530
+  tsaGroupPort: 9530
   # -- TSA Management port
-  tsamanagementport: 9540
+  tsaManagementPort: 9540
 
   # -- TMC Secure Port
-  tmcsecureport: 9443
+  tmcSecurePort: 9443
 
   # -- TMC Management Port
-  tmcmanagementport: 9889
+  tmcManagementPort: 9889
 
 # -- The license config map name if provided externally.
 licenseConfigMap: ""
@@ -91,7 +91,7 @@ tsaServer:
   # -- Configure startup probe
   startupProbe:
     tcpSocket:
-      port: tsaport
+      port: 9530
     initialDelaySeconds: 10
     periodSeconds: 5
     successThreshold: 1
@@ -101,7 +101,7 @@ tsaServer:
   # -- Configure readiness probe
   readinessProbe:
     tcpSocket:
-      port: tsaport
+      port: 9530
     initialDelaySeconds: 30
     periodSeconds: 30
     successThreshold: 1
@@ -111,7 +111,7 @@ tsaServer:
   # -- Configure liveness probe
   livenessProbe:
     tcpSocket:
-      port: tsaport
+      port: 9530
     initialDelaySeconds: 30
     periodSeconds: 30
     successThreshold: 1
@@ -123,7 +123,7 @@ tmcServer:
   # -- Configure startup probe
   startupProbe:
     tcpSocket:
-      port: managementport
+      port: 9889
     initialDelaySeconds: 10
     periodSeconds: 30
     successThreshold: 1
@@ -133,7 +133,7 @@ tmcServer:
   # -- Configure readiness probe
   readinessProbe:
     tcpSocket:
-      port: managementport
+      port: 9889
     initialDelaySeconds: 20
     periodSeconds: 30
     successThreshold: 1
@@ -143,7 +143,7 @@ tmcServer:
   # -- Configure liveness probe
   livenessProbe:
     tcpSocket:
-      port: managementport
+      port: 9889
     initialDelaySeconds: 20
     periodSeconds: 30
     successThreshold: 1
@@ -167,7 +167,7 @@ tmcServer:
 #     cpu: 500m
 #     memory: 2Gi
 #   limits:
-#     # use a high cpu limit to avaoid the container being throttled
+#     # use a high cpu limit to avoid the container being throttled
 #     cpu: 8
 #     memory: 4Gi
 resources: {}

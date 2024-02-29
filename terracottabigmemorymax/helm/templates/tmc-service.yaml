@@ -21,7 +21,7 @@ kind: Service
 metadata:
   name: {{ include "common.names.fullname" . }}-tmc-service
   annotations:
-    {{- include "common.prometheus.annotations" (dict "port" .Values.terracotta.tmcManagmentPort "path" "/tmc/api/prometheus" ) | nindent 8 }}
+    {{- include "common.prometheus.annotations" (dict "port" .Values.terracotta.tmcManagementPort "path" "/tmc/api/prometheus" ) | nindent 8 }}
   labels:
     app: tmc
     {{- include "common.labels.standard" . | nindent 4 }}
@@ -33,10 +33,10 @@ spec:
   clusterIP: None
   ports:
     - name: managementport
-      port: {{ .Values.terracotta.tmcmanagementport }}
+      port: {{ .Values.terracotta.tmcManagementPort }}
     {{- if eq $.Values.terracotta.security true }}
     - name: secureport
-      port: {{ .Values.terracotta.tmcsecureport }}
+      port: {{ .Values.terracotta.tmcSecurePort }}
     {{- end }}
   selector:
     app: tmc

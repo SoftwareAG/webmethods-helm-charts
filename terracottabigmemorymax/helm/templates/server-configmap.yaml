@@ -38,10 +38,11 @@ data:
     {{- range $i := until (int $.Values.terracotta.stripeCount) }}
         <mirror-group>
     {{- range $j := until (int $.Values.terracotta.nodeCountPerStripe) }}
-          <server host="{{ include "common.names.fullname" $ }}-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace }}.svc.cluster.local" name="{{ include "common.names.fullname" $ }}-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace }}.svc.cluster.local">
-            <tsa-port>{{ $.Values.terracotta.tsaport }} </tsa-port>
-            <tsa-group-port>{{ $.Values.terracotta.tsagroupport }}</tsa-group-port>
-            <management-port>{{ $.Values.terracotta.tsamanagementport }}</management-port>
+          <server host="{{ include "common.names.fullname" $ }}-tsa-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace }}.svc.cluster.local"
+                  name="{{ include "common.names.fullname" $ }}-tsa-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace }}.svc.cluster.local">
+            <tsa-port>{{ $.Values.terracotta.tsaPort }} </tsa-port>
+            <tsa-group-port>{{ $.Values.terracotta.tsaGroupPort }}</tsa-group-port>
+            <management-port>{{ $.Values.terracotta.tsaManagementPort }}</management-port>
             <data>/opt/softwareag/run/data</data>
             <logs>/opt/softwareag/run/logs</logs>
             <dataStorage size={{ $.Values.terracotta.datastoreSize | quote }}>
@@ -62,9 +63,9 @@ data:
                 <user>user</user>
               </auth>
               <management>
-                <ia>https://{{ include "common.names.fullname" $ }}-tmc-service.{{ $.Release.namespace }}.svc.cluster.local:{{ $.Values.terracotta.tmcsecureport }}/tmc/api/assertIdentity</ia>
+                <ia>https://{{ include "common.names.fullname" . }}-tmc-0.{{ include "common.names.fullname" $ }}-tmc-service.{{ $.Release.Namespace }}.svc.cluster.local:{{ $.Values.terracotta.tmcSecurePort }}/tmc/api/assertIdentity</ia>
                 <timeout>10000</timeout>
-                <hostname>{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace $ }}.svc.cluster.local</hostname >
+                <hostname>{{ include "common.names.fullname" $ }}-tsa-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.{{ include "common.names.fullname" $ }}-tsa-service.{{ $.Release.Namespace }}.svc.cluster.local</hostname >
               </management>
             </security>
             {{- end }}

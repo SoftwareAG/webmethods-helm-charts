@@ -19,7 +19,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "common.names.fullname" . }}
+  name: {{ include "common.names.fullname" . }}-tsa
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
     {{- with .Values.extraLabels -}}
@@ -55,7 +55,7 @@ spec:
             {{- toYaml .Values.tsaServer.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.tsaServer.readinessProbe | nindent 12 }}
-          {{- if and .Values.resources .Values.resourves.tsaContainer }}
+          {{- if and .Values.resources .Values.resources.tsaContainer }}
           resources:
             {{- toYaml .Values.resources.tsaContainer | nindent 12 }}
           {{- end }}
@@ -67,8 +67,8 @@ spec:
           env:
             - name: JSON_LOGGING
               value: {{ $.Values.terracotta.jsonLogging | quote }}
-            {{- if eq $.Values.security true }}
-            {{- if eq $.Values.selfSignedCerts true }}
+            {{- if eq $.Values.terracotta.security true }}
+            {{- if eq $.Values.terracotta.selfSignedCerts true }}
             - name: JAVA_OPTS
               value: {{ $.Values.terracotta.serverOpts }} -Djavax.net.ssl.trustStore=/opt/softwareag/run/truststore.jks
             {{- else }} 

@@ -31,11 +31,11 @@ spec:
   clusterIP: None
   ports:
     - name: tsaport
-      port: {{ .Values.terracotta.tsaport }}
+      port: {{ .Values.terracotta.tsaPort }}
     - name: groupport
-      port: {{ .Values.terracotta.tsagroupport }}
+      port: {{ .Values.terracotta.tsaGroupPort }}
     - name: managementport
-      port: {{ .Values.terracotta.tsamanagementport }}
+      port: {{ .Values.terracotta.tsaManagementPort }}
   selector:
     app: terracotta
   publishNotReadyAddresses: true
