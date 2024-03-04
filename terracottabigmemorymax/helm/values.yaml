@@ -14,11 +14,6 @@ tag: "4.4.0"
 imagePullSecrets:
   - name: regcred
 
-# -- Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`.
-nameOverride: ""
-# -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
-fullnameOverride: ""
-
 #
 # BELOW ARE THE CONFIGURATIONS FOR THE PODS
 #
