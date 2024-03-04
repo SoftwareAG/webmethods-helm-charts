@@ -171,9 +171,7 @@ helm delete <release-name>
 |-----|------|---------|-------------|
 | extraEnvs | list | `[]` | Exta environment properties to be passed on to the terracotta runtime  - name: extraEnvironmentVariable    value: "myvalue" |
 | extraLabels | object | `{}` | Extra Labels |
-| fullnameOverride | string | `""` | Overwrites full workload name. As default, the workload name is release name + '-' + Chart name. |
 | imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
-| nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | pullPolicy | string | `"IfNotPresent"` |  |
 | registry | string | `"sagcr.azurecr.io"` | The repository for the image. By default, this points to the Software AG container repository. Change this for air-gaped installations or custom images. For the Software AG container repository you need to have a valid access token stored as registry credentials |
 | resources | object | `{}` | We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This also increases chances charts run on environments with little resources, such as Minikube. If you do want to specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after 'resources:'.  tsaContainer:   limits:     cpu: 100m     memory: 128Mi   requests:     cpu: 100m     memory: 128Mi tmcContainer:   requests:     cpu: 500m     memory: 2Gi   limits:     # use a high cpu limit to avoid the container being throttled     cpu: 8     memory: 4Gi |
