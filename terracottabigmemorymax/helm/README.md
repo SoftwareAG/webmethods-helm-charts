@@ -117,10 +117,10 @@ kubectl delete pod tmc-0.
 - Now again start port-forwarding and go to browser and connect to following url -
 
 ```
-https://terracotta-0.terracotta-service.default.svc.cluster.local
+https://tmc-0.terracotta-service.default.svc.cluster.local
 ```
 
-- When asking for user name enter "user" . It should be able to connect and show cluster information on browser.
+- When asking for username enter "user" . It should be able to connect and show cluster information on browser.
 
 ### Prometheus support
 Terracotta BigMemory provides a list of key metrics in Prometheus compatible format over HTTP on TMC endpoint:
