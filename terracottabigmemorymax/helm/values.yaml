@@ -46,7 +46,7 @@ tmcStorage: 1Gi
 terracotta:
 
   # -- The number of Terracotta stripes to deploy.
-  stripeCount: 2
+  stripeCount: 1
   # -- The number of Terracotta servers per stripe.
   nodeCountPerStripe: 2
   # -- The <datastoreSize> configuration for each Terracotta server.
