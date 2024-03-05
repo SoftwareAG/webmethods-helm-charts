@@ -164,6 +164,7 @@ helm delete <release-name>
 | `1.0.0' | Initial release         |
 | `1.1.0' | Available from GitHub   |
 | `1.2.0' | Adapted to webMethods Helm charts   |
+| `1.2.1' | Set `terracotta.stripeCount` to 1 by default and added `terracotta.tmcEnabled`   |
 
 ## Values
 
@@ -182,7 +183,7 @@ helm delete <release-name>
 | serverImage | string | `"bigmemorymax-server"` |  |
 | serverStorage | string | `"10Gi"` | The pvc storage request for the server pods |
 | tag | string | `"4.4.0"` | Specific version to not accidentally change production versions with newer images. |
-| terracotta | object | `{"datastoreSize":"4G","jsonLogging":true,"license":"","nodeCountPerStripe":2,"offHeapSize":"2G","restartable":false,"secretName":"","security":false,"selfSignedCerts":true,"serverOpts":"","stripeCount":2,"tmcManagementPort":9889,"tmcOpts":"","tmcSecurePort":9443,"tsaGroupPort":9530,"tsaManagementPort":9540,"tsaPort":9510}` | Terracotta BigMemoryMax configurations |
+| terracotta | object | `{"datastoreSize":"4G","jsonLogging":true,"license":"","nodeCountPerStripe":2,"offHeapSize":"2G","restartable":false,"secretName":"","security":false,"selfSignedCerts":true,"serverOpts":"","stripeCount":1,"tmcEnabled":true,"tmcManagementPort":9889,"tmcOpts":"","tmcSecurePort":9443,"tsaGroupPort":9530,"tsaManagementPort":9540,"tsaPort":9510}` | Terracotta BigMemoryMax configurations |
 | terracotta.datastoreSize | string | `"4G"` | The <datastoreSize> configuration for each Terracotta server. |
 | terracotta.jsonLogging | bool | `true` | The JSON_LOGGING environment variable for each Terracotta server. |
 | terracotta.license | string | `""` | The license content for the Terracotta cluster. Optional. |
@@ -193,7 +194,8 @@ helm delete <release-name>
 | terracotta.security | bool | `false` | Add the <security> configuration for each Terracotta server. Requires secretName to be set. |
 | terracotta.selfSignedCerts | bool | `true` | Configure JAVA_OPTS appropriately when using self-signed certificates. |
 | terracotta.serverOpts | string | `""` | Can be used for passing some jvm related options for terracotta servers. |
-| terracotta.stripeCount | int | `2` | The number of Terracotta stripes to deploy. |
+| terracotta.stripeCount | int | `1` | The number of Terracotta stripes to deploy. |
+| terracotta.tmcEnabled | bool | `true` | TMC Enabled or not |
 | terracotta.tmcManagementPort | int | `9889` | TMC Management Port |
 | terracotta.tmcOpts | string | `""` | Can be used for passing some jvm related options for tmc. |
 | terracotta.tmcSecurePort | int | `9443` | TMC Secure Port |
