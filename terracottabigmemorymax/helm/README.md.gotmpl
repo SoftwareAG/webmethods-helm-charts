@@ -114,14 +114,13 @@ kubectl port-forward service/tmc-service 8080:9443
 kubectl delete pod tmc-0.
 ```
 
-- Now again start port-forwarding and go to browser and connect to following url -
+- Now again start port-forwarding and go to browser and provide the connection location (URL)  -
 
 ```
-https://terracotta-0.terracotta-service.default.svc.cluster.local
+https://terracotta-0.terracotta-service.default.svc.cluster.local:9540
 ```
 
-- When asking for user name enter "user" . It should be able to connect and show cluster information on browser.
-
+- When asking for username enter "user" . It should be able to connect and show cluster information on browser.
 
 ### Prometheus support
 Terracotta BigMemory provides a list of key metrics in Prometheus compatible format over HTTP on TMC endpoint:
@@ -130,7 +129,7 @@ http(s)://<host>:<port>/tmc/api/prometheus
 ```
 Sample config to add BigMemory as a target in the prometheus.yml configuration file
 
-For non secure cluster - 
+For non secure cluster -
 ```
 - job_name: 'big_memory'
     metrics_path: /tmc/api/prometheus
@@ -138,7 +137,7 @@ For non secure cluster -
         - targets: ['localhost:9889']
 ```
 
-For secure cluster - 
+For secure cluster -
 ```
 - job_name: 'big_memory'
     scheme: https
@@ -165,5 +164,6 @@ helm delete <release-name>
 | `1.0.0' | Initial release         |
 | `1.1.0' | Available from GitHub   |
 | `1.2.0' | Adapted to webMethods Helm charts   |
+| `1.2.1' | Set `terracotta.stripeCount` to 1 by default and added `terracotta.tmcEnabled`   |
 
 {{ template "chart.valuesSection" . }}

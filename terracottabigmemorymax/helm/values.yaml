@@ -54,8 +54,6 @@ terracotta:
   jsonLogging: true
   # -- Can be used for passing some jvm related options for terracotta servers.
   serverOpts: ""
-  # -- Can be used for passing some jvm related options for tmc.
-  tmcOpts: ""
   # -- Add the <security> configuration for each Terracotta server. Requires secretName to be set.
   security: false
   # -- Configure JAVA_OPTS appropriately when using self-signed certificates.
@@ -68,13 +66,14 @@ terracotta:
   tsaGroupPort: 9530
   # -- TSA Management port
   tsaManagementPort: 9540
-
+  # -- TMC Enabled or not
+  tmcEnabled: true
   # -- TMC Secure Port
   tmcSecurePort: 9443
-
   # -- TMC Management Port
   tmcManagementPort: 9889
-
+  # -- Can be used for passing some jvm related options for tmc.
+  tmcOpts: ""
   # -- The license content for the Terracotta cluster. Optional.
   license: ""
 
