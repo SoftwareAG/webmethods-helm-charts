@@ -114,10 +114,10 @@ kubectl port-forward service/tmc-service 8080:9443
 kubectl delete pod tmc-0.
 ```
 
-- Now again start port-forwarding and go to browser and connect to following url -
+- Now again start port-forwarding and go to browser and provide the connection location (URL)  -
 
 ```
-https://tmc-0.terracotta-service.default.svc.cluster.local
+https://terracotta-0.terracotta-service.default.svc.cluster.local:9540
 ```
 
 - When asking for username enter "user" . It should be able to connect and show cluster information on browser.
