@@ -13,13 +13,14 @@ helm repo add webmethods https://open-source.softwareag.com/webmethods-helm-char
 To list the content of repository, type `helm search repo webmethods`
 
 ```
-NAME                            CHART VERSION   APP VERSION     DESCRIPTION
-webmethods/mywebmethodsserver   1.0.0           10.15           My webMethods Server (MWS) Helm Chart for Kuber...
-webmethods/apigateway           1.0.0           10.15           API Gateway Helm Chart for Kubernetes
-webmethods/common               1.0.0           1.0.0           A Library Helm Chart for grouping common logic ...
-webmethods/developerportal      1.0.0           10.15           webMethods Developer Portal Helm Chart for Kube...
-webmethods/microservicesruntime 1.0.0           10.15           Microservices Runtime (MSR) Helm Chart for Kube...
-webmethods/universalmessaging   1.0.1           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
+NAME                                CHART VERSION   APP VERSION     DESCRIPTION
+webmethods/mywebmethodsserver       1.0.0           10.15           My webMethods Server (MWS) Helm Chart for Kuber...
+webmethods/apigateway               1.0.0           10.15           API Gateway Helm Chart for Kubernetes
+webmethods/common                   1.0.0           1.0.0           A Library Helm Chart for grouping common logic ...
+webmethods/developerportal          1.0.0           10.15           webMethods Developer Portal Helm Chart for Kube...
+webmethods/microservicesruntime     1.0.0           10.15           Microservices Runtime (MSR) Helm Chart for Kube...
+webmethods/universalmessaging       1.0.1           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
+webmethods/terracottabigmemorymax   1.2.1           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
 ```
 
 ## Available Charts READMEs
@@ -33,6 +34,7 @@ Each chart has a README for *how to use* and lists some prerequisites.
 | [microservicesruntime](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/microservicesruntime/helm/README.md) | Microservices Runtime (MSR) |
 | [mywebmethodsserver](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/mywebmethodsserver/helm/README.md) | My webMethods Server (MWS) |
 | [universalmessaging](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/universalmessaging/helm/README.md) | Universal Messaging (UM) |
+| [terracottabigmemorymax](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/terracottabigmemorymax/helm/README.md) | Terracotta BigMemoryMax |
 
 ## Chart Versions
 
