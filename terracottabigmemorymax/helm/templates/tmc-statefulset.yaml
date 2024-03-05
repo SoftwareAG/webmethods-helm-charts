@@ -16,6 +16,7 @@
 #  *   limitations under the License.
 #  *
 #  */
+{{- if eq $.Values.terracotta.tmcEnabled true }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -99,3 +100,4 @@ spec:
         resources:
           requests:
             storage: {{ required "A valid storage request is required!" $.Values.tmcStorage }}
+{{- end }}

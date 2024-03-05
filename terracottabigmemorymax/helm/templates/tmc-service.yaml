@@ -16,6 +16,7 @@
 #  *   limitations under the License.
 #  *
 #  */
+{{- if eq $.Values.terracotta.tmcEnabled true }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -41,3 +42,4 @@ spec:
   selector:
     app: tmc
   publishNotReadyAddresses: true
+{{- end }}
