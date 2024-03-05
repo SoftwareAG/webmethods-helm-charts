@@ -13,13 +13,14 @@ helm repo add webmethods https://open-source.softwareag.com/webmethods-helm-char
 To list the content of repository, type `helm search repo webmethods`
 
 ```
-NAME                            CHART VERSION   APP VERSION     DESCRIPTION
-webmethods/mywebmethodsserver   1.0.0           10.15           My webMethods Server (MWS) Helm Chart for Kuber...
-webmethods/apigateway           1.0.0           10.15           API Gateway Helm Chart for Kubernetes
-webmethods/common               1.0.0           1.0.0           A Library Helm Chart for grouping common logic ...
-webmethods/developerportal      1.0.0           10.15           webMethods Developer Portal Helm Chart for Kube...
-webmethods/microservicesruntime 1.0.0           10.15           Microservices Runtime (MSR) Helm Chart for Kube...
-webmethods/universalmessaging   1.0.1           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
+NAME                                CHART VERSION   APP VERSION     DESCRIPTION
+webmethods/mywebmethodsserver       1.0.0           10.15           My webMethods Server (MWS) Helm Chart for Kuber...
+webmethods/apigateway               1.0.0           10.15           API Gateway Helm Chart for Kubernetes
+webmethods/common                   1.0.0           1.0.0           A Library Helm Chart for grouping common logic ...
+webmethods/developerportal          1.0.0           10.15           webMethods Developer Portal Helm Chart for Kube...
+webmethods/microservicesruntime     1.0.0           10.15           Microservices Runtime (MSR) Helm Chart for Kube...
+webmethods/universalmessaging       1.0.0           10.15           Terracotta BigMemoryMax Helm Chart for Kubernetes
+webmethods/terracottabigmemorymax   1.2.1           10.15           Universal Messaging (UM) Helm Chart for Kubernetes
 ```
 
 ## Available Charts READMEs
@@ -33,6 +34,7 @@ Each chart has a README for *how to use* and lists some prerequisites.
 | [microservicesruntime](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/microservicesruntime/helm/README.md) | Microservices Runtime (MSR) |
 | [mywebmethodsserver](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/mywebmethodsserver/helm/README.md) | My webMethods Server (MWS) |
 | [universalmessaging](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/universalmessaging/helm/README.md) | Universal Messaging (UM) |
+| [terracottabigmemorymax](https://github.com/SoftwareAG/webmethods-helm-charts/blob/main/terracottabigmemorymax/helm/README.md) | Terracotta BigMemoryMax |
 
 ## Chart Versions
 
@@ -53,22 +55,22 @@ To adopt Microservices Runtime for your deployment and environment or to build i
 
 If you want to contribute to this repository, please read the [contributing guidelines](./CONTRIBUTING.md) first.
 
-## Useful links   
+## Useful links
 
 📘 Explore the Knowledge Base    
-Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://tech.forums.softwareag.com/tags/c/knowledge-base/6/webmethods).  
+Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://tech.forums.softwareag.com/tags/c/knowledge-base/6/webmethods).
 
 💡 Get Expert Answers    
-Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://tech.forums.softwareag.com/tags/c/forum/1/webMethods).  
+Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://tech.forums.softwareag.com/tags/c/forum/1/webMethods).
 
 🚀 Try webMethods    
-See webMethods in action with a [Free Trial](https://techcommunity.softwareag.com/en_en/downloads.html).   
+See webMethods in action with a [Free Trial](https://techcommunity.softwareag.com/en_en/downloads.html).
 
 ✍️ Share Your Feedback    
-Your input drives our innovation. If you find a bug, please create an issue in the repository. If you’d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).   
+Your input drives our innovation. If you find a bug, please create an issue in the repository. If you’d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).
 
 More to discover
-* [Helm Charts: Deploying webMethods Components in Kubernetes](https://tech.forums.softwareag.com/t/helm-charts-deploying-webmethods-components-in-kubernetes/285781)  
-* [What is Develop Anywhere, Deploy Anywhere?](https://tech.forums.softwareag.com/t/what-is-develop-anywhere-deploy-anywhere/284756)  
+* [Helm Charts: Deploying webMethods Components in Kubernetes](https://tech.forums.softwareag.com/t/helm-charts-deploying-webmethods-components-in-kubernetes/285781)
+* [What is Develop Anywhere, Deploy Anywhere?](https://tech.forums.softwareag.com/t/what-is-develop-anywhere-deploy-anywhere/284756)
 ------------
 These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
