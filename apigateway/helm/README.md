@@ -250,6 +250,9 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingress.tls.secretProviderName | string | `""` |  |
 | ingress.tls.secretProviderParameters | object | `{}` |  |
 | ingresses.admin.annotations."nginx.ingress.kubernetes.io/affinity" | string | `"cookie"` |  |
+| ingresses.admin.annotations."nginx.ingress.kubernetes.io/proxy-body-size" | string | `"10m"` |  |
+| ingresses.admin.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"600"` |  |
+| ingresses.admin.annotations."nginx.ingress.kubernetes.io/proxy_connect_timeout" | string | `"600"` |  |
 | ingresses.admin.className | string | `"nginx"` |  |
 | ingresses.admin.defaultHost | string | `""` |  |
 | ingresses.admin.enabled | bool | `true` |  |
@@ -262,7 +265,9 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.admin.tls[0].secretName | string | `nil` |  |
 | ingresses.admin.tls[0].secretProviderEnabled | bool | `false` |  |
 | ingresses.admin.tls[0].secretProviderSecretName | string | `nil` |  |
-| ingresses.rt.annotations | object | `{}` |  |
+| ingresses.rt.annotations."nginx.ingress.kubernetes.io/proxy-body-size" | string | `"10m"` |  |
+| ingresses.rt.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"600"` |  |
+| ingresses.rt.annotations."nginx.ingress.kubernetes.io/proxy_connect_timeout" | string | `"600"` |  |
 | ingresses.rt.className | string | `"nginx"` |  |
 | ingresses.rt.defaultHost | string | `""` |  |
 | ingresses.rt.enabled | bool | `true` |  |
@@ -276,6 +281,9 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | ingresses.rt.tls[0].secretProviderEnabled | bool | `false` |  |
 | ingresses.rt.tls[0].secretProviderSecretName | string | `nil` |  |
 | ingresses.ui.annotations."nginx.ingress.kubernetes.io/affinity" | string | `"cookie"` |  |
+| ingresses.ui.annotations."nginx.ingress.kubernetes.io/proxy-body-size" | string | `"10m"` |  |
+| ingresses.ui.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"600"` |  |
+| ingresses.ui.annotations."nginx.ingress.kubernetes.io/proxy_connect_timeout" | string | `"600"` |  |
 | ingresses.ui.className | string | `"nginx"` |  |
 | ingresses.ui.defaultHost | string | `""` |  |
 | ingresses.ui.enabled | bool | `true` |  |
