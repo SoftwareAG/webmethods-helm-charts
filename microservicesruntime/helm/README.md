@@ -51,6 +51,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 |-----|------|
 | [external-postgresql-db](../examples/external-postgresql-db/README.md) | Using MSR with external PostgresQL database |
 | [msr-defaults](../examples/msr-defaults/README.md) | Recommended default application properties|
+| [Fluentd Sidecar](../examples/msr-fluentd-sidecar/README.md) | Running with Fluentd Sidecar |
 | [msr-post-init](../examples/msr-post-init/README.md) | Performs *post-init* actions after startup, e.g. deploy assets to Universal Messaging |
 | [msr-push-doc-types](../examples/msr-push-doc-types/README.md) | Pushing IS Document Types after startup |
 | [msr-statefulset-csq](../examples/msr-statefulset-csq/README.md) | Deploy MSR with stateful set |
