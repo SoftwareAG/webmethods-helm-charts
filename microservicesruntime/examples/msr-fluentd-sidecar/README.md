@@ -4,7 +4,11 @@ This sample shows how to run Microservices Runtime with a Fluentd sidecar contai
 
 ## Prerequisites
 
-The fluentd sidecar container requires a fluentd configuration file. This sample uses the [fluentd.conf](fluentd.conf) file. The fluentd configuration file is mounted as a volume in the fluentd sidecar container and provided through the sample values file.
+The fluentd sidecar container requires a fluentd configuration file. This sample uses the `fluentd.conf` file. The *fluentd* configuration file is mounted as a volume in the fluentd sidecar container and provided through the sample values file.
+
+## Provided Example
+
+This example provides the [values.yaml](./values.yaml) and use the `extraConfigMaps`, `extraVolumeMounts`, `extraVolumes` and `extraContainers` to setup a fluentd sidecar container.
 
 ## Installing the Chart
 
