@@ -73,9 +73,17 @@ terracotta:
   # -- TMC Management Port
   tmcManagementPort: 9889
   # -- Can be used for passing some jvm related options for tmc.
-  tmcOpts: ""
+  tmcOpts: "-Dcom.tc.management.config.disable.csrfGuard=true"
   # -- The license content for the Terracotta cluster. Optional.
   license: ""
+  # -- ingress class to be used 
+  ingressClass: "nginx"
+  # -- secret to secure the ingress
+  ingressSecretName: ""
+  # -- Ingress secured or not
+  secureIngress: false 
+  # -- hostname which is accessed publicly on browser to reach tmc.
+  ingressHostname: ""
 
 # -- TSA container-specific configurations for probes
 tsaServer:
