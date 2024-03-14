@@ -80,10 +80,10 @@ Optional, if you want to replicate the TN server then you must setup Terracotta 
 
 ## Install TN Server Release
 
-At least, you have the `application.properties` and a `values.yaml` (e.g. `tn-values.yaml`) file configured, you can install the MSR with Helm ...
+At least, you have the `application.properties` and a `values.yaml` (e.g. `tn-values.yaml`) file configured, you can install in a new namespace `TN` the MSR with Helm ...
 
 ```
-helm upgrade --install msr-tn webmethods/microservicesruntime -n TN -f tn-values.yaml
+helm upgrade --install msr-tn webmethods/microservicesruntime -n TN --create-namespace -f tn-values.yaml
 ```
 
 ## Install TN Portal Release
