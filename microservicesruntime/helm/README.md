@@ -55,12 +55,14 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | [msr-post-init](../examples/msr-post-init/README.md) | Performs *post-init* actions after startup, e.g. deploy assets to Universal Messaging |
 | [msr-push-doc-types](../examples/msr-push-doc-types/README.md) | Pushing IS Document Types after startup |
 | [msr-statefulset-csq](../examples/msr-statefulset-csq/README.md) | Deploy MSR with stateful set |
+| [../examples/msr-tsa-stateful-cluster/README.md] | Deploy MSR with Terracotta as distributed cache |
 | [msr-using-secrets](../examples/msr-using-secrets/README.md) | Using secrets in application properties and set Administrator password |
 | [msr-with-extra-ports](../examples/msr-with-extra-ports/README.md) | Define additional ports in MSR deployment |
 | [msr-with-tls](../examples/msr-with-tls/README.md) | Configure Ingress with TLS |
 | [process-engine](../examples/process-engine/README.md) | Deploy MSR as Process Engine |
 | [service-auditing-monitor](../examples/service-auditing-monitor/README.md) | Deploy MSR as Service Auditing Monitor |
 | [Stakater Reloader](../examples/stakater-reloader/README.md) | Utility to restart MSR pod on configuration changes |
+| [Trading Networks](../examples/trading-networks/README.md | Deploy Trading Networks in a container environment) |
 
 ## Install Microservices Runtime Release
 
