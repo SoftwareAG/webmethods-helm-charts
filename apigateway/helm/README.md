@@ -149,9 +149,9 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 
 | Version | Changes and Description |
 |-----|------|
-| `1.0.0' | Initial release |
-| `1.1.0' | Bug fixes in default values and helper functions for elastic secret names. <br> **Attention:** moved elasticsearch secret keys: <br>elasticSecretName --> elasticsearch.secretName<br>elasticSecretUserKey --> elasticsearch.secretUserKey<br>elasticSecretPasswordKey --> elasticsearch.secretPasswordKey |
-
+| `1.0.0` | Initial release |
+| `1.1.0` | Bug fixes in default values and helper functions for elastic secret names. <br> **Attention:** moved elasticsearch secret keys: <br>elasticSecretName --> elasticsearch.secretName<br>elasticSecretUserKey --> elasticsearch.secretUserKey<br>elasticSecretPasswordKey --> elasticsearch.secretPasswordKey |
+| `1.2.0` | Added Kibana TLS/SSL functionality towards Elasticsearch. Helper function aded for kibana truststore password.
 ## Values
 
 | Key | Type | Default | Description |
@@ -311,6 +311,12 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | kibana.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Kibana |
 | kibana.serviceAccount.name | string | `""` | Name of the ServiceAccount for Kibana |
 | kibana.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Kibana ServiceAccount. Requires create=true to work. |
+| kibana.tls | object | `{"enabled":false,"secretName":"","trustStoreName":"","truststorePasswordSecret":"","verificationMode":"certificate"}` | Enable and configure tls connection from Kibana to Elasticsearch. |
+| kibana.tls.enabled | bool | `false` | Whether to enable tls connection from Kibana to Elasticsearch. |
+| kibana.tls.secretName | string | `""` | Name of the k8s secret holding the p12 truststore for Kibana |
+| kibana.tls.trustStoreName | string | `""` | File name of the p12 truststore for Kibana |
+| kibana.tls.truststorePasswordSecret | string | `""` | Name of the k8s secret containing the password for above p12 truststore in key 'password' |
+| kibana.tls.verificationMode | string | `"certificate"` | TLS verification mode. Either 'none', 'certificate' or 'full'. Full includes hostname verification (service name must be in alt dns for it to work). |
 | kibana.version | string | `"8.2.3"` | The ECK version to be used |
 | license | string | `""` | Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.   |
 | licenseConfigKey | string | `""` |  |

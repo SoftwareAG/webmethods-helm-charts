@@ -650,6 +650,20 @@ kibana:
     # Requires create=true to work.
     roleName: ""
   
+  # -- Enable and configure tls connection from Kibana to Elasticsearch.
+  tls:
+    # -- Whether to enable tls connection from Kibana to Elasticsearch.
+    enabled: false
+    # -- Name of the k8s secret holding the p12 truststore for Kibana
+    secretName: ""
+    # -- File name of the p12 truststore for Kibana
+    trustStoreName: ""
+    # -- Name of the k8s secret containing the password for above p12 truststore in key 'password'
+    truststorePasswordSecret: ""
+    # -- TLS verification mode. Either 'none', 'certificate' or 'full'. Full includes hostname verification (service name must be in alt dns for it to work).
+    verificationMode: certificate
+
+
 # -- Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details.
 prometheus-elasticsearch-exporter:
 

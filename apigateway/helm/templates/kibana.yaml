@@ -38,7 +38,13 @@ spec:
     server.publicBaseUrl: https://{{ $defaultHost }}/apigatewayui/dashboardproxy
     server.basePath: /apigatewayui/dashboardproxy
     server.rewriteBasePath: false
-    
+    {{- if .Values.kibana.tls.enabled }}
+    elasticsearch.ssl.truststore.path: /usr/share/kibana/config/elasticsearch-certs/truststore.p12
+    elasticsearch.ssl.truststore.password: "${KIBANA_TRUSTSTORE_PASSWORD}"
+    elasticsearch.ssl.verificationMode: {{ .Values.kibana.tls.verificationMode }}
+    {{- else }}
+    elasticsearch.ssl.verificationMode: none
+    {{- end }}
   http:
     tls:
       selfSignedCertificate:
@@ -72,6 +78,15 @@ spec:
       initContainers:
         {{- toYaml .Values.kibana.extraInitContainers | nindent 8 }}
       {{- end }}
+      {{- if .Values.kibana.tls.enabled }}
+      volumes:
+        - name: elasticsearch-certs
+          secret:
+            secretName: {{ .Values.kibana.tls.secretName }}
+            items:
+              - key: {{ .Values.kibana.tls.trustStoreName }}
+                path: truststore.p12
+      {{- end }}
       containers:
         - name: kibana
           resources:
@@ -91,8 +106,22 @@ spec:
                 secretKeyRef:
                   name: {{ include "apigateway.kibanasecret" . }}
                   key: password
+            {{- if .Values.kibana.tls.enabled }}
+            - name: KIBANA_TRUSTSTORE_PASSWORD  
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "apigateway.kibanatruststorepassword" . }}
+                  key: password
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /status
               port: 5601
               scheme: HTTP
+          {{- if .Values.kibana.tls.enabled }}
+          volumeMounts:
+            - name: elasticsearch-certs
+              mountPath: /usr/share/kibana/config/elasticsearch-certs/truststore.p12
+              subPath:   truststore.p12
+              readOnly: true
+          {{- end }}
