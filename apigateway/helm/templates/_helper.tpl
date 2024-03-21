@@ -38,6 +38,13 @@ Build the secret name for kibana user
 {{- end }}
 
 {{/*
+Build the secret password for truststore for Kibana
+*/}}
+{{- define "apigateway.kibanatruststorepassword" -}}
+{{- default (printf "%s%s" ( include "common.names.fullname" .) "-truststore-password-kb") .Values.kibana.tls.truststorePasswordSecret }}
+{{- end }}
+
+{{/*
 Build the secret name for keystore for Elasticsearch
 */}}
 {{- define "apigateway.elastickeystoresecret" -}}
