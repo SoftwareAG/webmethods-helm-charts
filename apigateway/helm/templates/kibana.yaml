@@ -106,11 +106,13 @@ spec:
                 secretKeyRef:
                   name: {{ include "apigateway.kibanasecret" . }}
                   key: password
+            {{- if .Values.kibana.tls.enabled }}
             - name: KIBANA_TRUSTSTORE_PASSWORD  
               valueFrom:
                 secretKeyRef:
                   name: {{ include "apigateway.kibanatruststorepassword" . }}
                   key: password
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /status
