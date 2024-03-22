@@ -118,11 +118,16 @@ spec:
                   name: {{ include "apigateway.kibanatruststorepassword" . }}
                   key: password
             {{- end }}
+          {{- if .Values.kibana.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.kibana.readinessProbe | nindent 12 }}
+          {{- else }}
           readinessProbe:
             httpGet:
               path: /status
               port: 5601
               scheme: HTTP
+          {{- end }}
           {{- if .Values.kibana.tls.enabled }}
           volumeMounts:
             - name: elasticsearch-certs

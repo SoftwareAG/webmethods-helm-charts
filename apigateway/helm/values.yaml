@@ -650,6 +650,18 @@ kibana:
     # Requires create=true to work.
     roleName: ""
   
+  # -- Configure Kibana's readinessProbe.
+  readinessProbe: {}
+  # readinessProbe:
+  #   httpGet:
+  #     path: /api/status
+  #     port: 5601
+  #     scheme: HTTP
+  #   failureThreshold: 3
+  #   successThreshold: 1
+  #   periodSeconds: 10
+  #   timeoutSeconds: 1
+  
   # Set to 'true' prevents API Gateway Error message in the log, indicating that Kibana is not available.
   # -- Enable anonymous access to /api/status.
   allowAnonymousStatus: true
