@@ -38,6 +38,11 @@ spec:
     server.publicBaseUrl: https://{{ $defaultHost }}/apigatewayui/dashboardproxy
     server.basePath: /apigatewayui/dashboardproxy
     server.rewriteBasePath: false
+    {{- if .Values.kibana.allowAnonymousStatus }}
+    status.allowAnonymous: true
+    {{- else }}
+    status.allowAnonymous: false
+    {{- end }}
     {{- if .Values.kibana.tls.enabled }}
     elasticsearch.ssl.truststore.path: /usr/share/kibana/config/elasticsearch-certs/truststore.p12
     elasticsearch.ssl.truststore.password: "${KIBANA_TRUSTSTORE_PASSWORD}"
@@ -67,14 +72,14 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
-      {{-  if .Values.kibana.serviceAccount.name }}
+      {{- if .Values.kibana.serviceAccount.name }}
       serviceAccountName: {{ .Values.kibana.serviceAccount.name }}
       {{- end }}
-      {{-  if .Values.kibana.podSecurityContext }}
+      {{- if .Values.kibana.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.kibana.podSecurityContext | nindent 8 }}
       {{- end }}
-      {{-  if .Values.kibana.extraInitContainers }}
+      {{- if .Values.kibana.extraInitContainers }}
       initContainers:
         {{- toYaml .Values.kibana.extraInitContainers | nindent 8 }}
       {{- end }}
@@ -91,7 +96,7 @@ spec:
         - name: kibana
           resources:
             {{- toYaml .Values.kibana.resources | nindent 12 }}
-          {{-  if .Values.kibana.securityContext }}
+          {{- if .Values.kibana.securityContext }}
           securityContext:
             {{- toYaml .Values.kibana.securityContext | nindent 12 }}
           {{- end }}
@@ -114,10 +119,11 @@ spec:
                   key: password
             {{- end }}
           readinessProbe:
-            httpGet:
-              path: /status
-              port: 5601
-              scheme: HTTP
+            {{- toYaml .Values.kibana.readinessProbe | nindent 12 }}
+          {{- if .Values.kibana.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.kibana.livenessProbe | nindent 12 }}
+          {{- end }}
           {{- if .Values.kibana.tls.enabled }}
           volumeMounts:
             - name: elasticsearch-certs

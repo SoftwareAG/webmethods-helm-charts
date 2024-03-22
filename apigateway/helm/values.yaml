@@ -650,6 +650,31 @@ kibana:
     # Requires create=true to work.
     roleName: ""
   
+  # -- Configure Kibana's readinessProbe.
+  readinessProbe:
+    httpGet:
+      path: /status
+      port: 5601
+      scheme: HTTP
+    failureThreshold: 3
+    successThreshold: 1
+    periodSeconds: 10
+    timeoutSeconds: 1
+  
+  # -- Configure Kibana's livenessProbe.
+  livenessProbe: {}
+    # tcpSocket:
+    #   port: 5601
+    # failureThreshold: 3
+    # successThreshold: 1
+    # initialDelaySeconds: 30
+    # periodSeconds: 30
+    # timeoutSeconds: 1
+  
+  # Set to 'true' prevents API Gateway Error message in the log, indicating that Kibana is not available.
+  # -- Enable anonymous access to /api/status.
+  allowAnonymousStatus: true
+
   # -- Enable and configure tls connection from Kibana to Elasticsearch.
   tls:
     # -- Whether to enable tls connection from Kibana to Elasticsearch.

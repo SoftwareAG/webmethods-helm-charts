@@ -153,4 +153,5 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | `1.0.0` | Initial release |
 | `1.1.0` | Bug fixes in default values and helper functions for elastic secret names. <br> **Attention:** moved elasticsearch secret keys: <br>elasticSecretName --> elasticsearch.secretName<br>elasticSecretUserKey --> elasticsearch.secretUserKey<br>elasticSecretPasswordKey --> elasticsearch.secretPasswordKey |
 | `1.2.0` | Added Kibana TLS/SSL functionality towards Elasticsearch. Helper function aded for kibana truststore password.
+| `1.2.1` | Added Kibana configuration field 'status.allowAnonymous' set by Values.kibana.allowAnonymousStatus. This removes errors in API Gateway log indicating that Kibana is not available.
 {{ template "chart.valuesSection" . }}
