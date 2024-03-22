@@ -38,6 +38,11 @@ spec:
     server.publicBaseUrl: https://{{ $defaultHost }}/apigatewayui/dashboardproxy
     server.basePath: /apigatewayui/dashboardproxy
     server.rewriteBasePath: false
+    {{-  if .Values.kibana.allowAnonymousStatus }}
+    status.allowAnonymous: true
+    {{- else }}
+    status.allowAnonymous: false
+    {{- end }}
     {{- if .Values.kibana.tls.enabled }}
     elasticsearch.ssl.truststore.path: /usr/share/kibana/config/elasticsearch-certs/truststore.p12
     elasticsearch.ssl.truststore.password: "${KIBANA_TRUSTSTORE_PASSWORD}"

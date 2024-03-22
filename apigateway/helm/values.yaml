@@ -650,6 +650,10 @@ kibana:
     # Requires create=true to work.
     roleName: ""
   
+  # Set to 'true' prevents API Gateway Error message in the log, indicating that Kibana is not available.
+  # -- Enable anonymous access to /api/status.
+  allowAnonymousStatus: true
+
   # -- Enable and configure tls connection from Kibana to Elasticsearch.
   tls:
     # -- Whether to enable tls connection from Kibana to Elasticsearch.
