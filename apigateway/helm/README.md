@@ -304,9 +304,10 @@ helm upgrade -i -f myvalues.yaml --set ingress.tls.key="$(<key.pem)" --set ingre
 | kibana.extraInitContainers | list | `[]` | The definition of extra initContainers for kibana. |
 | kibana.extraLabels | object | `{}` | Additional labels to be added to kibana pod labels. |
 | kibana.image | string | `nil` | The image that should be used. By default ECK will use the official Elasticsearch images.  Overwrite this to use an image from an internal registry or any custom images. Make sure that the image corresponds to the version field. |
+| kibana.livenessProbe | object | `{}` | Configure Kibana's livenessProbe. |
 | kibana.podSecurityContext | object | `{}` | The pod securityContext for kibana pod. |
 | kibana.port | int | `5601` | The default Kibana Port |
-| kibana.readinessProbe | object | `{}` | Configure Kibana's readinessProbe. |
+| kibana.readinessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/status","port":5601,"scheme":"HTTP"},"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1}` | Configure Kibana's readinessProbe. |
 | kibana.resources | object | `{}` | Resource Settings for Kibana Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
 | kibana.secretName | string | `""` | The secret name that holds the kibana user for API Gateway. |
 | kibana.securityContext | object | `{}` | The securityContext for kibana container. |
