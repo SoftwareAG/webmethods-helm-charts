@@ -17,4 +17,8 @@ jobs:
     - -c
     - >-
         echo Deploying Assets in UM [$DEPLOYMENT] ...;
-        runUMTool.sh CreateConnectionFactory -rname=nsp://$DEPLOYMENT:9000 -factoryname=local_um -factorytype=default -connectionurl=nsp://$DEPLOYMENT:9000 -durabletype=S
+        until [ "$response" = "0" ] || [ "$response" = "48" ] ; do
+          runUMTool.sh CreateConnectionFactory -rname=nsp://$DEPLOYMENT:9000 -factoryname=local_um -factorytype=default -connectionurl=nsp://$DEPLOYMENT:9000 -durabletype=S;
+          response=$?;
+          sleep 10;
+        done
