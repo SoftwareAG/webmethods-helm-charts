@@ -1,0 +1,3 @@
+# MWS as Service Auditing Monitor
+
+To use MWS as Service Auditing Monitor (SAM), MWS must communicate with a deployed [MSR as SAM](../../../microservicesruntime/examples/service-auditing-monitor/README.md). You can read [Configuring Web Service Authentication for CAF Applications](https://documentation.softwareag.com/webmethods/mywebmethods_server/mws10-15/webhelp/mws-webhelp/index.html#page/my-webmethods-server-webhelp%2Fta-configure_basic_auth_msr.html%23) to setup this connection.
