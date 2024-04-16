@@ -108,6 +108,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | `1.0.1` | Initial release |
 | `1.0.2` | Added new option `microservicesruntime.licenseKeyProvided` to allow using images with trial or baked-in license key |
 | `1.0.3` | Make Liveness and Readiness Probes as per current default. Both can now also be overwritten in a custom values file `values.yaml`. |
+| `1.0.4` | Option in `values.yaml` to create a ServiceMonitor added. Some errors in Nginx external LB corrected |
 
 ## Values
 
@@ -187,6 +188,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | persistence.storageClassName | string | `""` |  |
 | podAnnotations | object | `{}` | pod annotations |
 | podSecurityContext.fsGroup | int | `1724` |  |
+| prometheus | object | `{"interval":"10s","path":"/metrics","port":"5555","scheme":"http","scrape":"true","scrapeTimeout":"10s"}` | Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor. |
 | readinessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/readiness","port":"http"},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure readiness probe |
 | replicaCount | int | `1` | Number of replicates in Deployment |
 | resources | object | `{}` |  |
@@ -198,6 +200,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceMonitor | object | `{"enabled":false}` | Create and enable ServiceMonitor. The default is `false`. |
 | startupProbe | object | `{"failureThreshold":60,"periodSeconds":30,"tcpSocket":{"port":"http"}}` | startup probe for container |
 | statefulSet | bool | `false` | StatefulSet or Deployment. You should only change this if you require Client Side queuing (CSQ) or functionality in IS which requires stable hostnames and filesystems. Default is false => Deployment. Keep in mind, you must disable CSQ on each webMethods messaging and JMS connection if you don't use stateful-sets. See examples in Process Engine deployment for disableing QSC. |
 | tolerations | list | `[]` |  |
