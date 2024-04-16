@@ -108,5 +108,6 @@ helm install wm-msr webmethods/microservicesruntime   \
 | `1.0.1` | Initial release |
 | `1.0.2` | Added new option `microservicesruntime.licenseKeyProvided` to allow using images with trial or baked-in license key |
 | `1.0.3` | Make Liveness and Readiness Probes as per current default. Both can now also be overwritten in a custom values file `values.yaml`. |
+| `1.0.4` | Option in `values.yaml` to create a ServiceMonitor added. Some errors in Nginx external LB corrected |
 
 {{ template "chart.valuesSection" . }}
