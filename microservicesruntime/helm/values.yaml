@@ -332,5 +332,21 @@ metering:
   # Configure this property only if you use a truststore.
   trustStorePassword:
 
+# -- Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor.
+prometheus:
+  path:          "/metrics"
+  port:          "5555"
+  scheme:        "http"
+  ## -- Only used on annotation 
+  scrape:        "true"
+  ## -- Only used on ServiceMonitor
+  interval:      10s
+  ## -- Only used on ServiceMonitor
+  scrapeTimeout: 10s
+
+# -- Create and enable ServiceMonitor. The default is `false`.
+serviceMonitor:
+  enabled: false
+
 # -- Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.  
 license: |
