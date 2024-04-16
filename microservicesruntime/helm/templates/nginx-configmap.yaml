@@ -55,24 +55,13 @@ data:
         gzip  on;
      
         upstream msr-rt {
-            server {{ include "common.names.fullname" . }}:{{ int .Values.microservicesruntime.runtimePort }};
+            server {{ include "common.names.fullname" . }}:{{ int .Values.microservicesruntime.httpPort }};
         }
-     
-        upstream msr-admin {
-            server {{ include "common.names.fullname" . }}:{{ int .Values.microservicesruntime.adminPort }};
-        }
-     
+
         server {
-            listen {{ int .Values.microservicesruntime.runtimePort }};
+            listen {{ int .Values.microservicesruntime.httpPort }};
             location / {
                 proxy_pass http://msr-rt;
-            }
-        }
-        
-        server {
-            listen {{ int .Values.microservicesruntime.adminPort }};
-            location / {
-                proxy_pass http://msr-admin;
             }
         }
     }

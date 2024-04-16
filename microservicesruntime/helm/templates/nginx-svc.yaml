@@ -31,17 +31,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ int .Values.microservicesruntime.runtimePort }}
+  - port: {{ int .Values.microservicesruntime.httpPort }}
     protocol: TCP
-    targetPort: {{ int .Values.microservicesruntime.runtimePort }}
+    targetPort: {{ int .Values.microservicesruntime.httpPort }}
     name: rt-port    
-    {{- if (eq .Values.service.type "ClusterIP") }}
-    nodePort: null
-    {{- end }}
-  - port: {{ int .Values.microservicesruntime.adminPort }}
-    protocol: TCP
-    targetPort: {{ int .Values.microservicesruntime.adminPort }}
-    name: admin-port
     {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
