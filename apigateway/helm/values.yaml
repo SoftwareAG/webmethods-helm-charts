@@ -427,11 +427,21 @@ apigw:
   # -- Additional labels to be added to apigw pod labels.
   extraLabels: {}
 
+# -- Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor.
 prometheus:
-  path: "/metrics"
-  port: "5555"
-  scheme: "http"
-  scrape: "true"
+  path:          "/metrics"
+  port:          "5555"
+  scheme:        "http"
+  ## -- Only used on annotation 
+  scrape:        "true"
+  ## -- Only used on ServiceMonitor
+  interval:      10s
+  ## -- Only used on ServiceMonitor
+  scrapeTimeout: 10s
+
+# -- Create and enable ServiceMonitor. The default is `false`.
+serviceMonitor:
+  enabled: false
 
 metering:
 
