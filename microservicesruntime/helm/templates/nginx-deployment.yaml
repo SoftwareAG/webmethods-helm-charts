@@ -55,11 +55,8 @@ spec:
         resources:
           {{- toYaml .Values.resources.nginxContainer | nindent 10 }}
         ports:
-        - containerPort: {{ int .Values.microservicesruntime.runtimePort }}
+        - containerPort: {{ int .Values.microservicesruntime.httpPort }}
           name: rt-port
-          protocol: TCP
-        - containerPort: {{ int .Values.microservicesruntime.adminPort }}
-          name: admin-http
           protocol: TCP
         volumeMounts:
           - name: nginx-config

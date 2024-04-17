@@ -16,6 +16,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | Use-case | Description |
 |-----|------|
 | [mws-postgresql](../examples/postgresql/README.md) | Using MWS with external PostgreSQL database |
+| [service-auditing-monitor](../examples/service-auditing-monitor/README.md) | Using MWS as Service Auditing Monitor |
 
 ## Install MyWebMethods Server Release
 
