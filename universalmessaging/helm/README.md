@@ -60,6 +60,7 @@ helm install um webmethods/universalmessaging
 | `1.0.1` | Update JMX Exporter configuration file from latest [UM Git repository](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config). Bugfix: Mount configuration files into container. Nginx added. |
 | `1.0.2` | Change startup, liveness and readiness probes. All configuration settings are in `values.yaml`. Now, The probes are using `httpGet` instead of `runUMTool.sh` utility. |
 | `1.0.3` | Make license file handling same as MSR |
+| `1.0.4` | CRD `ServiceMonitor` added |
 
 ## Values
 
@@ -100,6 +101,7 @@ helm install um webmethods/universalmessaging
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` | pod annotations |
 | podSecurityContext.fsGroup | int | `1724` |  |
+| prometheus | object | `{"interval":"10s","path":"/metrics","port":"9200","scheme":"http","scrape":"true","scrapeTimeout":"10s"}` | Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor. |
 | readinessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure readiness probe |
 | replicaCount | int | `1` | Number of replicas |
 | resources | object | `{}` | Define CPU und memory resources UM and Nginx containers. |
@@ -110,6 +112,7 @@ helm install um webmethods/universalmessaging
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceMonitor | object | `{"enabled":false}` | Create and enable ServiceMonitor. The default is `false`. |
 | startupProbe | object | `{"failureThreshold":30,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":30,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure liveness probe |
 | storage.configurationSize | string | `"2Mi"` | Storage size of configuration files |
 | storage.dataSize | string | `"2Gi"` | Storage size of data |

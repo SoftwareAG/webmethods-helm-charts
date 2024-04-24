@@ -40,6 +40,13 @@ helm install wm-mws microservicesruntime
   --set "ingress.hosts[0].paths[0].port=5555"
 ```
 
+## Version History
+
+| Version | Changes and Description |
+|-----|------|
+| `1.0.0` | Initial release |
+| `1.0.1` | CRD `ServiceMonitor` added |
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -80,11 +87,13 @@ helm install wm-mws microservicesruntime
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+| prometheus | object | `{"interval":"10s","path":"/metrics","port":"8585","scheme":"http","scrape":"true","scrapeTimeout":"10s"}` | Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` | Define CPU and memory resources for container |
 | securityContext | object | `{}` | The security context the pods should run in. capabilities:   drop:   - ALL readOnlyRootFilesystem: true runAsNonRoot: true runAsUser: 1000 |
 | service | object | `{"port":8585,"type":"ClusterIP"}` | The service type of the MyWebMethodsServer service |
 | serviceAccount.create | bool | `false` |  |
+| serviceMonitor | object | `{"enabled":false}` | Create and enable ServiceMonitor. The default is `false`. |
 | storage.defaultAccessMode | list | `["ReadWriteOnce"]` | The default access mode |
 | storage.defaultStorageClass | string | `nil` | The default storage class for all application directories |
 | storage.defaultStorageRequest | string | `"1Gi"` | Storage claim request size |

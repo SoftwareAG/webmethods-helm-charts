@@ -228,3 +228,19 @@ mws:
     # E.g. helm install webmethods/mywebmethodsserver mws --set mws.jdbc.user=mwsuser --set mws.jdbc.password=mydbpassword
     # Do not save this information in a plain value file, use --set and reference it from an environment variable, or setup manually
     password:
+
+# -- Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor.
+prometheus:
+  path:          "/metrics"
+  port:          "8585"
+  scheme:        "http"
+  ## -- Only used on annotation 
+  scrape:        "true"
+  ## -- Only used on ServiceMonitor
+  interval:      10s
+  ## -- Only used on ServiceMonitor
+  scrapeTimeout: 10s
+
+# -- Create and enable ServiceMonitor. The default is `false`.
+serviceMonitor:
+  enabled: false
