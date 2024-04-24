@@ -1,0 +1,29 @@
+
+# Cron schedule syntax
+# ┌───────────── minute (0 - 59)
+# │ ┌───────────── hour (0 - 23)
+# │ │ ┌───────────── day of the month (1 - 31)
+# │ │ │ ┌───────────── month (1 - 12)
+# │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday;
+# │ │ │ │ │                                   7 is also Sunday on some systems)
+# │ │ │ │ │                                   OR sun, mon, tue, wed, thu, fri, sat
+# │ │ │ │ │
+# * * * * *
+
+jobs:
+# -- Implements a cron job to purge all events which are older than 7 days.
+- name: purge-transaction-events
+  image:
+    repository: curlimages/curl
+    tag: latest
+  imagePullPolicy: IfNotPresent
+  restartPolicy: Never
+  # -- Schedule job every day ...
+  schedule: "0 1 * * *"
+  command: ["/bin/sh"] 
+  args:
+    - -c
+    - >-
+        echo "Purge Transaction Events in [${DEPLOYMENT}]" ... &&
+        curl -X DELETE -s -u "Administrator:${ADMINISTRATOR_PASSWORD}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions?eventType=ALL&objectType=Analytics&from=&until=&olderThan=7d" &&
+        curl -X GET    -s -u "Administrator:${ADMINISTRATOR_PASSWORD}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions/jobs"
