@@ -1,0 +1,225 @@
+# /*
+#  * Copyright (c) 2023 Software AG, Darmstadt, Germany and/or its licensors
+#  *
+#  * SPDX-License-Identifier: Apache-2.0
+#  *
+#  *   Licensed under the Apache License, Version 2.0 (the "License");
+#  *   you may not use this file except in compliance with the License.
+#  *   You may obtain a copy of the License at
+#  *
+#  *       http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  *   Unless required by applicable law or agreed to in writing, software
+#  *   distributed under the License is distributed on an "AS IS" BASIS,
+#  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  *   See the License for the specific language governing permissions and
+#  *   limitations under the License.
+#  *
+#  */
+
+{{- $fullName := include "common.names.fullname" . -}}
+{{- $labels   := include "common.labels.standard" . -}}
+{{- $adminsecretName  := include "apigateway.adminsecretName" . -}}
+{{- $adminsecretKey   := include "apigateway.adminsecretKey" . -}}
+{{- $imagePullSecrets := .Values.imagePullSecrets -}}
+{{- $extraLabels      := .Values.extraLabels      -}}
+{{- $context := . }}
+
+{{- range $job := .Values.jobs }}
+---
+apiVersion: batch/v1
+kind: {{ if $job.schedule }}CronJob{{ else }}Job{{ end }}
+metadata:
+  name: {{ $fullName }}-{{ $job.name }}
+  labels:
+    {{- $labels | nindent 4 }}
+    {{- with $extraLabels }}
+      {{- toYaml $extraLabels | nindent 4 }}
+    {{- end }}
+  {{- with $job.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  {{ if $job.schedule }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: {{ $fullName }}-{{ $job.name }}
+          labels:
+            {{- $labels | nindent 12 }}
+            {{- with $extraLabels }}
+              {{- toYaml $extraLabels | nindent 12 }}
+            {{- end }}
+        spec:
+          {{- if hasKey $job "serviceAccount" }}
+          {{- if hasKey $job.serviceAccount "name" }}
+          serviceAccountName: {{ $job.serviceAccount.name }}
+          {{- else }}
+          serviceAccountName: {{ $job.name }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey $job "securityContext" }}
+          {{- if $job.securityContext.runAsUser }}
+          securityContext:
+            runAsUser: {{ $job.securityContext.runAsUser }}
+            {{- if $job.securityContext.runAsGroup }}
+            runAsGroup: {{ $job.securityContext.runAsGroup }}
+            {{- end }}
+            {{- if $job.securityContext.fsGroup }}
+            fsGroup: {{ $job.securityContext.fsGroup }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          containers:
+          - image: "{{ $job.image.repository }}:{{ $job.image.tag }}"
+            imagePullPolicy: {{ $job.image.imagePullPolicy }}
+            name: {{ $job.name }}
+            env:
+            - name: DEPLOYMENT
+              value: {{ $fullName }}
+            {{- with $job.env }}
+            env:
+{{ tpl (toYaml . ) $context | indent 12 }}
+            {{- end }}
+            envFrom:
+            - name: ADMINISTRATOR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $adminsecretName }}
+                  key: {{ $adminsecretKey }}
+            {{- with $job.envFrom }}
+            envFrom:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- if $job.command }}
+            command: {{ $job.command }}
+            {{- end }}
+            {{- with $job.args }}
+            args:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- with $job.resources }}
+            resources:
+{{ toYaml . | indent 14 }}
+            {{- end }}
+            {{- with $job.volumeMounts }}
+            volumeMounts:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+          {{- with $job.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with $job.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with $job.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          restartPolicy: {{ $job.restartPolicy }}
+          {{- with $job.volumes }}
+          volumes:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with $imagePullSecrets }}
+          imagePullSecrets:
+{{- toYaml . | nindent 12 }}
+          {{- end }}
+  schedule: {{ $job.schedule | quote }}
+  successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit }}
+
+  {{ else }}
+
+  template:
+    metadata:
+      name: {{ $fullName }}-{{ $job.name }}
+      labels:
+        {{- $labels | nindent 8 }}
+        {{- with $extraLabels }}
+          {{- toYaml $extraLabels | nindent 8 }}
+         {{- end }}
+    spec:
+      {{- if hasKey $job "serviceAccount" }}
+      {{- if hasKey $job.serviceAccount "name" }}
+      serviceAccountName: {{ $job.serviceAccount.name }}
+      {{- else }}
+      serviceAccountName: {{ $job.name }}
+      {{- end }}
+      {{- end }}
+      {{- if hasKey $job "securityContext" }}
+      {{- if $job.securityContext.runAsUser }}
+      securityContext:
+        runAsUser: {{ $job.securityContext.runAsUser }}
+        {{- if $job.securityContext.runAsGroup }}
+        runAsGroup: {{ $job.securityContext.runAsGroup }}
+        {{- end }}
+        {{- if $job.securityContext.fsGroup }}
+        fsGroup: {{ $job.securityContext.fsGroup }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
+      containers:
+      - image: "{{ $job.image.repository }}:{{ $job.image.tag }}"
+        imagePullPolicy: {{ $job.image.imagePullPolicy }}
+        name: {{ $job.name }}
+        env:
+        - name: DEPLOYMENT
+          value: {{ $fullName }}
+        {{- with $job.env }}
+        env:
+{{ tpl (toYaml . ) $context | indent 8 }}
+        {{- end }}
+        envFrom:
+        - name: ADMINISTRATOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "apigateway.adminsecretName" . }}
+              key: {{ include "apigateway.adminsecretKey" . }}
+        {{- with $job.envFrom }}
+        envFrom:
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        {{- if $job.command }}
+        command: {{ $job.command }}
+        {{- end }}
+        {{- with $job.args }}
+        args:
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        {{- with $job.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end }}
+        {{- with $job.volumeMounts }}
+        volumeMounts:
+{{ toYaml . | indent 8 }}
+        {{- end }}
+      {{- with $job.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with $job.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with $job.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      restartPolicy: {{ $job.restartPolicy }}
+      {{- with $job.volumes }}
+      volumes:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with $imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml . | nindent 8 }}
+      {{- end }}
+ 
+  {{ end }}
+
+{{- end -}}
