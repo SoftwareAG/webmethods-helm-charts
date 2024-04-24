@@ -210,7 +210,7 @@ resources:
       cpu: 500m
       memory: 4Gi
     limits:
-      # use a high cpu limit to avaoid the container being throttled
+      # use a high cpu limit to avoid the container being throttled
       cpu: 8
       memory: 8Gi
   
