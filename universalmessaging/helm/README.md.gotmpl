@@ -60,5 +60,6 @@ helm install um webmethods/universalmessaging
 | `1.0.1` | Update JMX Exporter configuration file from latest [UM Git repository](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config). Bugfix: Mount configuration files into container. Nginx added. |
 | `1.0.2` | Change startup, liveness and readiness probes. All configuration settings are in `values.yaml`. Now, The probes are using `httpGet` instead of `runUMTool.sh` utility. |
 | `1.0.3` | Make license file handling same as MSR |
+| `1.0.4` | CRD `ServiceMonitor` added |
 
 {{ template "chart.valuesSection" . }}

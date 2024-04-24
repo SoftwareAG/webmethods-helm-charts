@@ -219,5 +219,21 @@ readinessProbe:
 # Nginx is configured by example from [Universal Messaging documentation](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/#page/num-webhelp%2Fre-configure_nginx_to_serve_http_requests.html%23)
 externalLoadBalancer: false
 
+# -- Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor.
+prometheus:
+  path:          "/metrics"
+  port:          "9200"
+  scheme:        "http"
+  ## -- Only used on annotation 
+  scrape:        "true"
+  ## -- Only used on ServiceMonitor
+  interval:      10s
+  ## -- Only used on ServiceMonitor
+  scrapeTimeout: 10s
+
+# -- Create and enable ServiceMonitor. The default is `false`.
+serviceMonitor:
+  enabled: false
+
 # -- Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.  
 license: |
