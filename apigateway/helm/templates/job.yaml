@@ -19,8 +19,6 @@
 
 {{- $fullName := include "common.names.fullname" . -}}
 {{- $labels   := include "common.labels.standard" . -}}
-{{- $adminsecretName  := include "apigateway.adminsecretName" . -}}
-{{- $adminsecretKey   := include "apigateway.adminsecretKey" . -}}
 {{- $imagePullSecrets := .Values.imagePullSecrets -}}
 {{- $extraLabels      := .Values.extraLabels      -}}
 {{- $context := . }}
@@ -83,12 +81,6 @@ spec:
             env:
 {{ tpl (toYaml . ) $context | indent 12 }}
             {{- end }}
-            envFrom:
-            - name: ADMINISTRATOR_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $adminsecretName }}
-                  key: {{ $adminsecretKey }}
             {{- with $job.envFrom }}
             envFrom:
 {{ toYaml . | indent 12 }}
@@ -173,12 +165,6 @@ spec:
         env:
 {{ tpl (toYaml . ) $context | indent 8 }}
         {{- end }}
-        envFrom:
-        - name: ADMINISTRATOR_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "apigateway.adminsecretName" . }}
-              key: {{ include "apigateway.adminsecretKey" . }}
         {{- with $job.envFrom }}
         envFrom:
 {{ toYaml . | indent 8 }}

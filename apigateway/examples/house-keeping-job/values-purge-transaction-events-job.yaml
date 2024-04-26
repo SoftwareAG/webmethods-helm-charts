@@ -18,6 +18,10 @@ jobs:
     tag: latest
   imagePullPolicy: IfNotPresent
   restartPolicy: Never
+  envFrom:
+    - secretRef:
+        ## -- set secret name '<release>-apigateway-admin-password'
+        name: apigw-apigateway-admin-password
   # -- Schedule job every day ...
   schedule: "0 1 * * *"
   command: ["/bin/sh"] 
@@ -25,5 +29,5 @@ jobs:
     - -c
     - >-
         echo "Purge Transaction Events in [${DEPLOYMENT}]" ... &&
-        curl -X DELETE -s -u "Administrator:${ADMINISTRATOR_PASSWORD}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions?eventType=ALL&objectType=Analytics&from=&until=&olderThan=7d" &&
-        curl -X GET    -s -u "Administrator:${ADMINISTRATOR_PASSWORD}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions/jobs"
+        curl -X DELETE -s -u "Administrator:${password}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions?eventType=ALL&objectType=Analytics&from=&until=&olderThan=7d" &&
+        curl -X GET    -s -u "Administrator:${password}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions/jobs"
