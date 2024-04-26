@@ -29,5 +29,5 @@ jobs:
     - -c
     - >-
         echo "Purge Transaction Events in [${DEPLOYMENT}]" ... &&
-        curl -X DELETE -s -u "Administrator:${password}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions?eventType=ALL&objectType=Analytics&from=&until=&olderThan=7d" &&
-        curl -X GET    -s -u "Administrator:${password}" "${DEPLOYMENT}:5555/rest/apigateway/apitransactions/jobs"
+        curl -X DELETE -s -u "Administrator:${password}" "${DEPLOYMENT}-admin:5555/rest/apigateway/apitransactions?eventType=ALL&objectType=Analytics&from=&until=&olderThan=7d" &&
+        curl -X GET    -s -u "Administrator:${password}" "${DEPLOYMENT}-admin:5555/rest/apigateway/apitransactions/jobs"
