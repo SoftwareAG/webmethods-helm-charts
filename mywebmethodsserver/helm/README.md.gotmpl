@@ -23,7 +23,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 Install release with pulling image and setting secret (to pull image) ...
 
 ```shell
-helm install wm-mws microservicesruntime
+helm install wm-mws mywebmethodsserver
 ```
 
 ... define default domain name of Ingress service host ...
