@@ -1,6 +1,6 @@
-# MSR with ingress and TLS
+# MSR with Ingress and TLS
 
-This example shows how to configure the microservices runtime deployment to use an ssl / tls endpoint. 
+This example shows how to configure the microservices runtime deployment to use an SSL / TLS endpoint. 
 
 ## Prerequisites
 
