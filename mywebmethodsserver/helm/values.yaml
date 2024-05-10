@@ -204,8 +204,8 @@ mws:
   # -- The secret name containing user and password for the JDBC connection
   # By default the secret name contains of the full name + "-mws-secret". 
   # Provide a value if you setup a secret manually. Example:
-  # kubectl create secret mws-secret --from-literal=user=mwsuser --from-literal=password=mypassword
-  # and use "secretName: mws-secret" in your values file
+  # `kubectl create secret generic mws-secret --from-literal=user=mwsuser --from-literal=password=mypassword`
+  # and use `secretName: mws-secret` in your values file
   secretName: 
   jdbc:
     # -- Database connection URL, based on the type of database and the driver.
