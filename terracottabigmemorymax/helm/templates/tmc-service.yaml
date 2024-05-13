@@ -35,9 +35,11 @@ spec:
   ports:
     - name: managementport
       port: {{ .Values.terracotta.tmcManagementPort }}
+      targetPort: {{ .Values.terracotta.tmcManagementPort }}
     {{- if eq $.Values.terracotta.security true }}
     - name: secureport
       port: {{ .Values.terracotta.tmcSecurePort }}
+      targetPort: {{ .Values.terracotta.tmcSecurePort }}
     {{- end }}
   selector:
     app: tmc
