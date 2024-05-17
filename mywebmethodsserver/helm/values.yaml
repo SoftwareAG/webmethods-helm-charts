@@ -135,8 +135,10 @@ tolerations: []
 
 affinity: {}
 
-#- storage settings for the different application directories
+# storage settings for the different application directories
 storage:
+  # -- Enable or disable persistent storage handling. `true`creates (PVCs) and mounts all volumes. `false` doesn't create any PVC.
+  enabled: true
   # -- The default storage class for all application directories
   defaultStorageClass: 
   # -- Storage claim request size
