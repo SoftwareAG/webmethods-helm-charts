@@ -54,6 +54,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        {{- if .Values.storage.enabled }}
         - name: change-ownership
           image: busybox
           command: ["sh", "-c", "chown -R 1724:1724 {{- range $key,$value := .Values.storage.dirs }} {{ get $value "path" }} {{- end }}"]
@@ -62,6 +63,7 @@ spec:
             - name: {{ if $value.volume }} {{ $key }} {{ else }} {{ $.Values.storage.defaultVolume }} {{ end }}
               mountPath: {{ get $value "path" }}
             {{- end }}
+        {{- end }}
         {{- if .Values.extraInitContainers -}}
         {{- toYaml .Values.extraInitContainers | nindent 8 }}
       {{- end }}
@@ -98,6 +100,7 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          {{- if .Values.storage.enabled }}
           - name: APPS_DIR
             value: {{ .Values.storage.dirs.appsdir.path }}/{{ .Values.storage.dirs.appsdir.subPath }}
           - name: CONFIGS_DIR
@@ -108,6 +111,7 @@ spec:
             value: {{ .Values.storage.dirs.libsdir.path }}/{{ .Values.storage.dirs.libsdir.subPath }}
           - name: LOGS_DIR
             value: {{ .Values.storage.dirs.logsdir.path }}/{{ .Values.storage.dirs.logsdir.subPath }}
+          {{- end }}
           {{- if .Values.extraEnvs }}
           {{- range $key, $val := .Values.extraEnvs }}
           - name: {{ $key }}
@@ -134,9 +138,11 @@ spec:
             successThreshold:    1
             timeoutSeconds:      1
           volumeMounts:
+          {{- if .Values.storage.enabled }}
           {{- range $key,$value := .Values.storage.dirs }}
           - name: {{ if $value.volume }} {{ $key }} {{ else }} {{ $.Values.storage.defaultVolume }} {{ end }}
             mountPath: {{ get $value "path" }}
+          {{- end }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -163,6 +169,7 @@ spec:
       {{- end }}      
       {{- end }}
   volumeClaimTemplates:
+    {{- if .Values.storage.enabled }}
     {{ $defaultVolumeNotMapped := true }}
     {{- range $key,$value := .Values.storage.dirs }}
     {{- if $value.volume }}
@@ -184,6 +191,7 @@ spec:
           requests:
             storage: {{ default $.Values.storage.defaultStorageRequest $value.storageRequest }}                  
       {{- $defaultVolumeNotMapped = false -}}
+    {{- end }}
     {{- end }}
     {{- end }}
   {{- if .Values.extraVolumeClaimTemplates }}
