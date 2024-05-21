@@ -6,6 +6,10 @@ This example starts a post-initialization job to configure UM after release inst
 
 See general Prerequisites.
 
+## Job Template and `DEPLOYMENT` Environment Variable
+
+The [Job template](../../helm/templates/job.yaml) is used to create a Kubernetes (Cron) Job object. A feature of this template is to set the environment variable `DEPLOYMENT` with the full deployment name. The deployment name is equal to the Kubernetes service name.
+
 ## Values
 
 Download the [values.yaml](./values.yaml) file. Add the content to you existing or create a new file. Afterwards, you can install the release with ...

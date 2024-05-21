@@ -8,6 +8,10 @@ This use-case is similar to [msr-push-doc-types](../msr-push-doc-types/README.md
 
 This deployment depends on Universal Messaging. Make sure that UM is up and running before deploying this MSR example.
 
+## Job Template and `DEPLOYMENT` Environment Variable
+
+The [Job template](../../helm/templates/job.yaml) is used to create a Kubernetes (Cron) Job object. A feature of this template is to set the environment variable `DEPLOYMENT` with the full deployment name. The deployment name is equal to the Kubernetes service name.
+
 ## Values
 
 Following [values](./values-deploy-assets-to-um.yaml) create a Kubernetes job to deploy UM assets. The `sagcr.azurecr.io/universalmessaging-tools:10.15` image from [containers registry](https://containers.softwareag.com) is used to create JNDI connection factory. Inside the container, the tool [runUMTool.sh](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/index.html#page/num-webhelp%2Fco-clu_standard_administration_tasks.html%23) is called.
