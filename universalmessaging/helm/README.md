@@ -61,12 +61,14 @@ helm install um webmethods/universalmessaging
 | `1.0.2` | Change startup, liveness and readiness probes. All configuration settings are in `values.yaml`. Now, The probes are using `httpGet` instead of `runUMTool.sh` utility. |
 | `1.0.3` | Make license file handling same as MSR |
 | `1.0.4` | CRD `ServiceMonitor` added |
+| `1.0.4` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| containerName | string | `nil` | The name of the main container, by default this will be Chart name. |
 | customMetricExporterConfig | object | `{"content":""}` | Custom metric JMX exporter configuration. Overwriting the default content of file [jmx_exporter.yaml](./files/jmx_exporter.yaml). See [Prometheus JMX exporter configuration](https://github.com/SoftwareAG/universalmessaging-prometheus-jmx-exporter-config) for more configuration samples. |
 | customServerConfig | object | `{"content":""}` | Custom server configuration file. Overwriting the content of file `Custom_Server_Common.conf` in container.  |
 | externalLoadBalancer | bool | `false` | Deploy Nginx as external LB. The LB will be configured to dispatch incoming requests to all `replicaCount` replicas. Nginx is configured by example from [Universal Messaging documentation](https://documentation.softwareag.com/universal_messaging/num10-15/webhelp/num-webhelp/#page/num-webhelp%2Fre-configure_nginx_to_serve_http_requests.html%23) |
