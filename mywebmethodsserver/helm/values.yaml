@@ -16,6 +16,9 @@ nameOverride: ""
 # -- Overwrites full workload name. As default, the workload name is release name + '-' + Chart name.
 fullnameOverride: ""
 
+# -- The name of the main container, by default this will be Chart name.
+containerName:
+
 serviceAccount:
   create: false
 
