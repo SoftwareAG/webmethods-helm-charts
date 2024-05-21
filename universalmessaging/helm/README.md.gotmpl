@@ -61,5 +61,6 @@ helm install um webmethods/universalmessaging
 | `1.0.2` | Change startup, liveness and readiness probes. All configuration settings are in `values.yaml`. Now, The probes are using `httpGet` instead of `runUMTool.sh` utility. |
 | `1.0.3` | Make license file handling same as MSR |
 | `1.0.4` | CRD `ServiceMonitor` added |
+| `1.0.4` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
 
 {{ template "chart.valuesSection" . }}

@@ -85,7 +85,7 @@ spec:
       initContainers:
         {{- toYaml .Values.extraInitContainers | nindent 8 }}            
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Values.containerName | default .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           {{ if .Values.image.tag  }}
