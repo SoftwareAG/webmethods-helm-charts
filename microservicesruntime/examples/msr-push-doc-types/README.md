@@ -8,6 +8,10 @@ With the first deployment of IS packages in MSR (as Helm release), the Document 
 * `curl` is used to call IS build-in services `pub.utils.messaging:syncDocTypesToUM` and `syncToProvider`. The call requires IS Administrator credentials. To inject the Administrator password into job, you should implement  [examples/msr-using-secrets](../examples/msr-using-secrets/README.md).
 * The job requires the hostname of deployed MSR. It is expected that the full name of Helm release Chart can be used. In order to do, the `job.yaml` Helm template contains a line to set the Helm release full name as environment variable `DEPLOYMENT`. The job shell script uses the endpoint `${DEPLOYMENT}:5555` to call IS build-in services.
 
+## Job Template and `DEPLOYMENT` Environment Variable
+
+The [Job template](../../helm/templates/job.yaml) is used to create a Kubernetes (Cron) Job object. A feature of this template is to set the environment variable `DEPLOYMENT` with the full deployment name. The deployment name is equal to the Kubernetes service name.
+
 ## Values
 
 If you have solved and committed the above prerequisites, you can include the `example/msr-push-doc-types/values.yalm` in the Helm release install or upgrade command with `-f` option.
