@@ -313,6 +313,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.allowAnonymousStatus | bool | `true` | Enable anonymous access to /api/status. |
 | kibana.annotations | object | `{}` | Annotations for Kibana |
 | kibana.count | int | `1` |  |
+| kibana.extraContainers | list | `[]` | The definition of extra containers for kibana. |
 | kibana.extraInitContainers | list | `[]` | The definition of extra initContainers for kibana. |
 | kibana.extraLabels | object | `{}` | Additional labels to be added to kibana pod labels. |
 | kibana.image | string | `nil` | The image that should be used. By default ECK will use the official Elasticsearch images.  Overwrite this to use an image from an internal registry or any custom images. Make sure that the image corresponds to the version field. |
