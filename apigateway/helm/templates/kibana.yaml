@@ -131,3 +131,4 @@ spec:
               subPath:   truststore.p12
               readOnly: true
           {{- end }}
+        {{- toYaml .Values.kibana.extraContainers | nindent 8 }}

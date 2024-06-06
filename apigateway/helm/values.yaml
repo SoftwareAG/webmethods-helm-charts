@@ -633,6 +633,9 @@ kibana:
   # -- The securityContext for kibana container.
   securityContext: {}
 
+  # -- The definition of extra containers for kibana.
+  extraContainers: []
+
   # -- The definition of extra initContainers for kibana.
   extraInitContainers: []
 
