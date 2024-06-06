@@ -442,6 +442,7 @@ prometheus:
 # -- Create and enable ServiceMonitor. The default is `false`.
 serviceMonitor:
   enabled: false
+  serviceName: ""
 
 metering:
 
