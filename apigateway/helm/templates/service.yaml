@@ -26,6 +26,7 @@ metadata:
     {{- with .Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
     {{- end }}
+    service-name: {{ include "common.names.fullname" . }}-rt
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -48,6 +49,7 @@ metadata:
     {{- with .Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
     {{- end }}
+    service-name: {{ include "common.names.fullname" . }}-admin
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -70,6 +72,7 @@ metadata:
     {{- with .Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
     {{- end }}
+    service-name: {{ include "common.names.fullname" . }}-ui
 spec:
   type: {{ .Values.service.type }}
   sessionAffinity: ClientIP
