@@ -378,5 +378,5 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | serviceAccount.create | bool | `true` | - apiVersion: rbac.authorization.k8s.io/v1 kind: Role metadata:   name: {{ include "common.names.roleName" . }} rules: - apiGroups:   - ""   resources:   - pods   - endpoints   verbs:   - get   - list   - watch |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | serviceAccount.roleName | string | `""` |  |
-| serviceMonitor | object | `{"enabled":false}` | Create and enable ServiceMonitor. The default is `false`. |
+| serviceMonitor | object | `{"enabled":false,"serviceName":""}` | Create and enable ServiceMonitor. The default is `false`. |
 | tolerations | list | `[]` |  |
