@@ -378,5 +378,6 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | serviceAccount.create | bool | `true` | - apiVersion: rbac.authorization.k8s.io/v1 kind: Role metadata:   name: {{ include "common.names.roleName" . }} rules: - apiGroups:   - ""   resources:   - pods   - endpoints   verbs:   - get   - list   - watch |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | serviceAccount.roleName | string | `""` |  |
-| serviceMonitor | object | `{"enabled":false,"serviceName":""}` | Create and enable ServiceMonitor. The default is `false`. |
+| serviceMonitor.enabled | bool | `false` | Create and enable CRD ServiceMonitor. The default is `false`. |
+| serviceMonitor.serviceName | string | `""` | Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.   |
 | tolerations | list | `[]` |  |
