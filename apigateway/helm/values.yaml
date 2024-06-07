@@ -439,9 +439,10 @@ prometheus:
   ## -- Only used on ServiceMonitor
   scrapeTimeout: 10s
 
-# -- Create and enable ServiceMonitor. The default is `false`.
 serviceMonitor:
+  # -- Create and enable CRD ServiceMonitor. The default is `false`.
   enabled: false
+  # -- Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.  
   serviceName: ""
 
 metering:
