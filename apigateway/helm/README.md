@@ -315,6 +315,11 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.allowAnonymousStatus | bool | `true` | Enable anonymous access to /api/status. |
 | kibana.annotations | object | `{}` | Annotations for Kibana |
 | kibana.count | int | `1` |  |
+| kibana.customLogging | object | `{"appenders":{},"enabled":false,"loggers":[],"root":{}}` | Custom logging configuration for kibana container. |
+| kibana.customLogging.appenders | object | `{}` | Define appenders for custom logging config. Example for logging to file: file:   type: file   fileName: /usr/share/kibana/logs/kibana.log   layout:     type: pattern |
+| kibana.customLogging.enabled | bool | `false` | Enable custom logging configuration. |
+| kibana.customLogging.loggers | list | `[]` | Define loggers other than root logger. Example for custom server logger: - name: server   appenders: [console]   level: warn |
+| kibana.customLogging.root | object | `{}` | Define which appenders are used by root logger. Example for logging to file additionally to default/console:   appenders: [file, default]   level: warn |
 | kibana.extraContainers | list | `[]` | The definition of extra containers for kibana. |
 | kibana.extraInitContainers | list | `[]` | The definition of extra initContainers for kibana. |
 | kibana.extraLabels | object | `{}` | Additional labels to be added to kibana pod labels. |
