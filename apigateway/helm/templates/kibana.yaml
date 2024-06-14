@@ -98,7 +98,7 @@ spec:
       initContainers:
         {{- toYaml .Values.kibana.extraInitContainers | nindent 8 }}
       {{- end }}
-      {{- if or (eq .Values.kibana.tls.enabled true) (eq .Values.kibana.extraVolumes true) }}
+      {{- if or (eq .Values.kibana.tls.enabled true) (eq (default .Values.kibana.extraVolumes false) true) }}
       volumes:
         {{- if .Values.kibana.tls.enabled }}
         - name: elasticsearch-certs
@@ -144,7 +144,7 @@ spec:
           livenessProbe:
             {{- toYaml .Values.kibana.livenessProbe | nindent 12 }}
           {{- end }}
-          {{- if or (eq .Values.kibana.tls.enabled true) (eq .Values.kibana.extraVolumeMounts true) }}
+          {{- if or (eq .Values.kibana.tls.enabled true) (eq (default .Values.kibana.extraVolumeMounts false) true) }}
           volumeMounts:
             {{- if .Values.kibana.tls.enabled }}
             - name: elasticsearch-certs
