@@ -164,6 +164,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.1` | Added Kibana configuration field 'status.allowAnonymous' set by Values.kibana.allowAnonymousStatus. This removes errors in API Gateway log indicating that Kibana is not available. |
 | `1.2.2` | Option in `values.yaml` to create a ServiceMonitor added. |
 | `1.2.3` | Job template added to create house keeping (cron) jobs.  |
+| `1.2.4` | Added Kibana extra container configuration, set by Values.kibana.extraContainers. <br> Added ServiceMonitor matchLabel for a specific service. The service is set by .Values.serviceMonitor.serviceName defaulting to API Gateways runtime service. |
 
 ## Values
 
@@ -313,6 +314,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.allowAnonymousStatus | bool | `true` | Enable anonymous access to /api/status. |
 | kibana.annotations | object | `{}` | Annotations for Kibana |
 | kibana.count | int | `1` |  |
+| kibana.extraContainers | list | `[]` | The definition of extra containers for kibana. |
 | kibana.extraInitContainers | list | `[]` | The definition of extra initContainers for kibana. |
 | kibana.extraLabels | object | `{}` | Additional labels to be added to kibana pod labels. |
 | kibana.image | string | `nil` | The image that should be used. By default ECK will use the official Elasticsearch images.  Overwrite this to use an image from an internal registry or any custom images. Make sure that the image corresponds to the version field. |
@@ -343,10 +345,10 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | metering.logLevel | string | `nil` | The level of log messages that are logged on the console. Valid values are: *error - logs only ERROR messages. *warn (default) - logs ERROR and WARN messages. *info - logs ERROR, WARN, and INFO messages. *debug - logs ERROR, WARN, INFO, and DEBUG messages. Use as a Java system property or an environment variable to see the debug messages of the configuration initialization. |
 | metering.proxyAddress | string | `nil` | The proxy address in a <host>:<port> format that the metering client uses.  Configure this property only if you use a metering proxy. |
 | metering.proxyPass | string | `nil` | The proxy password that the metering client uses. Configure this property only if you use a metering proxy with authentication. Depending on the method that you use to provide a password, ensure that you escape password characters that are specific for the selected method. Valid characters: *Letters: A-Z, a-z *Numbers: 0-9 *Special characters: !@#$%^&*()_+-=[]{}\/?,.<>; |
-| metering.proxyType | string | `"DIRECT"` | Тhe type of the proxy that the metering client uses.  Valid values are:  *DIRECT (default).  *HTTP  *SOCKS Indicates that the metering client does not use a proxy.  |
+| metering.proxyType | string | `"DIRECT"` | The type of the proxy that the metering client uses.  Valid values are:  *DIRECT (default).  *HTTP  *SOCKS Indicates that the metering client does not use a proxy.  |
 | metering.reportPeriod | string | `"3600"` |  |
 | metering.runtimeAlias | string | `nil` | An alias of the webMethods product instance or a group of instances, for which usage data is measured. |
-| metering.serverConnectTimeout | string | `"60000"` | Тhe time in milliseconds to establish the initial TCP connection when the metering client calls the server REST endpoint. This is also the time to start the request. |
+| metering.serverConnectTimeout | string | `"60000"` | The time in milliseconds to establish the initial TCP connection when the metering client calls the server REST endpoint. This is also the time to start the request. |
 | metering.serverReadTimeout | string | `"300000"` | The maximum time in milliseconds without data transfer over the TCP connection to the server. This is also the time that it takes for the server to respond. When this time passes, the request fails. |
 | metering.serverUrl | string | `"https://metering.softwareag.cloud/api/measurements"` | The URL of the metering aggregator server REST API. |
 | metering.trustStoreFile | string | `nil` | The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases: *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP). *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud.  |
@@ -377,5 +379,6 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | serviceAccount.create | bool | `true` | - apiVersion: rbac.authorization.k8s.io/v1 kind: Role metadata:   name: {{ include "common.names.roleName" . }} rules: - apiGroups:   - ""   resources:   - pods   - endpoints   verbs:   - get   - list   - watch |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | serviceAccount.roleName | string | `""` |  |
-| serviceMonitor | object | `{"enabled":false}` | Create and enable ServiceMonitor. The default is `false`. |
+| serviceMonitor.enabled | bool | `false` | Create and enable CRD ServiceMonitor. The default is `false`. |
+| serviceMonitor.serviceName | string | `""` | Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.   |
 | tolerations | list | `[]` |  |

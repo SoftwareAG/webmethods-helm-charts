@@ -42,4 +42,5 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ .Release.Name }}
+      service-name: {{ include "apigateway.monitorServiceName" . }}
 {{- end }}

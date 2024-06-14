@@ -439,9 +439,11 @@ prometheus:
   ## -- Only used on ServiceMonitor
   scrapeTimeout: 10s
 
-# -- Create and enable ServiceMonitor. The default is `false`.
 serviceMonitor:
+  # -- Create and enable CRD ServiceMonitor. The default is `false`.
   enabled: false
+  # -- Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.  
+  serviceName: ""
 
 metering:
 
@@ -449,7 +451,7 @@ metering:
   enabled: true
   # -- The URL of the metering aggregator server REST API.
   serverUrl: "https://metering.softwareag.cloud/api/measurements"
-  # -- Тhe type of the proxy that the metering client uses. 
+  # -- The type of the proxy that the metering client uses. 
   # Valid values are: 
   # *DIRECT (default). 
   # *HTTP 
@@ -467,7 +469,7 @@ metering:
   # *Numbers: 0-9
   # *Special characters: !@#$%^&*()_+-=[]{}\/?,.<>;
   proxyPass: 
-  # -- Тhe time in milliseconds to establish the initial TCP connection when the metering client calls the server REST endpoint. This is also the time to start the request.
+  # -- The time in milliseconds to establish the initial TCP connection when the metering client calls the server REST endpoint. This is also the time to start the request.
   serverConnectTimeout: "60000"
   # -- The maximum time in milliseconds without data transfer over the TCP connection to the server. This is also the time that it takes for the server to respond. When this time passes, the request fails.
   serverReadTimeout: "300000"
@@ -632,6 +634,9 @@ kibana:
 
   # -- The securityContext for kibana container.
   securityContext: {}
+
+  # -- The definition of extra containers for kibana.
+  extraContainers: []
 
   # -- The definition of extra initContainers for kibana.
   extraInitContainers: []
