@@ -645,6 +645,12 @@ kibana:
   # -- The securityContext for kibana container.
   securityContext: {}
 
+  # -- The definition of extra volumes for kibana.
+  extraVolumes: []
+
+  # -- The definition of extra volumeMounts for kibana.
+  extraVolumeMounts: []
+
   # -- The definition of extra containers for kibana.
   extraContainers: []
 

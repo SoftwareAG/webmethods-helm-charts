@@ -83,14 +83,19 @@ spec:
       initContainers:
         {{- toYaml .Values.kibana.extraInitContainers | nindent 8 }}
       {{- end }}
-      {{- if .Values.kibana.tls.enabled }}
+      {{- if or (eq .Values.kibana.tls.enabled true) (eq .Values.kibana.extraVolumes true) }}
       volumes:
+        {{- if .Values.kibana.tls.enabled }}
         - name: elasticsearch-certs
           secret:
             secretName: {{ .Values.kibana.tls.secretName }}
             items:
               - key: {{ .Values.kibana.tls.trustStoreName }}
                 path: truststore.p12
+        {{- end }}
+        {{- if .Values.kibana.extraVolumes }}
+        {{- toYaml .Values.kibana.extraVolumes | nindent 8 }}
+        {{- end }}
       {{- end }}
       containers:
         - name: kibana
@@ -124,12 +129,17 @@ spec:
           livenessProbe:
             {{- toYaml .Values.kibana.livenessProbe | nindent 12 }}
           {{- end }}
-          {{- if .Values.kibana.tls.enabled }}
+          {{- if or (eq .Values.kibana.tls.enabled true) (eq .Values.kibana.extraVolumeMounts true) }}
           volumeMounts:
+            {{- if .Values.kibana.tls.enabled }}
             - name: elasticsearch-certs
               mountPath: /usr/share/kibana/config/elasticsearch-certs/truststore.p12
               subPath:   truststore.p12
               readOnly: true
+            {{- end }}
+            {{- if .Values.kibana.extraVolumeMounts }}
+            {{- toYaml .Values.kibana.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           {{- end }}
         {{- if .Values.kibana.extraContainers }}
         {{- toYaml .Values.kibana.extraContainers | nindent 8 }}
