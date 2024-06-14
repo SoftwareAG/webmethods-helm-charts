@@ -492,6 +492,16 @@ metering:
   # -- The password for the metering client truststore.
   # Configure this property only if you use a truststore.
   trustStorePassword:
+  # -- Configuration for secretKeyRef containing the password for the metering client truststore.
+  # Configure this property only if you use a truststore.
+  # Mutually exclusive with providing the password directly over metering.trustStorePassword.
+  truststorePasswordFromSecret:
+    # -- enable secretKeyRef instead of providing password directly
+    enabled: false
+    # -- Name of the referenced secret
+    secretName: ""
+    # -- Key containing the truststore password in the referenced secret
+    secretKey: ""
 
 elasticsearch:
 
@@ -634,6 +644,36 @@ kibana:
 
   # -- The securityContext for kibana container.
   securityContext: {}
+
+  # -- Custom logging configuration for kibana container.
+  customLogging:
+    # -- Enable custom logging configuration.
+    enabled: false
+    # -- Define appenders for custom logging config.
+    # Example for logging to file:
+    # file:
+    #   type: file
+    #   fileName: /usr/share/kibana/logs/kibana.log
+    #   layout:
+    #     type: pattern
+    appenders: {}
+    # -- Define which appenders are used by root logger.
+    # Example for logging to file additionally to default/console:
+    #   appenders: [file, default]
+    #   level: warn
+    root: {}
+    # -- Define loggers other than root logger.
+    # Example for custom server logger:
+    # - name: server
+    #   appenders: [console]
+    #   level: warn
+    loggers: []
+
+  # -- The definition of extra volumes for kibana.
+  extraVolumes: []
+
+  # -- The definition of extra volumeMounts for kibana.
+  extraVolumeMounts: []
 
   # -- The definition of extra containers for kibana.
   extraContainers: []

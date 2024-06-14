@@ -165,6 +165,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.2` | Option in `values.yaml` to create a ServiceMonitor added. |
 | `1.2.3` | Job template added to create house keeping (cron) jobs.  |
 | `1.2.4` | Added Kibana extra container configuration, set by Values.kibana.extraContainers. <br> Added ServiceMonitor matchLabel for a specific service. The service is set by .Values.serviceMonitor.serviceName defaulting to API Gateways runtime service. |
+| `1.2.5` | Added possibility to read metering truststore password by secretKeyRef. <br> Added custom logging configuration for Kibana. |
 
 ## Values
 
@@ -314,9 +315,16 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.allowAnonymousStatus | bool | `true` | Enable anonymous access to /api/status. |
 | kibana.annotations | object | `{}` | Annotations for Kibana |
 | kibana.count | int | `1` |  |
+| kibana.customLogging | object | `{"appenders":{},"enabled":false,"loggers":[],"root":{}}` | Custom logging configuration for kibana container. |
+| kibana.customLogging.appenders | object | `{}` | Define appenders for custom logging config. Example for logging to file: file:   type: file   fileName: /usr/share/kibana/logs/kibana.log   layout:     type: pattern |
+| kibana.customLogging.enabled | bool | `false` | Enable custom logging configuration. |
+| kibana.customLogging.loggers | list | `[]` | Define loggers other than root logger. Example for custom server logger: - name: server   appenders: [console]   level: warn |
+| kibana.customLogging.root | object | `{}` | Define which appenders are used by root logger. Example for logging to file additionally to default/console:   appenders: [file, default]   level: warn |
 | kibana.extraContainers | list | `[]` | The definition of extra containers for kibana. |
 | kibana.extraInitContainers | list | `[]` | The definition of extra initContainers for kibana. |
 | kibana.extraLabels | object | `{}` | Additional labels to be added to kibana pod labels. |
+| kibana.extraVolumeMounts | list | `[]` | The definition of extra volumeMounts for kibana. |
+| kibana.extraVolumes | list | `[]` | The definition of extra volumes for kibana. |
 | kibana.image | string | `nil` | The image that should be used. By default ECK will use the official Elasticsearch images.  Overwrite this to use an image from an internal registry or any custom images. Make sure that the image corresponds to the version field. |
 | kibana.livenessProbe | object | `{}` | Configure Kibana's livenessProbe. |
 | kibana.podSecurityContext | object | `{}` | The pod securityContext for kibana pod. |
@@ -353,6 +361,10 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | metering.serverUrl | string | `"https://metering.softwareag.cloud/api/measurements"` | The URL of the metering aggregator server REST API. |
 | metering.trustStoreFile | string | `nil` | The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases: *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP). *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud.  |
 | metering.trustStorePassword | string | `nil` | The password for the metering client truststore. Configure this property only if you use a truststore. |
+| metering.truststorePasswordFromSecret | object | `{"enabled":false,"secretKey":"","secretName":""}` | Configuration for secretKeyRef containing the password for the metering client truststore. Configure this property only if you use a truststore. Mutually exclusive with providing the password directly over metering.trustStorePassword. |
+| metering.truststorePasswordFromSecret.enabled | bool | `false` | enable secretKeyRef instead of providing password directly |
+| metering.truststorePasswordFromSecret.secretKey | string | `""` | Key containing the truststore password in the referenced secret |
+| metering.truststorePasswordFromSecret.secretName | string | `""` | Name of the referenced secret |
 | nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
