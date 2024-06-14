@@ -50,6 +50,21 @@ spec:
     {{- else }}
     elasticsearch.ssl.verificationMode: none
     {{- end }}
+    {{- if .Values.kibana.customLogging.enabled }}
+    logging:
+      {{- if .Values.kibana.customLogging.appenders }}
+      appenders:
+        {{- toYaml .Values.kibana.customLogging.appenders | nindent 8 }}
+      {{- end }}
+      {{- if .Values.kibana.customLogging.root }}
+      root:
+        {{- toYaml .Values.kibana.customLogging.root | nindent 8 }}
+      {{- end }}
+      {{- if .Values.kibana.customLogging.loggers }}
+      loggers:
+        {{- toYaml .Values.kibana.customLogging.loggers | nindent 8 }}
+      {{- end }}
+    {{- end }}
   http:
     tls:
       selfSignedCertificate:
