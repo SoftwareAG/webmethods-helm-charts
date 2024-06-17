@@ -28,12 +28,12 @@ Usage:
 - name: "METERING_TRUSTSTORE_FILE"
   value: "{{ .Values.metering.trustStoreFile }}"
 - name: "METERING_TRUSTSTORE_PASSWORD"
-{{- if .Values.metering.trustStorePasswordFromSecret.enabled -}}
+{{ if .Values.metering.trustStorePasswordFromSecret.enabled }}
   valueFrom:
     secretKeyRef:
       name: "{{ .Values.metering.trustStorePasswordFromSecret.secretName }}"
       key: "{{ .Values.metering.trustStorePasswordFromSecret.secretKey }}"
-{{- else -}}
+{{ else }}
   value: "{{ .Values.metering.trustStorePassword }}"
-{{- end -}}
+{{ end }}
 {{- end }}
