@@ -37,3 +37,4 @@ Usage:
   value: "{{ .Values.metering.trustStorePassword }}"
 {{- end }}
 {{- end }}
+{{- end }}
