@@ -27,14 +27,13 @@ Usage:
   value: "{{ .Values.metering.logLevel }}"
 - name: "METERING_TRUSTSTORE_FILE"
   value: "{{ .Values.metering.trustStoreFile }}"
-{{- if .Values.metering.truststorePasswordFromSecret.enabled -}}
 - name: "METERING_TRUSTSTORE_PASSWORD"
+{{- if .Values.metering.trustStorePasswordFromSecret.enabled -}}
   valueFrom:
     secretKeyRef:
-      name: "{{ .Values.metering.truststorePasswordFromSecret.secretName }}"
-      key: "{{ .Values.metering.truststorePasswordFromSecret.secretKey }}"
+      name: "{{ .Values.metering.trustStorePasswordFromSecret.secretName }}"
+      key: "{{ .Values.metering.trustStorePasswordFromSecret.secretKey }}"
 {{- else -}}
-- name: "METERING_TRUSTSTORE_PASSWORD"
   value: "{{ .Values.metering.trustStorePassword }}"
 {{- end -}}
 {{- end -}}
