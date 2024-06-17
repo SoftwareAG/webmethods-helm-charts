@@ -361,10 +361,10 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | metering.serverUrl | string | `"https://metering.softwareag.cloud/api/measurements"` | The URL of the metering aggregator server REST API. |
 | metering.trustStoreFile | string | `nil` | The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases: *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP). *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud.  |
 | metering.trustStorePassword | string | `nil` | The password for the metering client truststore. Configure this property only if you use a truststore. |
-| metering.truststorePasswordFromSecret | object | `{"enabled":false,"secretKey":"","secretName":""}` | Configuration for secretKeyRef containing the password for the metering client truststore. Configure this property only if you use a truststore. Mutually exclusive with providing the password directly over metering.trustStorePassword. |
-| metering.truststorePasswordFromSecret.enabled | bool | `false` | enable secretKeyRef instead of providing password directly |
-| metering.truststorePasswordFromSecret.secretKey | string | `""` | Key containing the truststore password in the referenced secret |
-| metering.truststorePasswordFromSecret.secretName | string | `""` | Name of the referenced secret |
+| metering.trustStorePasswordFromSecret | object | `{"enabled":false,"secretKey":"","secretName":""}` | Configuration for secretKeyRef containing the password for the metering client truststore. Configure this property only if you use a truststore. Mutually exclusive with providing the password directly over metering.trustStorePassword. |
+| metering.trustStorePasswordFromSecret.enabled | bool | `false` | enable secretKeyRef instead of providing password directly |
+| metering.trustStorePasswordFromSecret.secretKey | string | `""` | Key containing the truststore password in the referenced secret |
+| metering.trustStorePasswordFromSecret.secretName | string | `""` | Name of the referenced secret |
 | nameOverride | string | `""` | Overwrites Chart name of release name in workload name. As default, the workload name is release name + '-' + Chart name. The workload name is at the end release name + '-' + value of `nameOverride`. |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
