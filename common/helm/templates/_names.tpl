@@ -85,3 +85,14 @@ Create the name of the role to use
 {{- default "default" .Values.serviceAccount.roleName }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the rolebinding to use
+*/}}
+{{- define "common.names.roleBindingName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "common.names.fullname" .) .Values.serviceAccount.roleBindingName }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.roleBindingName }}
+{{- end }}
+{{- end }}
