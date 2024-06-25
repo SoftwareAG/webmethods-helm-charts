@@ -37,4 +37,4 @@ dependencies:
   repository: "https://open-source.softwareag.com/webmethods-helm-charts/charts"
   tags:
     - softwareag-common
-  version: 1.x.x
+  version: 1.0.3
