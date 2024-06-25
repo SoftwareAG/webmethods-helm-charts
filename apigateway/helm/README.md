@@ -166,7 +166,8 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.3` | Job template added to create house keeping (cron) jobs.  |
 | `1.2.4` | Added Kibana extra container configuration, set by Values.kibana.extraContainers. <br> Added ServiceMonitor matchLabel for a specific service. The service is set by .Values.serviceMonitor.serviceName defaulting to API Gateways runtime service. |
 | `1.2.5` | Added possibility to read metering truststore password by secretKeyRef. <br> Added custom logging configuration for Kibana. |
-
+| `1.2.6` | Fixed commons dependency to enable metering change from 1.2.5. |
+| `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasitcsearch. This allows for multiple deployments into the same namespace. |
 ## Values
 
 | Key | Type | Default | Description |
@@ -187,7 +188,8 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | apigw.extraConfigSources | list | `[]` | Extra configuration sources for API Gateway Example:  - type: YAML   allowEdit: false   properties:     location: apigw-config.yml |
 | apigw.extraLabels | object | `{}` | Additional labels to be added to apigw pod labels. |
 | apigw.grpcPort | int | `4440` | gRPC port for High Availability and Fault Tolerance (HAFT) solution. This port must be manually setup after API Gateway was initizalized. |
-| apigw.initContainer | object | `{"securityContext":{}}` | SecurityContext for apigw initContainer Deactivated by default. Usage example: securityContext:   runAsGroup: 1000   runAsUser: 1000   runAsNonRoot: true   allowPrivilegeEscalation: false   capabilities:     drop:       - ALL |
+| apigw.initContainer | object | `{"enabled":true,"securityContext":{}}` | SecurityContext for apigw initContainer Deactivated by default. Usage example: securityContext:   runAsGroup: 1000   runAsUser: 1000   runAsNonRoot: true   allowPrivilegeEscalation: false   capabilities:     drop:       - ALL |
+| apigw.initContainer.enabled | bool | `true` | If apigw initContainer for ES should be enabled |
 | apigw.initMemory | string | `"1024Mi"` |  |
 | apigw.maxMemory | string | `"1024Mi"` |  |
 | apigw.readinessProbe.scheme | string | `"HTTP"` | The readinessprobe scheme (https or http). |
@@ -223,9 +225,10 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | elasticsearch.secretName | string | `""` | The secret name that holds the sag es user for API Gateway. |
 | elasticsearch.secretPasswordKey | string | `""` | The key that holds the Elasticsearch password; defauls to "password" |
 | elasticsearch.secretUserKey | string | `""` | The key that holds the Elasticsearch user; defauls to "username" |
-| elasticsearch.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
+| elasticsearch.serviceAccount | object | `{"create":false,"name":"","roleBindingName":"elasticsearch-rolebinding","roleName":""}` | Enable and configure service account creation. |
 | elasticsearch.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Elasticsearch |
 | elasticsearch.serviceAccount.name | string | `""` | Name of the ServiceAccount for Elasticsearch |
+| elasticsearch.serviceAccount.roleBindingName | string | `"elasticsearch-rolebinding"` | Name of the ServiceAccount Rolebinding used by the Elasticsearch ServiceAccount. Requires create=true to work. |
 | elasticsearch.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount. Requires create=true to work. |
 | elasticsearch.storage | string | `""` |  |
 | elasticsearch.storageClassName | string | `""` |  |
@@ -333,9 +336,10 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.resources | object | `{}` | Resource Settings for Kibana Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
 | kibana.secretName | string | `""` | The secret name that holds the kibana user for API Gateway. |
 | kibana.securityContext | object | `{}` | The securityContext for kibana container. |
-| kibana.serviceAccount | object | `{"create":false,"name":"","roleName":""}` | Enable and configure service account creation. |
+| kibana.serviceAccount | object | `{"create":false,"name":"","roleBindingName":"kibana-rolebinding","roleName":""}` | Enable and configure service account creation. |
 | kibana.serviceAccount.create | bool | `false` | Whether to create a ServiceAccount for Kibana |
 | kibana.serviceAccount.name | string | `""` | Name of the ServiceAccount for Kibana |
+| kibana.serviceAccount.roleBindingName | string | `"kibana-rolebinding"` | Name of the ServiceAccount Rolebinding used by the Kibana ServiceAccount. Requires create=true to work. |
 | kibana.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Kibana ServiceAccount. Requires create=true to work. |
 | kibana.tls | object | `{"enabled":false,"secretName":"","trustStoreName":"","truststorePasswordSecret":"","verificationMode":"certificate"}` | Enable and configure tls connection from Kibana to Elasticsearch. |
 | kibana.tls.enabled | bool | `false` | Whether to enable tls connection from Kibana to Elasticsearch. |
@@ -390,6 +394,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.create | bool | `true` | - apiVersion: rbac.authorization.k8s.io/v1 kind: Role metadata:   name: {{ include "common.names.roleName" . }} rules: - apiGroups:   - ""   resources:   - pods   - endpoints   verbs:   - get   - list   - watch |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceAccount.roleBindingName | string | `"cluster-discovery-rolebinding"` |  |
 | serviceAccount.roleName | string | `""` |  |
 | serviceMonitor.enabled | bool | `false` | Create and enable CRD ServiceMonitor. The default is `false`. |
 | serviceMonitor.serviceName | string | `""` | Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.   |
