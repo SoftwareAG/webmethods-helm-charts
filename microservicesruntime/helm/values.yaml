@@ -331,6 +331,16 @@ metering:
   # -- The password for the metering client truststore.
   # Configure this property only if you use a truststore.
   trustStorePassword:
+  # -- Configuration for secretKeyRef containing the password for the metering client truststore.
+  # Configure this property only if you use a truststore.
+  # Mutually exclusive with providing the password directly over metering.trustStorePassword.
+  trustStorePasswordFromSecret:
+    # -- enable secretKeyRef instead of providing password directly
+    enabled: false
+    # -- Name of the referenced secret
+    secretName: ""
+    # -- Key containing the truststore password in the referenced secret
+    secretKey: ""
 
 # -- Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor.
 prometheus:

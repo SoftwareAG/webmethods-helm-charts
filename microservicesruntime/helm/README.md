@@ -109,6 +109,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | `1.0.2` | Added new option `microservicesruntime.licenseKeyProvided` to allow using images with trial or baked-in license key |
 | `1.0.3` | Make Liveness and Readiness Probes as per current default. Both can now also be overwritten in a custom values file `values.yaml`. |
 | `1.0.4` | Option in `values.yaml` to create a ServiceMonitor added. Some errors in Nginx external LB corrected |
+| `1.0.5` | Value `trustStorePasswordFromSecret` added in `values.yaml` to support common `1.0.2` |
 
 ## Values
 
@@ -161,6 +162,10 @@ helm install wm-msr webmethods/microservicesruntime   \
 | metering.serverUrl | string | `"https://metering.softwareag.cloud/api/measurements"` | The URL of the metering aggregator server REST API. |
 | metering.trustStoreFile | string | `nil` | The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases: *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP). *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud. |
 | metering.trustStorePassword | string | `nil` | The password for the metering client truststore. Configure this property only if you use a truststore. |
+| metering.trustStorePasswordFromSecret | object | `{"enabled":false,"secretKey":"","secretName":""}` | Configuration for secretKeyRef containing the password for the metering client truststore. Configure this property only if you use a truststore. Mutually exclusive with providing the password directly over metering.trustStorePassword. |
+| metering.trustStorePasswordFromSecret.enabled | bool | `false` | enable secretKeyRef instead of providing password directly |
+| metering.trustStorePasswordFromSecret.secretKey | string | `""` | Key containing the truststore password in the referenced secret |
+| metering.trustStorePasswordFromSecret.secretName | string | `""` | Name of the referenced secret |
 | microservicesruntime.diagnosticPort | int | `9999` | Defies diagnostic port |
 | microservicesruntime.httpPort | int | `5555` | Defines administration port |
 | microservicesruntime.httpPortScheme | string | `"HTTP"` | Defines scheme of administration port |
