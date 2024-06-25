@@ -36,9 +36,11 @@ jobs:
           sudo docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
 
       - name: Push new generated README  
+        env:
+          CMT_MSG: ${{ github.event.head_commit.message }}
         run: |
           cd webmethods-helm-charts/
           git add .
-          git commit -am "${{ github.event.head_commit.message }} and updating helm/README.me from values.yaml"
+          git commit -am "$CMT_MSG and updating helm/README.me from values.yaml"
           git branch -M      ${{ github.ref_name }}
           git push -f origin ${{ github.ref_name }}

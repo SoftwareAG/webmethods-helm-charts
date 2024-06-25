@@ -20,14 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Helm README Documentation with jnorwood
-        run: |
-          sudo docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
-
-      - name: Remove README.md template files
-        run: |
-          find . -name "README.md.gotmpl" | xargs rm
-
       - name: Install Helm
         run: |
           curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
@@ -36,24 +28,30 @@ jobs:
 
       - name: Dry-run of apigateway
         run: |
-          helm template apigw apigateway/helm
+          helm dependencies update apigateway/helm
+          helm template apigw      apigateway/helm
 
       - name: Dry-run of developerportal
         run: |
-          helm template devportal developerportal/helm
+          helm dependencies update developerportal/helm
+          helm template devportal  developerportal/helm
 
       - name: Dry-run of microservicesruntime
         run: |
-          helm template msr microservicesruntime/helm
+          helm dependencies update microservicesruntime/helm
+          helm template msr        microservicesruntime/helm
 
       - name: Dry-run of mywebmethodsserver
         run: |
-          helm template mws mywebmethodsserver/helm
+          helm dependencies update mywebmethodsserver/helm
+          helm template mws        mywebmethodsserver/helm
 
       - name: Dry-run of universalmessaging
         run: |
-          helm template um universalmessaging/helm
+          helm dependencies update universalmessaging/helm
+          helm template um         universalmessaging/helm
 
       - name: Dry-run of terracottabigmemorymax
         run: |
-          helm template um terracottabigmemorymax/helm
+          helm dependencies update terracottabigmemorymax/helm
+          helm template tc         terracottabigmemorymax/helm
