@@ -71,6 +71,8 @@ serviceAccount:
   name: ""
   # If not set and create is true, a name is generated using the fullname template
   roleName: ""
+  # If not set and create is true, a name is generated using the fullname template
+  roleBindingName: "cluster-discovery-rolebinding"
 
 # -- The name of the secret or configmap that contains the license key.
 # Defaults to the release name + chart name + "-license".
@@ -328,6 +330,8 @@ apigw:
   #       - ALL
   initContainer:
     securityContext: {}
+    # -- If apigw initContainer for ES should be enabled
+    enabled: true
   
   # -- Specifies the location and name of the configuration variables template
   # or the directory containing templates for use with Microservices Runtime or
@@ -561,7 +565,7 @@ elasticsearch:
     # Overwriting with custom PodDisruptionBudget Policy requires enabled=true.
     # Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
     data: {}
-
+  
   # -- Enable and configure service account creation.
   serviceAccount:
     # -- Whether to create a ServiceAccount for Elasticsearch
@@ -571,6 +575,9 @@ elasticsearch:
     # -- Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount.
     # Requires create=true to work.
     roleName: ""
+    # -- Name of the ServiceAccount Rolebinding used by the Elasticsearch ServiceAccount.
+    # Requires create=true to work.
+    roleBindingName: "elasticsearch-rolebinding"
   
   # -- Whether the communication from APIGW and Kibana should be HTTPS
   # Note: you will need to create certificate and a separate truststore for the communication.
@@ -704,6 +711,9 @@ kibana:
     # -- Name of the ServiceAccount Role used by the Kibana ServiceAccount.
     # Requires create=true to work.
     roleName: ""
+    # -- Name of the ServiceAccount Rolebinding used by the Kibana ServiceAccount.
+    # Requires create=true to work.
+    roleBindingName: "kibana-rolebinding"
   
   # -- Configure Kibana's readinessProbe.
   readinessProbe:
