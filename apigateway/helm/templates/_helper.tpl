@@ -125,5 +125,5 @@ Renders the license config name or secret. If not specified, it will be the defa
 Renders the service name for service monitoring. If not specified, it will be the default name.
 */}}
 {{- define "apigateway.monitorServiceName" -}}
-  {{- default ( printf "%s-%s" (include "common.names.fullname" . ) "-rt") .Values.serviceMonitor.serviceName  }}
+  {{- default ( printf "%s-rt" (include "common.names.fullname" . ) ) .Values.serviceMonitor.serviceName  }}
 {{- end }}
