@@ -69,6 +69,7 @@ Sample product IDs:
 * `TaskEngineRuntime`: Task Engine in MWS
 * `MWSPIETaskEngine`: Task Engine in IS
 * `MwsProgramFiles`: My webMethods Server (requires `centos:7|8` base image)
+* `wst`: Cloud Streams for [connectors](https://tech.forums.softwareag.com/c/webmethods-cloudstreams-connectors/76)
 
 To install Database Component Configurator (for 10.15 and all DCC components), use the product IDs:
 
