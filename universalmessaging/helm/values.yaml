@@ -135,6 +135,22 @@ storage:
   # -- Storage size of configuration files
   configurationSize: 2Mi
 
+  logs:
+    # -- Annotation for logs
+    annotations: {}
+    # -- Storage class name for logs
+    storageClassName: ""
+  data:
+    # -- Annotation for data
+    annotations: {}
+    # -- Storage class name for data
+    storageClassName: ""
+  configuration:
+    # -- Annotation for data
+    annotations: {}
+    # -- Storage class name for data
+    storageClassName: ""
+  
 ingress:
   # -- Enable or disable Ingress, default is disabled. On enabling Ingress, only the first `-0` replica is currently supported. 
   enabled: false

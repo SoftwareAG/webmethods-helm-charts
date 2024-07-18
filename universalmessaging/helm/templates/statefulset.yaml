@@ -183,25 +183,40 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: data
+      {{- with .Values.storage.data.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       accessModes:
       - ReadWriteOnce
       resources:
         requests:
           storage: {{ .Values.storage.dataSize }}
+      storageClassName: {{ .Values.storage.data.storageClassName | quote }}
   - metadata:
       name: logs
+      {{- with .Values.storage.logs.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       accessModes:
       - ReadWriteOnce
       resources:
         requests:
           storage: {{ .Values.storage.logsSize }}
+      storageClassName: {{ .Values.storage.logs.storageClassName | quote }}
   - metadata:
       name: configuration
+      {{- with .Values.storage.configuration.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       accessModes:
       - ReadWriteOnce
       resources:
         requests:
           storage: {{ .Values.storage.configurationSize }}
+      storageClassName: {{ .Values.storage.configuration.storageClassName | quote }}

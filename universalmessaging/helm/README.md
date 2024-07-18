@@ -62,6 +62,7 @@ helm install um webmethods/universalmessaging
 | `1.0.3` | Make license file handling same as MSR |
 | `1.0.4` | CRD `ServiceMonitor` added |
 | `1.0.4` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
+| `1.0.5` | support of PV storage annotation and class name |
 
 ## Values
 
@@ -116,8 +117,14 @@ helm install um webmethods/universalmessaging
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | serviceMonitor | object | `{"enabled":false}` | Create and enable ServiceMonitor. The default is `false`. |
 | startupProbe | object | `{"failureThreshold":30,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":30,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure liveness probe |
+| storage.configuration.annotations | object | `{}` | Annotation for data |
+| storage.configuration.storageClassName | string | `""` | Storage class name for data |
 | storage.configurationSize | string | `"2Mi"` | Storage size of configuration files |
+| storage.data.annotations | object | `{}` | Annotation for data |
+| storage.data.storageClassName | string | `""` | Storage class name for data |
 | storage.dataSize | string | `"2Gi"` | Storage size of data |
+| storage.logs.annotations | object | `{}` | Annotation for logs |
+| storage.logs.storageClassName | string | `""` | Storage class name for logs |
 | storage.logsSize | string | `"2Gi"` | Storage size of logs |
 | tolerations | list | `[]` |  |
 | um.basicAuthEnable | string | `"No"` | Enable basic authentication on the server |
