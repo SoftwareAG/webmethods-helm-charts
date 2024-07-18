@@ -193,7 +193,9 @@ spec:
       resources:
         requests:
           storage: {{ .Values.storage.dataSize }}
+      {{- if .Values.storage.data.storageClassName }}
       storageClassName: {{ .Values.storage.data.storageClassName | quote }}
+      {{- end }}
   - metadata:
       name: logs
       {{- with .Values.storage.logs.annotations }}
@@ -206,7 +208,9 @@ spec:
       resources:
         requests:
           storage: {{ .Values.storage.logsSize }}
+      {{- if .Values.storage.logs.storageClassName }}
       storageClassName: {{ .Values.storage.logs.storageClassName | quote }}
+      {{- end }}
   - metadata:
       name: configuration
       {{- with .Values.storage.configuration.annotations }}
@@ -219,4 +223,6 @@ spec:
       resources:
         requests:
           storage: {{ .Values.storage.configurationSize }}
+      {{- if .Values.storage.configuration.storageClassName }}
       storageClassName: {{ .Values.storage.configuration.storageClassName | quote }}
+      {{- end }}
