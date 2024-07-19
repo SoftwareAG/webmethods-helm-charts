@@ -93,28 +93,53 @@ kubectl create secret generic certificatesecret \
 --from-file=/home/mdh@eur.ad.sag/4.xconfig/k8sCert/terracotta-1-keystore.jks
 ````
 
+Steps related to ingress - 
+
+````
+Following two steps are required to secure the ingress - 
+1. Create a certificate like openssl req -x509 -nodes -days 9999 -newkey rsa:2048 -keyout certs/ingress-tls.key -out certs/ingress-tls.crt
+Note- The CN should match the hostname in terracotta.ingressHostname.
+2. Create a kubernetes secret in the same namespace in which terracotta is supposed to be deployed.
+kubectl create secret tls test-ingress-secret --key=certs/ingress-tls.key --cert=certs/ingress-tls.crt -o yaml
+3. Ingress controller for specified terracotta.ingressClass needs to be installed in the k8s cluster.
+For ex- If using terracotta.ingressClass as "nginx" then ingress controller for nginx needs to be deployed in the cluster.
+
+helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx --create-namespace
+
+mdh@SAG-1HXQKG3:~/Myrepos/webmethods-helm-charts/terracottabigmemorymax/helm$ kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS    RESTARTS      AGE
+ingress-nginx-controller-967b94856-4c7mp   1/1     Running   1 (32h ago)   2d
+mdh@SAG-1HXQKG3:~/Myrepos/webmethods-helm-charts/terracottabigmemorymax/helm$ kubectl get svc -n ingress-nginx
+NAME                                 TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)                      AGE
+ingress-nginx-controller-admission   ClusterIP      10.43.152.27   <none>           443/TCP                      2d
+ingress-nginx-controller             LoadBalancer   10.43.190.88   172.30.119.197   80:31717/TCP,443:31285/TCP   2d
+````
+
 ### Step #2: Install the helm chart and use the above created secret.
 
 ````
-helm install "my-release" --set terracotta.stripeCount=2 --set terracotta.nodeCountPerStripe=1 --set-file terracotta.license=/home/mdh@eur.ad.sag/4.xlicense/license.key --set tag=4.3.10-SNAPSHOT --set security=true --set secretName=certificatesecret  .
+helm install "my-release" --set terracotta.stripeCount=2 \
+--set terracotta.nodeCountPerStripe=1 \
+--set-file terracotta.license=/home/mdh@eur.ad.sag/4.xlicense/license.key \
+--set tag=4.3.10-SNAPSHOT \
+--set terracotta.security=true \
+--set terracotta.secretName=certificatesecret \
+--set terracotta.ingressSecretName=test-ingress-secret \
+--set terracotta.secureIngress=true \
+--set terracotta.ingressHostname = hostname.terracotta.com \ 
+--set terracotta.tmcOpts = "-Dcom.tc.management.config.disable.csrfGuard=true -Djdk.internal.httpclient.disableHostnameVerification=true -Djetty.sslContext.sniRequired=false -Djetty.ssl.sniHostCheck=false -Djetty.ssl.sniRequired=false"
 ````
 
 ### Step #3: Verify from the browser to see if connections can be created securely to tmc.
 
-- First enable port-forwarding for tmc-service using -
-
-````
-kubectl port-forward service/tmc-service 8080:9443
-````
-
-- Go to browser and go to url https://localhost:8080 and then set up authentication.
+- Go to browser and go to url https://hostname.terracotta.com:443 and then set up authentication.
 - It will ask for tmc restart so do it using
 
 ```
 kubectl delete pod tmc-0.
 ```
 
-- Now again start port-forwarding and go to browser and provide the connection location (URL)  -
+- Now go to browser to the same url https://hostname.terracotta.com:443 and provide the connection location (URL)  -
 
 ```
 https://terracotta-0.terracotta-service.default.svc.cluster.local:9540
@@ -200,6 +225,10 @@ helm delete <release-name>
 | terracotta.tmcEnabled | bool | `true` | TMC Enabled or not |
 | terracotta.tmcManagementPort | int | `9889` | TMC Management Port |
 | terracotta.tmcOpts | string | `""` | Can be used for passing some jvm related options for tmc. |
+| terracotta.ingressClass | string | `"nginx"` | Ingress controller to be used. |
+| terracotta.ingressSecretName | string | `""` | Ingress secret of "kubernetes.io/tls" deployed in the same namespace. |
+| terracotta.secureIngress | bool | `false` | Ingress is secured or not. | 
+| terracotta.ingressHostname | string | `""` | Configure hostname which will be used to access tmc ui from browser. When ingress is secured the hostname in the ingress secret should match hostname configured here. | 
 | terracotta.tmcSecurePort | int | `9443` | TMC Secure Port |
 | terracotta.tsaGroupPort | int | `9530` | TSA group port |
 | terracotta.tsaManagementPort | int | `9540` | TSA Management port |
