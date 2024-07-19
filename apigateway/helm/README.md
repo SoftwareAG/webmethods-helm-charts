@@ -167,7 +167,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.4` | Added Kibana extra container configuration, set by Values.kibana.extraContainers. <br> Added ServiceMonitor matchLabel for a specific service. The service is set by .Values.serviceMonitor.serviceName defaulting to API Gateways runtime service. |
 | `1.2.5` | Added possibility to read metering truststore password by secretKeyRef. <br> Added custom logging configuration for Kibana. |
 | `1.2.6` | Fixed commons dependency to enable metering change from 1.2.5. |
-| `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasitcsearch. This allows for multiple deployments into the same namespace. |
+| `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasitcsearch. This allows for multiple deployments into the same namespace. Also, CRD ServiceMonitor selector corrected. Support of ES storage PVC annotations. |
 ## Values
 
 | Key | Type | Default | Description |
@@ -230,8 +230,9 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | elasticsearch.serviceAccount.name | string | `""` | Name of the ServiceAccount for Elasticsearch |
 | elasticsearch.serviceAccount.roleBindingName | string | `"elasticsearch-rolebinding"` | Name of the ServiceAccount Rolebinding used by the Elasticsearch ServiceAccount. Requires create=true to work. |
 | elasticsearch.serviceAccount.roleName | string | `""` | Name of the ServiceAccount Role used by the Elasticsearch ServiceAccount. Requires create=true to work. |
-| elasticsearch.storage | string | `""` |  |
-| elasticsearch.storageClassName | string | `""` |  |
+| elasticsearch.storage | string | `""` | Request size of storage. The default is 1Gi. |
+| elasticsearch.storageAnnotations | object | `{}` | Annotations of PVC storage |
+| elasticsearch.storageClassName | string | `""` | Use the storage class. |
 | elasticsearch.tlsEnabled | bool | `false` | Whether the communication from APIGW and Kibana should be HTTPS Note: you will need to create certificate and a separate truststore for the communication. |
 | elasticsearch.tlsSecretName | string | `""` | The name of the elasticsearch secret. By default it will created by the fullname + "-es-tls-secret" if tlsEnabled is set to true. |
 | elasticsearch.version | string | `"8.2.3"` | The ECK version to be used |

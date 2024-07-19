@@ -532,8 +532,14 @@ elasticsearch:
   #   memory: 128Mi  
   resources: {}
 
+  # -- Request size of storage. The default is 1Gi.
   storage: ""
+
+  # -- Use the storage class.
   storageClassName: ""
+
+  # -- Annotations of PVC storage
+  storageAnnotations: {}
 
   # -- The secret name that holds the sag es user for API Gateway.
   secretName: ""
