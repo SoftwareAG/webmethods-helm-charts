@@ -72,6 +72,10 @@ spec:
       volumeClaimTemplates:
       - metadata:
           name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          {{- with .Values.elasticsearch.storageAnnotations }}
+          annotations:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
         spec:
           accessModes:
           - ReadWriteOnce
