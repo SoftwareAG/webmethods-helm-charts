@@ -41,6 +41,13 @@ kubectl create secret docker-registry regcred --docker-server=sagcr.azurecr.io -
 helm install webmethods/developerportal devportal
 ```
 
+## Version History
+
+| Version | Changes and Description |
+|-----|------|
+| `1.0.0` | Initial release |
+| `1.0.1` | Supports wM version 11.0. Validate `devportal.port` value in `values.yaml` if you want to use wM image version 11.0. |
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -54,7 +61,7 @@ helm install webmethods/developerportal devportal
 | devportal.clusterPorts.start | int | `47500` |  |
 | devportal.cspDomains | string | `""` | csp domains for SSO usage with external Identity providers. This should point to your identity provider domains.  Controls the PORTAL_SERVER_CONFIG_HEADERS_CONTENT_SECURITY_POLICY environment variable for developer portal |
 | devportal.elasticSearchDeployment | bool | `true` | Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch   |
-| devportal.port | int | `8083` |  |
+| devportal.port | int | `8083` | HTTP listening port. Use on wM version 10.15 (default): `8083`, 11.0: `8080`  |
 | devportal.useDefaultAffinityRule | bool | `true` | Use the default anti pod affinity. Specifies a Pod Anti-Affinity rule for Kubernetes pods.  The default Pod Anti-Affinity is a scheduling preference that indicates  how Kubernetes should distribute pods across nodes to avoid having multiple  pods of the same application or with specific labels running on the same node. If you want to use your on rules, refer to affinity value and provide your own configuration. |
 | elasticsearch.certificateSecretName | string | `"{{ include \"common.names.fullname\" .}}-es-tls-secret"` | The name of the secret holding the tls secret By default the name will be fullname of release + "es-tls-secret" |
 | elasticsearch.defaultNodeSet | object | `{"count":1,"extraConfig":{},"extraInitContainers":{},"installPlugins":["mapper-size"],"memoryMapping":false,"setMaxMapCount":true}` | Default Node Set |
