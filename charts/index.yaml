@@ -3,7 +3,7 @@ entries:
   apigateway:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.185698271+02:00"
+    created: "2024-08-23T13:27:44.313247409+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -17,7 +17,7 @@ entries:
       - prometheus-elasticsearch-exporter
       version: 5.0.0
     description: API Gateway Helm Chart for Kubernetes
-    digest: cd9788a9da44ff697d6c4c32bf7ef713bd9810999e262be913c942fb7457bf34
+    digest: e92ec3650fa2445148fa335d1695c7570901468153e7935a14226dac8bd0aded
     name: apigateway
     type: application
     urls:
@@ -25,7 +25,7 @@ entries:
     version: 1.2.7
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.180808328+02:00"
+    created: "2024-08-23T13:27:44.308662767+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -47,7 +47,7 @@ entries:
     version: 1.2.6
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.176758042+02:00"
+    created: "2024-08-23T13:27:44.305327007+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -69,7 +69,7 @@ entries:
     version: 1.2.5
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.172587281+02:00"
+    created: "2024-08-23T13:27:44.301807573+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -91,7 +91,7 @@ entries:
     version: 1.2.4
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.167847295+02:00"
+    created: "2024-08-23T13:27:44.297879623+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -113,7 +113,7 @@ entries:
     version: 1.2.3
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.163869837+02:00"
+    created: "2024-08-23T13:27:44.294363833+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -135,7 +135,7 @@ entries:
     version: 1.2.2
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.159119197+02:00"
+    created: "2024-08-23T13:27:44.290948169+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -157,7 +157,7 @@ entries:
     version: 1.2.1
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.151880736+02:00"
+    created: "2024-08-23T13:27:44.287383989+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -179,7 +179,7 @@ entries:
     version: 1.2.0
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.147127875+02:00"
+    created: "2024-08-23T13:27:44.283132162+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -201,7 +201,7 @@ entries:
     version: 1.1.0
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.142685453+02:00"
+    created: "2024-08-23T13:27:44.279913165+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -227,10 +227,10 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-07-19T08:54:07.187380164+02:00"
+    created: "2024-08-23T13:27:44.314695106+02:00"
     description: A Library Helm Chart for grouping common logic between Software AG
       charts. This chart is not deployable by itself.
-    digest: 56f19542b33aab58283b63563da94bab9079ed928da49a958a1ac36b87f1a6b4
+    digest: 953652254fa2b3009d48d7965917d76e7da7dbb08f74d6971c442da4966d44b0
     home: https://softwareag.com
     icon: https://softwareag.com/downloads/logos/softwareag-mark.png
     keywords:
@@ -254,7 +254,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-07-19T08:54:07.186955109+02:00"
+    created: "2024-08-23T13:27:44.314329226+02:00"
     description: A Library Helm Chart for grouping common logic between Software AG
       charts. This chart is not deployable by itself.
     digest: fe0922bd623fe96f1cce418e9f3c3918f303ea6a7f2a45f20873845f037d9452
@@ -281,7 +281,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-07-19T08:54:07.186524776+02:00"
+    created: "2024-08-23T13:27:44.313990323+02:00"
     description: A Library Helm Chart for grouping common logic between Software AG
       charts. This chart is not deployable by itself.
     digest: 7721eb7cd8b3d2c1cf82687502eb7ec5d36caefdf553ccb0ffb62ae8e0308896
@@ -308,7 +308,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-07-19T08:54:07.18609106+02:00"
+    created: "2024-08-23T13:27:44.313652112+02:00"
     description: A Library Helm Chart for grouping common logic between Software AG
       charts. This chart is not deployable by itself.
     digest: 4c9eda6a44b05e9aa23e33196a67dd1ac6fd767d6a14cee40a312a320a780c8d
@@ -333,7 +333,28 @@ entries:
   developerportal:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.189709935+02:00"
+    created: "2024-08-23T13:27:44.318770524+02:00"
+    dependencies:
+    - name: common
+      repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
+      tags:
+      - softwareag-common
+      version: 1.0.3
+    - name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      tags:
+      - prometheus-elasticsearch-exporter
+      version: 5.0.0
+    description: webMethods Developer Portal Helm Chart for Kubernetes
+    digest: e727bc4507e8d66d10496177f8e39837d99701dc2c6df5b95d90c54f9a2ee2b7
+    name: developerportal
+    type: application
+    urls:
+    - https://open-source.softwareag.com/webmethods-helm-charts/charts/developerportal-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: "10.15"
+    created: "2024-08-23T13:27:44.316754108+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -355,7 +376,7 @@ entries:
   microservicesruntime:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.20536525+02:00"
+    created: "2024-08-23T13:27:44.328903646+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -363,7 +384,7 @@ entries:
       - softwareag-common
       version: 1.0.2
     description: Microservices Runtime (MSR) Helm Chart for Kubernetes
-    digest: 40539dfc59196264eeecd00bd383595f2c691dcc8e706bdfc5fb88ee7a3aa074
+    digest: ee743737bd2ab3547e5ed664e45149c5817b0d8ebc9586d21af2a2bb8df12185
     name: microservicesruntime
     type: application
     urls:
@@ -371,7 +392,7 @@ entries:
     version: 1.0.5
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.201995313+02:00"
+    created: "2024-08-23T13:27:44.327281751+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -387,7 +408,7 @@ entries:
     version: 1.0.4
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.198718783+02:00"
+    created: "2024-08-23T13:27:44.325673377+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -403,7 +424,7 @@ entries:
     version: 1.0.3
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.195405618+02:00"
+    created: "2024-08-23T13:27:44.32367044+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -419,7 +440,7 @@ entries:
     version: 1.0.2
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.193240372+02:00"
+    created: "2024-08-23T13:27:44.322009187+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -435,7 +456,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.191462756+02:00"
+    created: "2024-08-23T13:27:44.320517884+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -452,7 +473,7 @@ entries:
   mywebmethodsserver:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.213031963+02:00"
+    created: "2024-08-23T13:27:44.332552033+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -460,14 +481,14 @@ entries:
       - softwareag-common
       version: 1.0.3
     description: My webMethods Server (MWS) Helm Chart for Kubernetes
-    digest: 696548528b1ed0c84ddcdfe1b5b60804c3a4c83f84f8a8aee9b6e43be6da10a9
+    digest: c1d0c05840aea29e13637cd012d380da76cac250b79bd27827a8336cb87cde41
     name: mywebmethodsserver
     urls:
     - https://open-source.softwareag.com/webmethods-helm-charts/charts/mywebmethodsserver-1.0.2.tgz
     version: 1.0.2
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.21038788+02:00"
+    created: "2024-08-23T13:27:44.331261162+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -482,7 +503,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.207839174+02:00"
+    created: "2024-08-23T13:27:44.33006569+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -498,7 +519,7 @@ entries:
   terracottabigmemorymax:
   - apiVersion: v2
     appVersion: 4.4.0
-    created: "2024-07-19T08:54:07.220446191+02:00"
+    created: "2024-08-23T13:27:44.336052454+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -506,7 +527,7 @@ entries:
       - softwareag-common
       version: 1.0.3
     description: Terracotta BigMemory Max Helm Chart for Kubernetes
-    digest: 117dac9561ee0e4a0dc82733b6ab73c93a8e0f790071d44c65adebba4613cb98
+    digest: a5a6ea1e81baada1dc3cfe84c5466604620923931946ea3610de7b45858cb736
     name: terracottabigmemorymax
     type: application
     urls:
@@ -514,7 +535,7 @@ entries:
     version: 1.3.0
   - apiVersion: v2
     appVersion: 4.4.0
-    created: "2024-07-19T08:54:07.217512383+02:00"
+    created: "2024-08-23T13:27:44.334660803+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -530,7 +551,7 @@ entries:
     version: 1.2.1
   - apiVersion: v2
     appVersion: 4.4.0
-    created: "2024-07-19T08:54:07.215253206+02:00"
+    created: "2024-08-23T13:27:44.333608626+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -547,7 +568,7 @@ entries:
   universalmessaging:
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.230025213+02:00"
+    created: "2024-08-23T13:27:44.344311726+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -555,7 +576,7 @@ entries:
       - softwareag-common
       version: 1.0.3
     description: Universal Messaging (UM) Helm Chart for Kubernetes
-    digest: c4576abc430f9728825952e7a9959b1578f576ec69b3473fd819a7a9f7b3e869
+    digest: 1ea38517d9779e1708d2725562fb9a79a62a5afecf54b1cfc8d7da991f606cc5
     name: universalmessaging
     type: application
     urls:
@@ -563,7 +584,7 @@ entries:
     version: 1.0.5
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.228294413+02:00"
+    created: "2024-08-23T13:27:44.342942893+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -579,7 +600,7 @@ entries:
     version: 1.0.4
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.226678288+02:00"
+    created: "2024-08-23T13:27:44.341445373+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -595,7 +616,7 @@ entries:
     version: 1.0.3
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.225064273+02:00"
+    created: "2024-08-23T13:27:44.340159901+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -611,7 +632,7 @@ entries:
     version: 1.0.2
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.223463202+02:00"
+    created: "2024-08-23T13:27:44.33886374+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -627,7 +648,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: "10.15"
-    created: "2024-07-19T08:54:07.221945588+02:00"
+    created: "2024-08-23T13:27:44.337607393+02:00"
     dependencies:
     - name: common
       repository: https://open-source.softwareag.com/webmethods-helm-charts/charts
@@ -641,4 +662,4 @@ entries:
     urls:
     - https://open-source.softwareag.com/webmethods-helm-charts/charts/universalmessaging-1.0.0.tgz
     version: 1.0.0
-generated: "2024-07-19T08:54:07.137981425+02:00"
+generated: "2024-08-23T13:27:44.276752805+02:00"
