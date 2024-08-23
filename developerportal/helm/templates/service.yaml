@@ -37,7 +37,7 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: 8083
+      targetPort: {{ .Values.devportal.port }}
     - name: https
       port: 443
       protocol: TCP

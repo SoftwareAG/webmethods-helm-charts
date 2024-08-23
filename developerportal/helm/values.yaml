@@ -151,7 +151,8 @@ lifecycle: {}
 #   exec:
 #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
 
-devportal: 
+devportal:
+  # -- HTTP listening port. Use on wM version 10.15 (default): `8083`, 11.0: `8080` 
   port: 8083
   # -- Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch  
   elasticSearchDeployment: true
