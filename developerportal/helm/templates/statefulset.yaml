@@ -69,7 +69,9 @@ spec:
           ports:
             - containerPort: {{ .Values.devportal.port }}
           env:
-            - name: SPRING_ELASTICSEARCH_REST_URIS            
+            - name: SPRING_ELASTICSEARCH_REST_URIS            # supports version 10.15 
+              value: {{ include "developerportal.elasticservice" . }}:9200
+            - name: SPRING_ELASTICSEARCH_URIS                 # supports version 11.0
               value: {{ include "developerportal.elasticservice" . }}:9200
             - name: PORTAL_SERVER_CACHE_DISTRIBUTED_CLUSTER_PEERS_0
               value: {{ include "common.names.fullname" . }}-svc:{{ .Values.devportal.clusterPorts.start }}..{{ .Values.devportal.clusterPorts.end }}              

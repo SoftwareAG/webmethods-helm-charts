@@ -41,5 +41,11 @@ kubectl create secret docker-registry regcred --docker-server=sagcr.azurecr.io -
 helm install webmethods/developerportal devportal
 ```
 
+## Version History
+
+| Version | Changes and Description |
+|-----|------|
+| `1.0.0` | Initial release |
+| `1.0.1` | Supports wM version 11.0. Validate `devportal.port` value in `values.yaml` if you want to use wM image version 11.0. |
 
 {{ template "chart.valuesSection" . }}
