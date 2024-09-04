@@ -110,12 +110,13 @@ helm install wm-msr webmethods/microservicesruntime   \
 | `1.0.3` | Make Liveness and Readiness Probes as per current default. Both can now also be overwritten in a custom values file `values.yaml`. |
 | `1.0.4` | Option in `values.yaml` to create a ServiceMonitor added. Some errors in Nginx external LB corrected |
 | `1.0.5` | Value `trustStorePasswordFromSecret` added in `values.yaml` to support common `1.0.2` |
+| `1.0.6` | `tpl` function support in `affinity` value added. |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` |  |
+| affinity | object | `{}` | Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering. |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |

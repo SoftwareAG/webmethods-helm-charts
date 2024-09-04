@@ -47,12 +47,13 @@ helm install webmethods/developerportal devportal
 |-----|------|
 | `1.0.0` | Initial release |
 | `1.0.1` | Supports wM version 11.0. Validate `devportal.port` value in `values.yaml` if you want to use wM image version 11.0. |
+| `1.0.2` | `tpl` function support in `affinity` value added. |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` |  |
+| affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/instance","operator":"In","values":["{{ include \"common.names.fullname\" . }}"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering. |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
