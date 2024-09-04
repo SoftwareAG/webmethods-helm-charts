@@ -18,6 +18,7 @@
 #  *   limitations under the License.
 #  *
 #  */
+{{- $context := . }}
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
@@ -98,6 +99,10 @@ spec:
             {{ toYaml . | nindent 12 }}
             {{- end }}
         spec:
+          {{- with .Values.elasticsearch.affinity }}
+          affinity:
+            {{- tpl (toYaml .) $context  | nindent 12 }}
+          {{- end }}
           imagePullSecrets:
             {{- toYaml .Values.imagePullSecrets | nindent 12 }}
           containers:

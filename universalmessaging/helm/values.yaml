@@ -199,6 +199,7 @@ nodeSelector: {}
 
 tolerations: []
 
+# -- Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering.
 affinity: {}
 
 # -- Configure liveness probe

@@ -108,7 +108,20 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity: {}
+# -- Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering.
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: "app.kubernetes.io/instance"
+                operator: In
+                values:
+                  - "{{ include \"common.names.fullname\" . }}"
+          topologyKey: kubernetes.io/hostname
+
 
 # -- Extra Labels
 extraLabels: {}

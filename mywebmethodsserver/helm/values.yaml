@@ -136,6 +136,7 @@ nodeSelector: {}
 
 tolerations: []
 
+# -- Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering.
 affinity: {}
 
 # storage settings for the different application directories
