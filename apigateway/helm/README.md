@@ -168,7 +168,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.5` | Added possibility to read metering truststore password by secretKeyRef. <br> Added custom logging configuration for Kibana. |
 | `1.2.6` | Fixed commons dependency to enable metering change from 1.2.5. |
 | `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasticsearch. This allows for multiple deployments into the same namespace. Also, CRD ServiceMonitor selector corrected. Support of ES storage PVC annotations. |
-| `1.2.8` | `tpl` function support in `affinity` value added. `affinity` support added for Kibana and Elasticsearch. |
+| `1.2.8` | `tpl` function support in `affinity` value added. `affinity` support added for Kibana and Elasticsearch. `topologySpreadConstraints` support added for APIGW, Elasticsearch and Kibana. |
 
 ## Values
 
@@ -238,6 +238,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | elasticsearch.storageClassName | string | `""` | Use the storage class. |
 | elasticsearch.tlsEnabled | bool | `false` | Whether the communication from APIGW and Kibana should be HTTPS Note: you will need to create certificate and a separate truststore for the communication. |
 | elasticsearch.tlsSecretName | string | `""` | The name of the elasticsearch secret. By default it will created by the fullname + "-es-tls-secret" if tlsEnabled is set to true. |
+| elasticsearch.topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints for ElasticSearch. You can use templates inside because `tpl` function is called for rendering.  |
 | elasticsearch.version | string | `"8.2.3"` | The ECK version to be used |
 | extraConfigMaps | list | `[]` | Extra config maps for additional configurations such as extra ports, etc. |
 | extraContainers | list | `[]` | Extra containers which should run in addition to the main container as a sidecar - name: do-something   image: busybox   command: ['do', 'something'] |
@@ -352,6 +353,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.tls.trustStoreName | string | `""` | File name of the p12 truststore for Kibana |
 | kibana.tls.truststorePasswordSecret | string | `""` | Name of the k8s secret containing the password for above p12 truststore in key 'password' |
 | kibana.tls.verificationMode | string | `"certificate"` | TLS verification mode. Either 'none', 'certificate' or 'full'. Full includes hostname verification (service name must be in alt dns for it to work). |
+| kibana.topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints for Kibana. You can use templates inside because `tpl` function is called for rendering.  |
 | kibana.version | string | `"8.2.3"` | The ECK version to be used |
 | license | string | `""` | Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.   |
 | licenseConfigKey | string | `""` |  |
@@ -404,3 +406,4 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | serviceMonitor.enabled | bool | `false` | Create and enable CRD ServiceMonitor. The default is `false`. |
 | serviceMonitor.serviceName | string | `""` | Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.   |
 | tolerations | list | `[]` |  |
+| topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints for APIGW. You can use templates inside because `tpl` function is called for rendering.  |

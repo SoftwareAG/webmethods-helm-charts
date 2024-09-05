@@ -48,7 +48,7 @@ helm install wm-mws mywebmethodsserver
 | `1.0.1` | CRD `ServiceMonitor` added |
 | `1.0.2` | `storage.enabled` added in `values.yaml`. For backward reason is this value set to `true` as default. `false` doesn't create and mount any PV. (You can test this feature if you don't want to deploy any own MWS application. MWS is more stateless and has only the database as stateful dependency.) |
 | `1.0.2` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
-| `1.0.3` | `tpl` function support in `affinity` value added. |
+| `1.0.3` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
 
 ## Values
 
@@ -114,3 +114,4 @@ helm install wm-mws mywebmethodsserver
 | storage.dirs.logsdir.volume | string | `nil` | when set to true, a separate volume will be created for this directory. Otherwise, the directory will be created on the defaultVolume. |
 | storage.enabled | bool | `true` | Enable or disable persistent storage handling. `true`creates (PVCs) and mounts all volumes. `false` doesn't create any PVC. |
 | tolerations | list | `[]` |  |
+| topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering.  |

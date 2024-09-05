@@ -63,7 +63,7 @@ helm install um webmethods/universalmessaging
 | `1.0.4` | CRD `ServiceMonitor` added |
 | `1.0.4` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
 | `1.0.5` | support of PV storage annotation and class name |
-| `1.0.6` | `tpl` function support in `affinity` value added. |
+| `1.0.6` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
 
 ## Values
 
@@ -128,6 +128,7 @@ helm install um webmethods/universalmessaging
 | storage.logs.storageClassName | string | `""` | Storage class name for logs |
 | storage.logsSize | string | `"2Gi"` | Storage size of logs |
 | tolerations | list | `[]` |  |
+| topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering.  |
 | um.basicAuthEnable | string | `"No"` | Enable basic authentication on the server |
 | um.basicAuthMandatory | string | `"No"` | Enable and mandate basic authentication on the server |
 | um.initJavaMemSize | string | `"1024"` | Initial Java Heap Size (in MB) |
