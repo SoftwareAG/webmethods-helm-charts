@@ -48,6 +48,6 @@ helm install wm-mws mywebmethodsserver
 | `1.0.1` | CRD `ServiceMonitor` added |
 | `1.0.2` | `storage.enabled` added in `values.yaml`. For backward reason is this value set to `true` as default. `false` doesn't create and mount any PV. (You can test this feature if you don't want to deploy any own MWS application. MWS is more stateless and has only the database as stateful dependency.) |
 | `1.0.2` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
-| `1.0.3` | `tpl` function support in `affinity` value added. |
+| `1.0.3` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
 
 {{ template "chart.valuesSection" . }}

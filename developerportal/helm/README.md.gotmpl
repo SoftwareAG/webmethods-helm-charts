@@ -47,6 +47,6 @@ helm install webmethods/developerportal devportal
 |-----|------|
 | `1.0.0` | Initial release |
 | `1.0.1` | Supports wM version 11.0. Validate `devportal.port` value in `values.yaml` if you want to use wM image version 11.0. |
-| `1.0.2` | `tpl` function support in `affinity` value added. |
+| `1.0.2` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
 
 {{ template "chart.valuesSection" . }}

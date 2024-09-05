@@ -103,6 +103,10 @@ spec:
           affinity:
             {{- tpl (toYaml .) $context  | nindent 12 }}
           {{- end }}
+          {{- with .Values.elasticsearch.topologySpreadConstraints }}
+          topologySpreadConstraints:
+            {{- tpl (toYaml .) $context  | nindent 12 }}
+          {{- end }}
           imagePullSecrets:
             {{- toYaml .Values.imagePullSecrets | nindent 12 }}
           containers:

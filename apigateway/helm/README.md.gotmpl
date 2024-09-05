@@ -169,6 +169,6 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.5` | Added possibility to read metering truststore password by secretKeyRef. <br> Added custom logging configuration for Kibana. |
 | `1.2.6` | Fixed commons dependency to enable metering change from 1.2.5. |
 | `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasticsearch. This allows for multiple deployments into the same namespace. Also, CRD ServiceMonitor selector corrected. Support of ES storage PVC annotations. |
-| `1.2.8` | `tpl` function support in `affinity` value added. `affinity` support added for Kibana and Elasticsearch. |
+| `1.2.8` | `tpl` function support in `affinity` value added. `affinity` support added for Kibana and Elasticsearch. `topologySpreadConstraints` support added for APIGW, Elasticsearch and Kibana. |
 
 {{ template "chart.valuesSection" . }}

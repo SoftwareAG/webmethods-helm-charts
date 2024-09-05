@@ -90,6 +90,10 @@ spec:
       affinity:
         {{- tpl (toYaml .) $context  | nindent 8 }}
       {{- end }}
+      {{- with .Values.kibana.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- tpl (toYaml .) $context  | nindent 8 }}
+      {{- end }}
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- if .Values.kibana.serviceAccount.name }}

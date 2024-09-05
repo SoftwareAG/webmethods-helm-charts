@@ -139,6 +139,9 @@ tolerations: []
 # -- Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering.
 affinity: {}
 
+# -- Set Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering. 
+topologySpreadConstraints: {}
+
 # storage settings for the different application directories
 storage:
   # -- Enable or disable persistent storage handling. `true`creates (PVCs) and mounts all volumes. `false` doesn't create any PVC.
