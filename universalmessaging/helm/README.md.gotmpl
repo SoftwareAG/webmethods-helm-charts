@@ -63,5 +63,6 @@ helm install um webmethods/universalmessaging
 | `1.0.4` | CRD `ServiceMonitor` added |
 | `1.0.4` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
 | `1.0.5` | support of PV storage annotation and class name |
+| `1.0.6` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
 
 {{ template "chart.valuesSection" . }}

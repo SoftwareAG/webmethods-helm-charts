@@ -16,6 +16,7 @@
 #  *   limitations under the License.
 #  *
 #  */
+{{- $context := . }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -59,8 +60,12 @@ spec:
                         - {{ include "common.names.fullname" . }}
                 topologyKey: kubernetes.io/hostname
         {{- else if .Values.affinity }}
-        {{ toYaml .Values.affinity | nindent 8 }}
+        {{ tpl (toYaml .Values.affinity) $context | nindent 8 }}
         {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- tpl (toYaml .) $context  | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "common.names.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"        

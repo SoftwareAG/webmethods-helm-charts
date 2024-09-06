@@ -199,7 +199,11 @@ nodeSelector: {}
 
 tolerations: []
 
+# -- Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering.
 affinity: {}
+
+# -- Set Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering. 
+topologySpreadConstraints: {}
 
 # -- Configure liveness probe
 startupProbe:

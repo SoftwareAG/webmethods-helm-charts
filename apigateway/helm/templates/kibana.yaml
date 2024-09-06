@@ -16,6 +16,7 @@
 #  *   limitations under the License.
 #  *
 #  */
+{{- $context := . }}
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
@@ -85,6 +86,14 @@ spec:
         {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.kibana.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $context  | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kibana.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- tpl (toYaml .) $context  | nindent 8 }}
+      {{- end }}
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- if .Values.kibana.serviceAccount.name }}

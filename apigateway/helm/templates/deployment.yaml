@@ -17,6 +17,7 @@
 #  *
 #  */
 {{ $apigwname := (include "common.names.fullname" $ ) }}
+{{- $context := . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -227,7 +228,11 @@ spec:
       {{- end }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $context  | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- tpl (toYaml .) $context  | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:

@@ -167,12 +167,14 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.4` | Added Kibana extra container configuration, set by Values.kibana.extraContainers. <br> Added ServiceMonitor matchLabel for a specific service. The service is set by .Values.serviceMonitor.serviceName defaulting to API Gateways runtime service. |
 | `1.2.5` | Added possibility to read metering truststore password by secretKeyRef. <br> Added custom logging configuration for Kibana. |
 | `1.2.6` | Fixed commons dependency to enable metering change from 1.2.5. |
-| `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasitcsearch. This allows for multiple deployments into the same namespace. Also, CRD ServiceMonitor selector corrected. Support of ES storage PVC annotations. |
+| `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasticsearch. This allows for multiple deployments into the same namespace. Also, CRD ServiceMonitor selector corrected. Support of ES storage PVC annotations. |
+| `1.2.8` | `tpl` function support in `affinity` value added. `affinity` support added for Kibana and Elasticsearch. `topologySpreadConstraints` support added for APIGW, Elasticsearch and Kibana. |
+
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` |  |
+| affinity | object | `{}` | Set Pod (anti-) affinity for APIGW. You can use templates inside because `tpl` function is called for rendering. |
 | apigw.adminPort | int | `5555` | The default administration port. Note in a default installation this port will also be used for runtime traffic. |
 | apigw.adminSecretKey | string | `""` | The key that holds the admin secret key; defauls to "password" |
 | apigw.adminSecretName | string | `""` | The secret that holds the admin password  Depends on secrets.genereateAdminSecret; if true the setting will be ignored. |
@@ -205,6 +207,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| elasticsearch.affinity | object | `{}` | Set Pod (anti-) affinity for ElasticSearch. You can use templates inside because `tpl` function is called for rendering. |
 | elasticsearch.certificateSecretName | string | `"{{ include \"common.names.fullname\" .}}-es-tls-secret"` | The name of the secret holding the tls secret By default the name will be fullname of release + "es-tls-secret" |
 | elasticsearch.defaultNodeSet | object | `{"annotations":{},"count":1,"extraConfig":{},"extraInitContainers":{},"installMapperSizePlugin":true,"memoryMapping":false,"setMaxMapCount":true}` | Default Node Set |
 | elasticsearch.defaultNodeSet.annotations | object | `{}` | Annotations for Elasticsearch |
@@ -235,6 +238,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | elasticsearch.storageClassName | string | `""` | Use the storage class. |
 | elasticsearch.tlsEnabled | bool | `false` | Whether the communication from APIGW and Kibana should be HTTPS Note: you will need to create certificate and a separate truststore for the communication. |
 | elasticsearch.tlsSecretName | string | `""` | The name of the elasticsearch secret. By default it will created by the fullname + "-es-tls-secret" if tlsEnabled is set to true. |
+| elasticsearch.topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints for ElasticSearch. You can use templates inside because `tpl` function is called for rendering.  |
 | elasticsearch.version | string | `"8.2.3"` | The ECK version to be used |
 | extraConfigMaps | list | `[]` | Extra config maps for additional configurations such as extra ports, etc. |
 | extraContainers | list | `[]` | Extra containers which should run in addition to the main container as a sidecar - name: do-something   image: busybox   command: ['do', 'something'] |
@@ -316,6 +320,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | ingresses.ui.tls[0].secretName | string | `nil` |  |
 | ingresses.ui.tls[0].secretProviderEnabled | bool | `false` |  |
 | ingresses.ui.tls[0].secretProviderSecretName | string | `nil` |  |
+| kibana.affinity | object | `{}` | Set Pod (anti-) affinity for Kibana. You can use templates inside because `tpl` function is called for rendering. |
 | kibana.allowAnonymousStatus | bool | `true` | Enable anonymous access to /api/status. |
 | kibana.annotations | object | `{}` | Annotations for Kibana |
 | kibana.count | int | `1` |  |
@@ -348,6 +353,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.tls.trustStoreName | string | `""` | File name of the p12 truststore for Kibana |
 | kibana.tls.truststorePasswordSecret | string | `""` | Name of the k8s secret containing the password for above p12 truststore in key 'password' |
 | kibana.tls.verificationMode | string | `"certificate"` | TLS verification mode. Either 'none', 'certificate' or 'full'. Full includes hostname verification (service name must be in alt dns for it to work). |
+| kibana.topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints for Kibana. You can use templates inside because `tpl` function is called for rendering.  |
 | kibana.version | string | `"8.2.3"` | The ECK version to be used |
 | license | string | `""` | Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.   |
 | licenseConfigKey | string | `""` |  |
@@ -400,3 +406,4 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | serviceMonitor.enabled | bool | `false` | Create and enable CRD ServiceMonitor. The default is `false`. |
 | serviceMonitor.serviceName | string | `""` | Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.   |
 | tolerations | list | `[]` |  |
+| topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints for APIGW. You can use templates inside because `tpl` function is called for rendering.  |
