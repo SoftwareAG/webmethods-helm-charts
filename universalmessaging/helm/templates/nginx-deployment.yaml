@@ -76,4 +76,8 @@ spec:
             items:
             - key:  nginx.conf
               path: nginx.conf
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+
 {{- end }}

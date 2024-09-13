@@ -17,6 +17,7 @@
 #  *
 #  */
 {{- if .Values.elasticsearch.deploy }}
+{{- $context := . }}
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
@@ -55,6 +56,17 @@ spec:
             authz_exception: false
       podTemplate:
         spec:
+          {{- with .Values.elasticsearch.affinity }}
+          affinity:
+            {{- tpl (toYaml .) $context  | nindent 12 }}
+          {{- end }}
+          {{- with .Values.elasticsearch.topologySpreadConstraints }}
+          topologySpreadConstraints:
+            {{- tpl (toYaml .) $context  | nindent 12 }}
+          {{- end }}
+          {{- if .Values.elasticsearch.priorityClassName }}
+          priorityClassName: {{ .Values.elasticsearch.priorityClassName }}
+          {{- end }}
           initContainers:
           {{- if and .Values.elasticsearch.defaultNodeSet.setMaxMapCount .Values.elasticsearch.defaultNodeSet.memoryMapping }}
           - name: sysctl

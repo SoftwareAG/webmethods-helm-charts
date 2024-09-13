@@ -107,6 +107,9 @@ spec:
           topologySpreadConstraints:
             {{- tpl (toYaml .) $context  | nindent 12 }}
           {{- end }}
+          {{- if .Values.elasticsearch.priorityClassName }}
+          priorityClassName: {{ .Values.elasticsearch.priorityClassName }}
+          {{- end }}
           imagePullSecrets:
             {{- toYaml .Values.imagePullSecrets | nindent 12 }}
           containers:
