@@ -57,7 +57,7 @@ spec:
                     - key: "app.kubernetes.io/instance"
                       operator: In
                       values:
-                        - {{ include "common.names.fullname" . }}
+                        - '{{ .Release.Name }}'
                 topologyKey: kubernetes.io/hostname
         {{- else if .Values.affinity }}
         {{ tpl (toYaml .Values.affinity) $context | nindent 8 }}
@@ -65,6 +65,9 @@ spec:
       {{- with .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- tpl (toYaml .) $context  | nindent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       containers:
         - name: {{ include "common.names.fullname" . }}

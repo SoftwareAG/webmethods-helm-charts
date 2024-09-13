@@ -169,6 +169,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.6` | Fixed commons dependency to enable metering change from 1.2.5. |
 | `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasticsearch. This allows for multiple deployments into the same namespace. Also, CRD ServiceMonitor selector corrected. Support of ES storage PVC annotations. |
 | `1.2.8` | `tpl` function support in `affinity` value added. `affinity` support added for Kibana and Elasticsearch. `topologySpreadConstraints` support added for APIGW, Elasticsearch and Kibana. |
+| `1.2.9` | `priorityClassName` support added for APIGW, Elasticsearch and Kibana. |
 
 ## Values
 
@@ -224,6 +225,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | elasticsearch.podDisruptionBudget | object | `{"data":{},"enabled":true}` | Customization of ElasticSearchs PodDisruptionBudget Policy. Elastic Cloud on Kubernetes operator (ECK) creates a default PodDisruptionBudget Policy. |
 | elasticsearch.podDisruptionBudget.data | object | `{}` | Overwrite the default PodDisruptionBudget Policy. Overwriting with custom PodDisruptionBudget Policy requires enabled=true. Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/ |
 | elasticsearch.podDisruptionBudget.enabled | bool | `true` | Whether a PodDisruptionBudget Policy should be created. Enabled=true results in ECK deploying the default (or custom, see data) PodDisruptionBudget Policy. Enabled=false results in no PodDisruptionBudget Policy deployment. |
+| elasticsearch.priorityClassName | string | `""` | Set Pods' Priority Class Name |
 | elasticsearch.resources | object | `{}` | Resource Settings for Elasticsearch Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
 | elasticsearch.secretName | string | `""` | The secret name that holds the sag es user for API Gateway. |
 | elasticsearch.secretPasswordKey | string | `""` | The key that holds the Elasticsearch password; defauls to "password" |
@@ -338,6 +340,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | kibana.livenessProbe | object | `{}` | Configure Kibana's livenessProbe. |
 | kibana.podSecurityContext | object | `{}` | The pod securityContext for kibana pod. |
 | kibana.port | int | `5601` | The default Kibana Port |
+| kibana.priorityClassName | string | `""` | Set Pods' Priority Class Name |
 | kibana.readinessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/status","port":5601,"scheme":"HTTP"},"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1}` | Configure Kibana's readinessProbe. |
 | kibana.resources | object | `{}` | Resource Settings for Kibana Example:   limits:   cpu: 100m   memory: 128Mi requests:   cpu: 100m   memory: 128Mi   |
 | kibana.secretName | string | `""` | The secret name that holds the kibana user for API Gateway. |
@@ -380,6 +383,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+| priorityClassName | string | `""` | Set APIGW and Nginx Pods' Priority Class Name ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |
 | prometheus | object | `{"interval":"10s","path":"/metrics","port":"5555","scheme":"http","scrape":"true","scrapeTimeout":"10s"}` | Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor. |
 | prometheus-elasticsearch-exporter | object | `{"enabled":true,"es":{"uri":"http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"},"extraEnvSecrets":{"ES_PASSWORD":{"key":"password","secret":"apigw-apigateway-sag-user-es"},"ES_USER":{"key":"username","secret":"apigw-apigateway-sag-user-es"}},"podAnnotations":{"prometheus.io/path":"/metrics","prometheus.io/port":"9108","prometheus.io/scheme":"http","prometheus.io/scrape":"true"},"serviceMonitor":{"enabled":false}}` | Elasticsearch exporter settings. See https://github.com/prometheus-community/elasticsearch_exporter for details. |
 | prometheus-elasticsearch-exporter.enabled | bool | `true` | Deploy the prometheus exporter for elasticsearch |

@@ -111,12 +111,13 @@ helm install wm-msr webmethods/microservicesruntime   \
 | `1.0.4` | Option in `values.yaml` to create a ServiceMonitor added. Some errors in Nginx external LB corrected |
 | `1.0.5` | Value `trustStorePasswordFromSecret` added in `values.yaml` to support common `1.0.2` |
 | `1.0.6` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
+| `1.0.7` | `priorityClassName` support added. |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` | Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering. |
+| affinity | object | `{}` | Set MSR and Nginx Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering. |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
@@ -194,6 +195,7 @@ helm install wm-msr webmethods/microservicesruntime   \
 | persistence.storageClassName | string | `""` |  |
 | podAnnotations | object | `{}` | pod annotations |
 | podSecurityContext.fsGroup | int | `1724` |  |
+| priorityClassName | string | `""` | Set MSR and Nginx Pods' Priority Class Name ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |
 | prometheus | object | `{"interval":"10s","path":"/metrics","port":"5555","scheme":"http","scrape":"true","scrapeTimeout":"10s"}` | Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor. |
 | readinessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/readiness","port":"http"},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure readiness probe |
 | replicaCount | int | `1` | Number of replicates in Deployment |
@@ -210,5 +212,5 @@ helm install wm-msr webmethods/microservicesruntime   \
 | startupProbe | object | `{"failureThreshold":60,"periodSeconds":30,"tcpSocket":{"port":"http"}}` | startup probe for container |
 | statefulSet | bool | `false` | StatefulSet or Deployment. You should only change this if you require Client Side queuing (CSQ) or functionality in IS which requires stable hostnames and filesystems. Default is false => Deployment. Keep in mind, you must disable CSQ on each webMethods messaging and JMS connection if you don't use stateful-sets. See examples in Process Engine deployment for disableing CSQ. |
 | tolerations | list | `[]` |  |
-| topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering.  |
+| topologySpreadConstraints | object | `{}` | Set MSR and Nginx Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering. ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods  |
 | volumeClaimTemplates | list | `[]` | Volume Claim Templates, only to be used when running as a Statefulset (e.g. using client-side queuing) |

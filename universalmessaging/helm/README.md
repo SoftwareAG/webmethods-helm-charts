@@ -64,6 +64,7 @@ helm install um webmethods/universalmessaging
 | `1.0.4` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
 | `1.0.5` | support of PV storage annotation and class name |
 | `1.0.6` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
+| `1.0.7` | `priorityClassName` support added. |
 
 ## Values
 
@@ -105,6 +106,7 @@ helm install um webmethods/universalmessaging
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` | pod annotations |
 | podSecurityContext.fsGroup | int | `1724` |  |
+| priorityClassName | string | `""` | Set UM and Nginx Pods' Priority Class Name ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |
 | prometheus | object | `{"interval":"10s","path":"/metrics","port":"9200","scheme":"http","scrape":"true","scrapeTimeout":"10s"}` | Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor. |
 | readinessProbe | object | `{"failureThreshold":3,"httpGet":{"path":"/health/","port":9000},"initialDelaySeconds":0,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":30}` | Configure readiness probe |
 | replicaCount | int | `1` | Number of replicas |

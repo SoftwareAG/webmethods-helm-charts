@@ -261,11 +261,16 @@ nodeSelector: {}
 
 tolerations: []
 
-# -- Set Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering.
+# -- Set MSR and Nginx Pod (anti-) affinity. You can use templates inside because `tpl` function is called for rendering.
 affinity: {}
 
-# -- Set Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering. 
+# -- Set MSR and Nginx Pod topology spread constraints. You can use templates inside because `tpl` function is called for rendering.
+# ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods 
 topologySpreadConstraints: {}
+
+# -- Set MSR and Nginx Pods' Priority Class Name
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+priorityClassName: ""
 
 # -- Deploy Nginx as external LB
 externalLoadBalancer: false

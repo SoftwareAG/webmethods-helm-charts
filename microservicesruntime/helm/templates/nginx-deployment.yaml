@@ -17,7 +17,7 @@
 #  *   limitations under the License.
 #  *
 #  */
-
+{{- $context := . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -75,4 +75,17 @@ spec:
             items:
             - key:  nginx.conf
               path: nginx.conf
+
+      {{- with .Values.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $context | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- tpl (toYaml .) $context | nindent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+
 {{- end }}

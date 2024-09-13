@@ -48,6 +48,7 @@ helm install webmethods/developerportal devportal
 | `1.0.0` | Initial release |
 | `1.0.1` | Supports wM version 11.0. Validate `devportal.port` value in `values.yaml` if you want to use wM image version 11.0. |
 | `1.0.2` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
+| `1.0.3` | `priorityClassName` support added. Error is corrected on using value `useDefaultAffinityRule == true`. Now, the release name is used in condition with `app.kubernetes.io/instance`. `affinity` and `topologySpreadConstraints` support added for Elasticsearch. |
 
 ## Values
 
@@ -64,6 +65,7 @@ helm install webmethods/developerportal devportal
 | devportal.elasticSearchDeployment | bool | `true` | Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch   |
 | devportal.port | int | `8083` | HTTP listening port. Use on wM version 10.15 (default): `8083`, 11.0: `8080`  |
 | devportal.useDefaultAffinityRule | bool | `true` | Use the default anti pod affinity. Specifies a Pod Anti-Affinity rule for Kubernetes pods.  The default Pod Anti-Affinity is a scheduling preference that indicates  how Kubernetes should distribute pods across nodes to avoid having multiple  pods of the same application or with specific labels running on the same node. If you want to use your on rules, refer to affinity value and provide your own configuration. |
+| elasticsearch.affinity | object | `{}` | Set Pod (anti-) affinity for ElasticSearch. You can use templates inside because `tpl` function is called for rendering. |
 | elasticsearch.certificateSecretName | string | `"{{ include \"common.names.fullname\" .}}-es-tls-secret"` | The name of the secret holding the tls secret By default the name will be fullname of release + "es-tls-secret" |
 | elasticsearch.defaultNodeSet | object | `{"count":1,"extraConfig":{},"extraInitContainers":{},"installPlugins":["mapper-size"],"memoryMapping":false,"setMaxMapCount":true}` | Default Node Set |
 | elasticsearch.defaultNodeSet.count | int | `1` | the number of replicas for Elastic Search |
@@ -77,9 +79,11 @@ helm install webmethods/developerportal devportal
 | elasticsearch.keystoreSecretName | string | `""` | The secret name that holds the keystore password   |
 | elasticsearch.nodeSets | object | `{}` | Node sets. See official ElasticSearch documentation at: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-orchestration.html if you specify node sets here the defaultNodeSet will not be used. |
 | elasticsearch.port | int | `9200` | The default elasticsearch instance http communication port |
+| elasticsearch.priorityClassName | string | `""` | Set Pods' Priority Class Name |
 | elasticsearch.secretName | string | `""` | The secret name that holds the sag es user for Developer Portal. |
 | elasticsearch.serviceName | string | `""` | The elasticsearch http service name that Developer Portal uses. The default is compiled of the fullname (releasename + chart name) + "-http"  You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart. |
 | elasticsearch.tlsEnabled | bool | `false` | Whether the communication from Developer Portal should be HTTPS Note: you will need to create certificate and a separate truststore for the communication. |
+| elasticsearch.topologySpreadConstraints | object | `{}` | Set Pod topology spread constraints for ElasticSearch. You can use templates inside because `tpl` function is called for rendering.  |
 | elasticsearch.version | string | `"8.2.3"` | The ECK version to be used |
 | extraConfigMaps | list | `[]` | Extra config maps for additional configurations such as extra ports, etc. |
 | extraContainers | list | `[]` | Extra containers which should run in addition to the main container as a sidecar |
@@ -108,6 +112,7 @@ helm install webmethods/developerportal devportal
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+| priorityClassName | string | `""` | Set Pods' Priority Class Name ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |
 | prometheus-elasticsearch-exporter.es.uri | string | `"{{ .Release.Name }}-developerportal-es-http:9200"` |  |
 | prometheus-elasticsearch-exporter.image.pullPolicy | string | `"IfNotPresent"` |  |
 | prometheus-elasticsearch-exporter.image.pullSecret | string | `""` |  |

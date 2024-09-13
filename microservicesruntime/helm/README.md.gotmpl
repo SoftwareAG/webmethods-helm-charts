@@ -111,5 +111,6 @@ helm install wm-msr webmethods/microservicesruntime   \
 | `1.0.4` | Option in `values.yaml` to create a ServiceMonitor added. Some errors in Nginx external LB corrected |
 | `1.0.5` | Value `trustStorePasswordFromSecret` added in `values.yaml` to support common `1.0.2` |
 | `1.0.6` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
+| `1.0.7` | `priorityClassName` support added. |
 
 {{ template "chart.valuesSection" . }}

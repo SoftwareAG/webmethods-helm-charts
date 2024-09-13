@@ -49,6 +49,7 @@ helm install wm-mws mywebmethodsserver
 | `1.0.2` | `storage.enabled` added in `values.yaml`. For backward reason is this value set to `true` as default. `false` doesn't create and mount any PV. (You can test this feature if you don't want to deploy any own MWS application. MWS is more stateless and has only the database as stateful dependency.) |
 | `1.0.2` | `containerName` added in `values.yaml`. Default is the Chart name. (Use `helm repo update` to get latest Helm Chart version.) |
 | `1.0.3` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
+| `1.0.4` | `priorityClassName` support added. |
 
 ## Values
 
@@ -91,6 +92,7 @@ helm install wm-mws mywebmethodsserver
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+| priorityClassName | string | `""` | Set Pods' Priority Class Name ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |
 | prometheus | object | `{"interval":"10s","path":"/metrics","port":"8585","scheme":"http","scrape":"true","scrapeTimeout":"10s"}` | Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` | Define CPU and memory resources for container |
