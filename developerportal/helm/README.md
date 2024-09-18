@@ -48,7 +48,7 @@ helm install webmethods/developerportal devportal
 | `1.0.0` | Initial release |
 | `1.0.1` | Supports wM version 11.0. Validate `devportal.port` value in `values.yaml` if you want to use wM image version 11.0. |
 | `1.0.2` | `tpl` function support in `affinity` value added. `topologySpreadConstraints` support added. |
-| `1.0.3` | `priorityClassName` support added. Error is corrected on using value `useDefaultAffinityRule == true`. Now, the release name is used in condition with `app.kubernetes.io/instance`. `affinity` and `topologySpreadConstraints` support added for Elasticsearch. |
+| `1.0.3` | `priorityClassName` support added. Error is corrected on using value `useDefaultAffinityRule == true`. Now, the release name is used in condition with `app.kubernetes.io/instance`. `affinity` and `topologySpreadConstraints` support added for Elasticsearch. Implementation of `extraConfigMaps` added. |
 
 ## Values
 
