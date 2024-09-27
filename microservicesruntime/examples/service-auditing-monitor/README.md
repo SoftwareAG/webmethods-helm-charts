@@ -44,7 +44,7 @@ Unfortunately, If you want to use a Kubernetes cron job to archive the auditing 
 
 ## A Cron Job for Archiving
 
-[values-archiving-config-job.yaml](./values-archiving-config-job.yaml) contains values to start with Kubernetes cron job the archiving of auditing data. The job calls the [archiving APIs of WmMonitor packages](https://documentation.softwareag.com/webmethods/monitor/wmn10-15/webhelp/wmn-webhelp/index.html#page/wmn-webhelp%2Fto-archive_folder.html%23)
+[values-archiving-cronjob.yaml](./values-archiving-cronjob.yaml) contains values to start a Kubernetes cron job to archiving auditing data. The job calls the [archiving APIs of WmMonitor packages](https://documentation.softwareag.com/webmethods/monitor/wmn10-15/webhelp/wmn-webhelp/index.html#page/wmn-webhelp%2Fto-archive_folder.html%23)
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
