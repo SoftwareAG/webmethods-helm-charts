@@ -1,5 +1,8 @@
 replicaCount: 1
 
+# -- The number of old ReplicaSets to retain to allow rollback.
+# revisionHistoryLimit: 10
+
 image:
   # -- The repository for the image. By default, 
   # this points to the Software AG container repository. 
