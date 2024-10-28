@@ -99,6 +99,9 @@ spec:
             {{ toYaml . | nindent 12 }}
             {{- end }}
         spec:
+          {{- with .Values.revisionHistoryLimit }}
+            revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+          {{- end }}
           {{- with .Values.elasticsearch.affinity }}
           affinity:
             {{- tpl (toYaml .) $context  | nindent 12 }}
