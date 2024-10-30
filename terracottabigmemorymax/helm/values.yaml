@@ -76,6 +76,8 @@ terracotta:
   tmcOpts: ""
   # -- The license content for the Terracotta cluster. Optional.
   license: ""
+  # -- ServiceAccountName for the terracotta related pods
+  serviceAccountName: ""
 
 # -- TSA container-specific configurations for probes
 tsaServer:

@@ -41,7 +41,7 @@ data:
         <mirror-group>
     {{- range $j := until (int $.Values.terracotta.nodeCountPerStripe) }}
           <server host="terracotta-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.terracotta-service.{{ $.Release.Namespace }}.svc.cluster.local"
-                  name="terracotta-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}.terracotta-service.{{ $.Release.Namespace }}.svc.cluster.local">
+                  name="terracotta-{{ add (mul $i $.Values.terracotta.nodeCountPerStripe) $j }}">
             <tsa-port>{{ $.Values.terracotta.tsaPort }} </tsa-port>
             <tsa-group-port>{{ $.Values.terracotta.tsaGroupPort }}</tsa-group-port>
             <management-port>{{ $.Values.terracotta.tsaManagementPort }}</management-port>

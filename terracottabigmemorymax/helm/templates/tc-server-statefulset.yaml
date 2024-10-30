@@ -44,6 +44,9 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- if .Values.terracotta.serviceAccountName }}
+      serviceAccount: {{ .Values.terracotta.serviceAccountName }}
+     {{- end }}
       containers:
         - name: server
           image: "{{ $.Values.registry }}/{{ $.Values.serverImage }}:{{ $.Values.tag | default .Chart.AppVersion }}"
