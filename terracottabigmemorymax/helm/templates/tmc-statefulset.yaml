@@ -46,6 +46,9 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- if .Values.terracotta.serviceAccountName }}
+      serviceAccount: {{ .Values.terracotta.serviceAccountName }}
+      {{- end }}
       containers:
         - name: tmc-server
           image: "{{ $.Values.registry }}/{{ $.Values.tmcImage }}:{{ $.Values.tag | default .Chart.AppVersion }}"
