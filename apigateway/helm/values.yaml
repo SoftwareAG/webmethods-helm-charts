@@ -4,20 +4,20 @@ replicaCount: 1
 # revisionHistoryLimit: 10
 
 image:
-  # -- The repository for the image. By default, 
-  # this points to the Software AG container repository. 
+  # -- The repository for the image. By default,
+  # this points to the Software AG container repository.
   # Change this for air-gapped installations or custom images.
-  # For the Software AG container repository you need to have a 
+  # For the Software AG container repository you need to have a
   # valid access token stored as registry credentials
   repository: sagcr.azurecr.io/apigateway-minimal
   pullPolicy: IfNotPresent
-  # -- The image tag of the apigateway image default this will be the latest version. 
-  # For realworld scenarios SAG recommends to use a 
+  # -- The image tag of the apigateway image default this will be the latest version.
+  # For realworld scenarios SAG recommends to use a
   # specific version to not accidently change production versions with newer images.
   tag: "10.15"
 
 # -- Image pull secret reference. By default looks for `regcred`.
-imagePullSecrets: 
+imagePullSecrets:
   - name: regcred
 
 # -- Controls if secrets should be generated automatically.
@@ -32,7 +32,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # -- Specifies whether a service account should be created
-  # if you set this to false, you need to specify an existing service account in 'name'. 
+  # if you set this to false, you need to specify an existing service account in 'name'.
   # A service account is required for the apigateway to access the kubernetes API (i.e, Apache Ignite clustering).
   # The default service account should be as follows:
   #  apiVersion: v1
@@ -108,15 +108,15 @@ grpcService:
   dnsExternal: false
   hostname: ""
 
-# multiple ingresses for ui, admin, ext and rt 
-ingresses: 
+# multiple ingresses for ui, admin, ext and rt
+ingresses:
   ui:
     defaultHost: ""
     enabled: true
     svcName: ""
     svcPort: ""
     className: "nginx"
-    annotations: 
+    annotations:
       nginx.ingress.kubernetes.io/affinity: "cookie"
       nginx.ingress.kubernetes.io/proxy-body-size: 10m
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
@@ -127,12 +127,12 @@ ingresses:
         paths:
           - path: /
             pathType: Prefix
-    tls: 
-      - secretName: 
-        hosts: 
+    tls:
+      - secretName:
+        hosts:
         csiSecretProvider:
         secretProviderEnabled: false
-        secretProviderSecretName: 
+        secretProviderSecretName:
   rt:
     defaultHost: ""
     enabled: true
@@ -149,18 +149,18 @@ ingresses:
         paths:
           - path: /gateway
             pathType: Prefix
-    tls: 
-      - secretName: 
+    tls:
+      - secretName:
         hosts:
         secretProviderEnabled: false
-        secretProviderSecretName: 
+        secretProviderSecretName:
   admin:
     defaultHost: ""
     enabled: true
     svcName: ""
     svcPort: ""
     className: "nginx"
-    annotations: 
+    annotations:
       nginx.ingress.kubernetes.io/affinity: "cookie"
       nginx.ingress.kubernetes.io/proxy-body-size: 10m
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
@@ -171,27 +171,27 @@ ingresses:
         paths:
           - path: /
             pathType: Prefix
-    tls: 
+    tls:
       - secretName:
         hosts:
         secretProviderEnabled: false
-        secretProviderSecretName: 
+        secretProviderSecretName:
 
 # global ingress settings for tls secret name, cert and key
 ingress:
-  defaultDomain: my-domain.com 
+  defaultDomain: my-domain.com
   tls:
     # -- default secret name for TLS. By default empty,
     # will look for <release-name-apigateway->tls".
     secretName: ""
-    cert: "" 
+    cert: ""
     key: ""
     secretProviderEnabled: false
     secretProviderName: ""
     secretProviderClassName: ""
     secretProviderParameters: {}
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -202,14 +202,14 @@ resources:
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-  apigwInitContainer:  
+  apigwInitContainer:
     requests:
       cpu: 100m
       memory: 50Mi
     limits:
       cpu: 200m
       memory: 100Mi
-  
+
   apigwContainer:
     requests:
       cpu: 500m
@@ -218,7 +218,7 @@ resources:
       # use a high cpu limit to avoid the container being throttled
       cpu: 8
       memory: 8Gi
-  
+
 
 autoscaling:
   enabled: false
@@ -234,7 +234,7 @@ tolerations: []
 # -- Set Pod (anti-) affinity for APIGW. You can use templates inside because `tpl` function is called for rendering.
 affinity: {}
 
-# -- Set Pod topology spread constraints for APIGW. You can use templates inside because `tpl` function is called for rendering. 
+# -- Set Pod topology spread constraints for APIGW. You can use templates inside because `tpl` function is called for rendering.
 topologySpreadConstraints: {}
 
 # -- Set APIGW and Nginx Pods' Priority Class Name
@@ -244,20 +244,20 @@ priorityClassName: ""
 # -- Value to add extra host aliases to APIGW container.
 hostAliases: []
 
-global: 
+global:
   curlImage: "curlimages/curl"
   # -- Protocol for health check for kibana startup, must be http / https
-  apigwHealthProtocol:             "http"             
+  apigwHealthProtocol:             "http"
   # -- Service name for health check for kibana startup, must same value as apigwAdminService
-  apigwHealthService:              "apigw-admin-svc"  
-  # -- Port for health check for kibana startup, must same value as apigwAdminPort  
-  apigwHealthPort:                 5555          
+  apigwHealthService:              "apigw-admin-svc"
+  # -- Port for health check for kibana startup, must same value as apigwAdminPort
+  apigwHealthPort:                 5555
 
   # -- Elasticsearch global settings
   # Required for Prometheus Exporter Sub Chart
-  elasticsearch: 
+  elasticsearch:
     # -- The elasticsearch http service name that API Gateway uses.
-    # The default is compiled of the fullname (releasename + chart name) + "-http" 
+    # The default is compiled of the fullname (releasename + chart name) + "-http"
     # You MUST override this if you use an external elastic search service and do not deploy the embedded elastic CRD from this chart.
     serviceName: ""
     port: 9200
@@ -304,17 +304,17 @@ extraConfigMaps: []
 lifecycle: {}
 
 apigw:
-  # -- Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch  
+  # -- Deploy Elasticsearch. Depends on Elasic Search Helm Charts. See https://github.com/elastic/helm-charts/blob/main/elasticsearch
   elasticSearchDeployment: true
 
   initMemory: 1024Mi
   maxMemory: 1024Mi
 
-  # -- The API Gateway runtime port for API invocations. By default API Gateway images do not have this port setup. 
+  # -- The API Gateway runtime port for API invocations. By default API Gateway images do not have this port setup.
   # You must manually set up this port or create post init job that creates this port after API Gateway was initialized.
   runtimePort:             5556
-  # -- The API Diagnostics port. 
-  diagPort:                9999 
+  # -- The API Diagnostics port.
+  diagPort:                9999
   # -- The default API Administration UI port
   uiPort:                  9072
   # -- The default administration port. Note in a default installation this port will also be used for runtime traffic.
@@ -327,7 +327,7 @@ apigw:
     # -- The readinessprobe scheme (https or http).
     scheme:                "HTTP"
   serviceName:             "apigw"
-  
+
   # -- SecurityContext for apigw initContainer
   # Deactivated by default.
   # Usage example:
@@ -343,14 +343,14 @@ apigw:
     securityContext: {}
     # -- If apigw initContainer for ES should be enabled
     enabled: true
-  
+
   # -- Specifies the location and name of the configuration variables template
   # or the directory containing templates for use with Microservices Runtime or
   # an Integration Server with licensed Microservices functionality. Use a
   # comma-separated list to specify multiple templates and/or directories.
   # See: https://documentation.softwareag.com/webmethods/integration_server/pie10-15/webhelp/pie-webhelp/index.html#page/pie-webhelp%2Fto-sag_environment_variables_2.html
-  # Note: should only be used for passing simple configurations such as extended 
-  # settings. For all other configurations of API Gateway, use the official 
+  # Note: should only be used for passing simple configurations such as extended
+  # settings. For all other configurations of API Gateway, use the official
   # Admin REST API.
   sagIsConfigProperties:   "/config/application.properties"
 
@@ -359,7 +359,7 @@ apigw:
   rtExternalService:      "apigw-rt-ext-svc"
   apigwAdminService:      "apigw-admin-svc"
 
-  # -- The secret that holds the admin password 
+  # -- The secret that holds the admin password
   # Depends on secrets.genereateAdminSecret; if true the setting will be ignored.
   adminSecretName: ""
 
@@ -371,16 +371,16 @@ apigw:
 
   # -- The key that holds the truststore password; defaults to "password"
   elastictrustStorePassKey: ""
-  
+
   # -- The secret that holds the keystore password. If empty the chart will generate the name: fullname + "-es-keystore-secret".
   elastickeyStoreName: ""
 
   # -- The key that holds the keystore password; defaults to "password"
   elastickeyStorePassKey: ""
 
-  # -- Application Properties to overwrite default API Gateway settings. Please check 
-  # Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables. 
-  # By default only the default Administrator password is set through this mechanism if nothing is set here. 
+  # -- Application Properties to overwrite default API Gateway settings. Please check
+  # Handle with care - Most settings should be set via the UI, Admin API, configSources values, or via environment variables.
+  # By default only the default Administrator password is set through this mechanism if nothing is set here.
   # Other examples are extended settings which can be set through this mechanism.
   # Examples:
   #
@@ -406,16 +406,16 @@ apigw:
   # settings.watt.net.default.content-type=json
   #
   # Avoid IS internal statistic data collector ...
-  # statisticsdatacollector.monitorConfig.enabled=false  
+  # statisticsdatacollector.monitorConfig.enabled=false
   applicationProperties: |
 
   # -- configuration source files for API Gateway
   configSources:
 
-    elasticsearch:      
+    elasticsearch:
       tenantId: default
       hosts: "{{ default (printf \"%s-%s-es-http\" .Release.Name .Chart.Name) .Values.global.elasticsearch.serviceName }}:{{ .Values.global.elasticsearch.port }}"
-    
+
     kibana:
       dashboardInstance: "{{ printf \"http://%s-%s-kb-http:%d\" .Release.Name .Chart.Name (int .Values.kibana.port) }}"
       autostart: false
@@ -432,7 +432,7 @@ apigw:
         communicationPort: "10400"
 
   # -- Extra configuration sources for API Gateway
-  # Example: 
+  # Example:
   # - type: YAML
   #   allowEdit: false
   #   properties:
@@ -447,7 +447,7 @@ prometheus:
   path:          "/metrics"
   port:          "5555"
   scheme:        "http"
-  ## -- Only used on annotation 
+  ## -- Only used on annotation
   scrape:        "true"
   ## -- Only used on ServiceMonitor
   interval:      10s
@@ -457,23 +457,23 @@ prometheus:
 serviceMonitor:
   # -- Create and enable CRD ServiceMonitor. The default is `false`.
   enabled: false
-  # -- Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.  
+  # -- Set the monitored service which is connected by ServiceMonitor. Default (if not set) is the `rt` runtime service.
   serviceName: ""
 
 metering:
 
-  # -- enable metering 
+  # -- enable metering
   enabled: true
   # -- The URL of the metering aggregator server REST API.
   serverUrl: "https://metering.softwareag.cloud/api/measurements"
-  # -- The type of the proxy that the metering client uses. 
-  # Valid values are: 
-  # *DIRECT (default). 
-  # *HTTP 
+  # -- The type of the proxy that the metering client uses.
+  # Valid values are:
+  # *DIRECT (default).
+  # *HTTP
   # *SOCKS
-  # Indicates that the metering client does not use a proxy. 
+  # Indicates that the metering client does not use a proxy.
   proxyType: "DIRECT"
-  # -- The proxy address in a <host>:<port> format that the metering client uses. 
+  # -- The proxy address in a <host>:<port> format that the metering client uses.
   # Configure this property only if you use a metering proxy.
   proxyAddress:
   # -- The proxy password that the metering client uses.
@@ -483,7 +483,7 @@ metering:
   # *Letters: A-Z, a-z
   # *Numbers: 0-9
   # *Special characters: !@#$%^&*()_+-=[]{}\/?,.<>;
-  proxyPass: 
+  proxyPass:
   # -- The time in milliseconds to establish the initial TCP connection when the metering client calls the server REST endpoint. This is also the time to start the request.
   serverConnectTimeout: "60000"
   # -- The maximum time in milliseconds without data transfer over the TCP connection to the server. This is also the time that it takes for the server to respond. When this time passes, the request fails.
@@ -502,7 +502,7 @@ metering:
   logLevel:
   # -- The absolute path to the metering client truststore that is used for HTTPS connections. Add this value in any of the following cases:
   # *If you use the Software AG Metering Server on premises (via HTTPS) and the certificates in the truststore do not match the certificates configured in Software AG Runtime (CTP).
-  # *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud. 
+  # *If you use a metering proxy that terminates the SSL connection to the Metering Server in Software AG Cloud.
   trustStoreFile:
   # -- The password for the metering client truststore.
   # Configure this property only if you use a truststore.
@@ -520,27 +520,27 @@ metering:
 
 elasticsearch:
 
-  # -- Deploy elastic search instance 
+  # -- Deploy elastic search instance
   deploy: true
 
   # -- The ECK version to be used
   version: 8.2.3
 
   # -- The image that should be used.
-  # By default ECK will use the official Elasticsearch images. 
+  # By default ECK will use the official Elasticsearch images.
   # Overwrite this to use an image from an internal registry or any custom images.
   # Make sure that the image corresponds to the version field.
-  image: 
+  image:
 
   # -- Resource Settings for Elasticsearch
-  # Example: 
-  # 
+  # Example:
+  #
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
   # requests:
   #   cpu: 100m
-  #   memory: 128Mi  
+  #   memory: 128Mi
   resources: {}
 
   # -- Request size of storage. The default is 1Gi.
@@ -570,7 +570,7 @@ elasticsearch:
   #    username: "elastic"
   #    roles: "viewer"
   extraSecrets: []
-  
+
   # -- Customization of ElasticSearchs PodDisruptionBudget Policy.
   # Elastic Cloud on Kubernetes operator (ECK) creates a default PodDisruptionBudget Policy.
   podDisruptionBudget:
@@ -582,7 +582,7 @@ elasticsearch:
     # Overwriting with custom PodDisruptionBudget Policy requires enabled=true.
     # Examples can be seen here: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
     data: {}
-  
+
   # -- Enable and configure service account creation.
   serviceAccount:
     # -- Whether to create a ServiceAccount for Elasticsearch
@@ -595,7 +595,7 @@ elasticsearch:
     # -- Name of the ServiceAccount Rolebinding used by the Elasticsearch ServiceAccount.
     # Requires create=true to work.
     roleBindingName: "elasticsearch-rolebinding"
-  
+
   # -- Whether the communication from APIGW and Kibana should be HTTPS
   # Note: you will need to create certificate and a separate truststore for the communication.
   tlsEnabled: false
@@ -603,7 +603,7 @@ elasticsearch:
   # -- The name of the elasticsearch secret. By default it will created by the fullname + "-es-tls-secret" if tlsEnabled is set to true.
   tlsSecretName: ""
 
-  # -- The secret name that holds the keystore password  
+  # -- The secret name that holds the keystore password
   keystoreSecretName: ""
 
   # -- The name of the secret holding the tls secret
@@ -613,7 +613,7 @@ elasticsearch:
   # -- Set Pod (anti-) affinity for ElasticSearch. You can use templates inside because `tpl` function is called for rendering.
   affinity: {}
 
-  # -- Set Pod topology spread constraints for ElasticSearch. You can use templates inside because `tpl` function is called for rendering. 
+  # -- Set Pod topology spread constraints for ElasticSearch. You can use templates inside because `tpl` function is called for rendering.
   topologySpreadConstraints: {}
 
   # -- Set Pods' Priority Class Name
@@ -623,20 +623,20 @@ elasticsearch:
   # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-orchestration.html
   # if you specify node sets here the defaultNodeSet will not be used.
   nodeSets: []
-  
+
   # -- Default Node Set
   defaultNodeSet:
 
     # -- the number of replicas for Elastic Search
     count: 1
-    # -- Set this to true for production workloads, this will also 
+    # -- Set this to true for production workloads, this will also
     # use an init container to increase the vm.max_map_count to 262144 on the nodes.
-    memoryMapping: false    
+    memoryMapping: false
 
     # -- Controls whether to start an init container that increases the vm.max_map_count to 262144 on the node.
     # Set memoryMapping to true and this setting also to true to run the init container.
     # Note that this requires the ability to run privileged containers, which is likely not the case on many secure clusters.
-    setMaxMapCount: true     
+    setMaxMapCount: true
     installMapperSizePlugin: true
 
     # -- Extra configuration parameters for Elasticsearch nodes to be appended to the default (none).
@@ -645,11 +645,11 @@ elasticsearch:
 
     # -- Extra init containers to be started before Elasticsearch nodes are started.
     # See https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-init-containers-plugin-downloads.html
-    extraInitContainers: {}  
+    extraInitContainers: {}
 
     # -- Annotations for Elasticsearch
     annotations: {}
-  
+
 
 kibana:
   # -- The ECK version to be used
@@ -658,17 +658,17 @@ kibana:
   # -- Set Pod (anti-) affinity for Kibana. You can use templates inside because `tpl` function is called for rendering.
   affinity: {}
 
-  # -- Set Pod topology spread constraints for Kibana. You can use templates inside because `tpl` function is called for rendering. 
+  # -- Set Pod topology spread constraints for Kibana. You can use templates inside because `tpl` function is called for rendering.
   topologySpreadConstraints: {}
 
   # -- Set Pods' Priority Class Name
   priorityClassName: ""
 
   # -- The image that should be used.
-  # By default ECK will use the official Elasticsearch images. 
+  # By default ECK will use the official Elasticsearch images.
   # Overwrite this to use an image from an internal registry or any custom images.
   # Make sure that the image corresponds to the version field.
-  image: 
+  image:
 
   # -- The default Kibana Port
   port: 5601
@@ -677,7 +677,7 @@ kibana:
 
   # -- Annotations for Kibana
   annotations: {}
-  
+
   # -- The secret name that holds the kibana user for API Gateway.
   secretName: ""
 
@@ -724,14 +724,14 @@ kibana:
   extraInitContainers: []
 
   # -- Resource Settings for Kibana
-  # Example: 
-  # 
+  # Example:
+  #
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
   # requests:
   #   cpu: 100m
-  #   memory: 128Mi  
+  #   memory: 128Mi
   resources: {}
 
   # -- Additional labels to be added to kibana pod labels.
@@ -749,7 +749,7 @@ kibana:
     # -- Name of the ServiceAccount Rolebinding used by the Kibana ServiceAccount.
     # Requires create=true to work.
     roleBindingName: "kibana-rolebinding"
-  
+
   # -- Configure Kibana's readinessProbe.
   readinessProbe:
     httpGet:
@@ -760,7 +760,7 @@ kibana:
     successThreshold: 1
     periodSeconds: 10
     timeoutSeconds: 1
-  
+
   # -- Configure Kibana's livenessProbe.
   livenessProbe: {}
     # tcpSocket:
@@ -770,7 +770,7 @@ kibana:
     # initialDelaySeconds: 30
     # periodSeconds: 30
     # timeoutSeconds: 1
-  
+
   # Set to 'true' prevents API Gateway Error message in the log, indicating that Kibana is not available.
   # -- Enable anonymous access to /api/status.
   allowAnonymousStatus: true
@@ -796,7 +796,7 @@ prometheus-elasticsearch-exporter:
   enabled: true
 
   # -- secret for elasticsearch user. Will need to adjust the secret's name. By default the secret name is <releasename>-apigateway-sag-user-es.
-  # Adjust accordingly if your release name is different. 
+  # Adjust accordingly if your release name is different.
   extraEnvSecrets:
     ES_PASSWORD:
       secret: apigw-apigateway-sag-user-es
@@ -809,7 +809,7 @@ prometheus-elasticsearch-exporter:
     # -- The uri of the elasticsearch service. By default this is null and the environment variable ES_URI is used instead.
     # Overwrite this if you are using an external Elasticsearch instance
     uri: "http://$(ES_USER):$(ES_PASSWORD)@apigw-apigateway-es-http:9200"
-  
+
   serviceMonitor:
     enabled: false
 
@@ -819,5 +819,5 @@ prometheus-elasticsearch-exporter:
     prometheus.io/scheme: http
     prometheus.io/scrape: "true"
 
-# -- Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.  
+# -- Import the content as license key and create a ConfigMap named by `licenseConfigMap` value. You can copy/past the content of your provided license key file here.
 license: |
