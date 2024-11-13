@@ -103,13 +103,12 @@ spec:
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 1000
-     
 ---
 # apigateway-ingress.yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  annotations:                                   
+  annotations:
     nginx.ingress.kubernetes.io/affinity: "cookie"
 ```
 
