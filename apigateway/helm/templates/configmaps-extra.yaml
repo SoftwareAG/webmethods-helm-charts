@@ -27,6 +27,6 @@ metadata:
     {{- with $.Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
     {{- end }}
-data: 
-  {{- toYaml .data | nindent 2 }}  
+data:
+  {{- toYaml .data | nindent 2 }}
 {{- end }}

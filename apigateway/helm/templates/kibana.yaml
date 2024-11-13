@@ -74,7 +74,7 @@ spec:
     name: {{ include "common.names.fullname" . }}
   podTemplate:
     metadata:
-      labels: 
+      labels:
         {{- with .Values.extraLabels -}}
         {{ toYaml . | nindent 8 }}
         {{- end }}
@@ -147,7 +147,7 @@ spec:
                   name: {{ include "apigateway.kibanasecret" . }}
                   key: password
             {{- if .Values.kibana.tls.enabled }}
-            - name: KIBANA_TRUSTSTORE_PASSWORD  
+            - name: KIBANA_TRUSTSTORE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "apigateway.kibanatruststorepassword" . }}

@@ -36,9 +36,8 @@ data:
     {{- if .Values.apigw.extraConfigSources }}
     {{- toYaml .Values.apigw.extraConfigSources | nindent 4 -}}
     {{- end }}
-
   apigw-config.yml: |
-    apigw: 
+    apigw:
       {{- range $key, $value := .Values.apigw.configSources }}
         {{- if kindIs "map" $value }}
           {{- printf "%s:" $key | nindent 6 }}
@@ -46,10 +45,9 @@ data:
         {{- else if kindIs "string" $value }}
           {{- printf "%s: %s" $key (tpl $value $) }}
         {{- else if or (kindIs "bool" $value) (or (kindIs "float" $value) (kindIs "int" $value)) }}
-          {{- printf "%s: %v" $key $value }}    
+          {{- printf "%s: %v" $key $value }}
         {{- end }}
       {{- end }}
-    
   {{ if .Values.apigw.applicationProperties -}}
   application.properties: |
     {{- printf "%s" (tpl .Values.apigw.applicationProperties .) | nindent 4 }}
