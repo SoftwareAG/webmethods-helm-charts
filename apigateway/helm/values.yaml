@@ -1,7 +1,7 @@
 replicaCount: 1
 
 # -- The number of old ReplicaSets to retain to allow rollback.
-# revisionHistoryLimit: 10
+revisionHistoryLimit: 10
 
 image:
   # -- The repository for the image. By default,
@@ -794,6 +794,9 @@ prometheus-elasticsearch-exporter:
 
   # -- Deploy the prometheus exporter for elasticsearch
   enabled: true
+
+  # -- The number of old ReplicaSets to retain to allow rollback.
+  revisionHistoryLimit: 10
 
   # -- secret for elasticsearch user. Will need to adjust the secret's name. By default the secret name is <releasename>-apigateway-sag-user-es.
   # Adjust accordingly if your release name is different.
