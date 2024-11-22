@@ -167,8 +167,9 @@ devportal:
   clusterPorts:
     start:  47500 
     end:    47509
-  # -- csp domains for SSO usage with external Identity providers. This should point to your identity provider domains. 
-  # Controls the PORTAL_SERVER_CONFIG_HEADERS_CONTENT_SECURITY_POLICY environment variable for developer portal
+  # -- csp domains for SSO usage with external Identity providers. This should point to your identity provider domains.
+  # Controls the PORTAL_SERVER_CONFIG_HEADERS_CONTENT_SECURITY_POLICY environment variable for developer portal.
+  # More CSP information on https://tech.forums.softwareag.com/t/webmethods-developer-portal-csp-content-security-policy-troubleshooting/263736  
   cspDomains: ""
   # -- Use the default anti pod affinity.
   # Specifies a Pod Anti-Affinity rule for Kubernetes pods. 
