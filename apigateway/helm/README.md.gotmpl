@@ -103,7 +103,6 @@ spec:
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 1000
-
 ---
 # apigateway-ingress.yaml
 apiVersion: extensions/v1beta1
@@ -114,7 +113,6 @@ metadata:
 ```
 
 Note, if you are using the default configuration and nginx as your ingress controller, sticky sessions will be enabled by default for the UI port and ingress. Change the ingress annotations accordingly for other ingress controllers like Traefik.
-
 
 ## Using an external load balancer
 
