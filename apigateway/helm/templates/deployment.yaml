@@ -60,20 +60,20 @@ spec:
       {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "common.names.serviceAccountName" . }}
-      {{- end }}      
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- if or ( .Values.apigw.initContainer.enabled ) ( .Values.extraInitContainers ) }}
       initContainers:
-        {{- if .Values.elasticsearch.deploy }} 
+        {{- if .Values.elasticsearch.deploy }}
         - name: waitforelasticsearch
           image: {{ .Values.global.curlImage }}
           imagePullPolicy: IfNotPresent
-          {{- if .Values.resources.apigwInitContainer }} 
+          {{- if .Values.resources.apigwInitContainer }}
           resources:
             {{- toYaml .Values.resources.apigwInitContainer | nindent 12 }}
           {{- end }}
-          {{- if .Values.apigw.initContainer.securityContext }} 
+          {{- if .Values.apigw.initContainer.securityContext }}
           securityContext:
             {{- toYaml .Values.apigw.initContainer.securityContext | nindent 12 }}
           {{- end }}
@@ -148,7 +148,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ include "apigateway.elastickeystoresecret" . }}
-                key: {{ include "apigateway.elastickeystoresecretPasswordKey" . }}     
+                key: {{ include "apigateway.elastickeystoresecretPasswordKey" . }}
           - name: apigw_elasticsearch_https_truststorePassword
             valueFrom:
               secretKeyRef:
@@ -171,7 +171,7 @@ spec:
           - containerPort: {{ int .Values.apigw.adminPort }}
             name: admin-http
             protocol: TCP
-          - containerPort: {{ int .Values.apigw.runtimeExternalPort }} 
+          - containerPort: {{ int .Values.apigw.runtimeExternalPort }}
             name: external-http
             protocol: TCP
           {{- if .Values.grpcService.enabled }}
@@ -181,7 +181,7 @@ spec:
           {{- end }}
           {{- if .Values.extraPorts }}
           {{- toYaml .Values.extraPorts | nindent 10 }}
-          {{- end }}                  
+          {{- end }}
           livenessProbe:
             tcpSocket:
               port: {{ int .Values.apigw.adminPort }}
@@ -194,7 +194,7 @@ spec:
             httpGet:
               path: /rest/apigateway/health
               port: {{ int .Values.apigw.adminPort }}
-              scheme: {{ .Values.apigw.readinessProbe.scheme }} 
+              scheme: {{ .Values.apigw.readinessProbe.scheme }}
             failureThreshold: 3
             initialDelaySeconds: 30
             periodSeconds: 30
@@ -219,7 +219,7 @@ spec:
             {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- if eq "string" (printf "%T" .Values.extraVolumeMounts) }}
-              {{- tpl .Values.extraVolumeMounts . | nindent 12 }}              
+              {{- tpl .Values.extraVolumeMounts . | nindent 12 }}
             {{- else }}
               {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -245,7 +245,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if .Values.hostAliases }}
-      hostAliases:  
+      hostAliases:
         {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       volumes:
@@ -258,7 +258,7 @@ spec:
           - key:  apigw-config.yml
             path: apigw-config.yml
           - key:  application.properties
-            path: application.properties  
+            path: application.properties
       - name: apigw-license
         configMap:
           name: {{ include "apigateway.licenseconfigname" . }}
@@ -268,7 +268,7 @@ spec:
             path: licenseKey.xml
       {{- if .Values.elasticsearch.tlsEnabled }}
       - name: elastic-tls
-        secret: 
+        secret:
           secretName: {{ include "apigateway.elastictls" .}}
           items:
             - key: truststore.jks

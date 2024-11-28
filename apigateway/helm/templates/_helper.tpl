@@ -59,27 +59,27 @@ Build the secret name for truststore for Elasticsearch
 {{- end }}
 
 {{/*
-Renders API Gateway's password key identifier for API Gateway for the keystore. Defaults to "password" if no Value for .Values.apigw.elastic. 
+Renders API Gateway's password key identifier for API Gateway for the keystore. Defaults to "password" if no Value for .Values.apigw.elastic.
 */}}
 {{- define "apigateway.elastickeystoresecretPasswordKey" -}}
   {{- default ( printf "%s" "password" )  .Values.apigw.elastickeyStorePassKey }}
 {{- end }}
 
 {{/*
-Renders API Gateway's password key identifier for API Gateway for the truststore. Defaults to "password" if no Value for .Values.apigw.elastic. 
+Renders API Gateway's password key identifier for API Gateway for the truststore. Defaults to "password" if no Value for .Values.apigw.elastic.
 */}}
 {{- define "apigateway.elastictruststoresecretPasswordKey" -}}
   {{- default ( printf "%s" "password" )  .Values.apigw.elastictruststoreStorePassKey }}
 {{- end }}
 
-{{/* 
+{{/*
 Build the tls secret name, which holds the jks trust and keystore for API Gateway to communicate with Elasticsearch
 */}}
 {{- define "apigateway.elastictls" -}}
 {{- default (printf "%s%s" (include "common.names.fullname" .) "-es-tls-secret") .Values.elasticsearch.tlsSecretName }}
 {{- end }}
 
-{{/* 
+{{/*
 Build the admin secret name, which holds the Administrator password
 */}}
 {{- define "apigateway.adminsecret" -}}

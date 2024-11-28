@@ -103,13 +103,12 @@ spec:
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 1000
-     
 ---
 # apigateway-ingress.yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  annotations:                                   
+  annotations:
     nginx.ingress.kubernetes.io/affinity: "cookie"
 ```
 
@@ -170,6 +169,25 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | `1.2.7` | Added possibility to rename roleBinding for API Gateway, Kibana and Elasticsearch. This allows for multiple deployments into the same namespace. Also, CRD ServiceMonitor selector corrected. Support of ES storage PVC annotations. |
 | `1.2.8` | `tpl` function support in `affinity` value added. `affinity` support added for Kibana and Elasticsearch. `topologySpreadConstraints` support added for APIGW, Elasticsearch and Kibana. |
 | `1.2.9` | `priorityClassName` support added for APIGW, Elasticsearch and Kibana. |
+| `2.0.0` | Prometheus Elasticsearch Exporter version `6.5.0` is used. Value `revisionHistoryLimit` is added and documented. |
+
+## Chart Version `2.0.0`
+
+The Chart version `2.0.0` uses the [Prometheus Elasticsearch Exporter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-elasticsearch-exporter) version `6.5.0`.
+
+### Migrate from `1.x.x` to `2.0.0`
+
+If you want to migrate the Elasticsearch Exporter version `5.0.0`, you must delete the existing deployment. Over install is not working. You see the error ...  
+
+```
+Error: UPGRADE FAILED: cannot patch "apigw-prometheus-elasticsearch-exporter" ...
+```
+
+To delete the Elasticsearch Exporter deployment ...
+
+```
+kubectl delete deployment <Helm-release-name>-prometheus-elasticsearch-exporter  -n <namespace>
+```
 
 ## Values
 

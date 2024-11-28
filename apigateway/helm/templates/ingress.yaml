@@ -43,7 +43,7 @@ metadata:
     {{- $labels | nindent 4 }}
     {{- with $.Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
-    {{- end }}    
+    {{- end }}
   {{- with .annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

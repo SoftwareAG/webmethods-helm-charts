@@ -26,7 +26,7 @@ metadata:
   labels:
     {{- with .Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
-    {{- end }}      
+    {{- end }}
 spec:
   version: {{ .Values.elasticsearch.version }}
   {{- if .Values.elasticsearch.image }}
@@ -35,7 +35,7 @@ spec:
   http:
     tls:
     {{- if .Values.elasticsearch.tlsEnabled }}
-      certificate: 
+      certificate:
         secretName: {{ tpl .Values.elasticsearch.certificateSecretName . }}
       selfSignedCertificate:
         {{- if .Values.elasticsearch.subjectAltNames }}
@@ -88,9 +88,9 @@ spec:
         {{- if not .Values.elasticsearch.defaultNodeSet.memoryMapping  }}
         node.store.allow_mmap: false
         {{- end }}
-      podTemplate:    
+      podTemplate:
         metadata:
-          labels: 
+          labels:
             {{- with .Values.extraLabels -}}
             {{ toYaml . | nindent 12 }}
             {{- end }}
@@ -99,8 +99,8 @@ spec:
             {{ toYaml . | nindent 12 }}
             {{- end }}
         spec:
-          {{- with .Values.revisionHistoryLimit }}
-            revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+          {{- if .Values.revisionHistoryLimit }}
+          revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
           {{- end }}
           {{- with .Values.elasticsearch.affinity }}
           affinity:
@@ -144,7 +144,7 @@ spec:
               memory: 50Mi
               cpu: 500m
             limits:
-              memory: 100Mi                    
+              memory: 100Mi
           {{- end }}
   {{- end }}
 {{- end }}

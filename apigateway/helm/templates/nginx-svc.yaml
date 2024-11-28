@@ -23,18 +23,18 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "common.names.fullname" . }}-nginx-svc
-  labels:     
+  labels:
     {{- include "common.labels.standard" . | nindent 4 }}
     {{- with .Values.extraLabels -}}
     {{ toYaml . | nindent 4 }}
-    {{- end }}    
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ int .Values.apigw.runtimePort }}
     protocol: TCP
     targetPort: {{ int .Values.apigw.runtimePort }}
-    name: rtport    
+    name: rtport
     {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
