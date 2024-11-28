@@ -48,6 +48,7 @@ RUN echo 'Debug Installer script: ' && echo && cat installer.script
 #   and Change user context to ...
 USER sagadmin
 RUN sh installer.bin -readScript installer.script -console
+RUN echo 'Debug installation log ...' && echo && find . -name "installLog.txt" | xargs cat
 
 # Cleanup ...
 USER root

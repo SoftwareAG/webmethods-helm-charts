@@ -262,7 +262,7 @@ Sub-folder `examples` contains some *values* examples for more use-cases. To use
 | grpcService.hostname | string | `""` |  |
 | grpcService.type | string | `"LoadBalancer"` |  |
 | hostAliases | list | `[]` | Value to add extra host aliases to APIGW container. |
-| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"sagcr.azurecr.io/apigateway-minimal","tag":"10.15"}` | The number of old ReplicaSets to retain to allow rollback. revisionHistoryLimit: 10 |
 | image.repository | string | `"sagcr.azurecr.io/apigateway-minimal"` | The repository for the image. By default,  this points to the Software AG container repository.  Change this for air-gapped installations or custom images. For the Software AG container repository you need to have a  valid access token stored as registry credentials |
 | image.tag | string | `"10.15"` | The image tag of the apigateway image default this will be the latest version.  For realworld scenarios SAG recommends to use a  specific version to not accidently change production versions with newer images. |
 | imagePullSecrets | list | `[{"name":"regcred"}]` | Image pull secret reference. By default looks for `regcred`. |
