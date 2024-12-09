@@ -4,6 +4,7 @@
 parameters:
 - name: JOB_NAME
   displayName: 'Job name'
+  default: 'wm-msr#10.15'
 - name: TAG
   displayName: Tag the created image with this name, e.g. wm-msr:10.15
   default: 'wm-msr:10.15'
@@ -17,7 +18,7 @@ parameters:
   default: 'manage'
   displayName: Define Administrator password for installed product components
 - name: BASE_IMAGE
-  default: 'ubuntu:latest'
+  default: 'registry.access.redhat.com/ubi8/ubi:latest'
   displayName: 'Create new image based on this'
 - name: VARIABLE_GROUP
   default: 'webmethods-image-creator-vars'
