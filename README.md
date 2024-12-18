@@ -1,3 +1,5 @@
+⚠️ **WARNING:** Repository moved to IBM public Github: https://github.com/IBM/webmethods-helm-charts. This repository is no longer maintained and will be archived and closed on **31.01.2025**. The IBM repository was set up with the commits until December, 6th 2024 from this repository. 
+
 # Helm Chart Repository for Software AG webMethods Products and Components
 
 This repository contains a collection of Helm charts for various webMethods components. The section *Available Charts* provides more information about the contents. We test and develop all Helm Charts for webMethods release version 10.15.
